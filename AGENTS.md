@@ -12,6 +12,10 @@ Waqf Toolkit is a public, open-source collection of digital tools for the Muslim
 
 It is intentionally independent from the private `waqf-platform` repo: no imports, no shared builds, no secrets linking them. Integration happens only through the public `waqf.json` manifest and GitHub metadata.
 
+## Deployment
+
+Vercel is the **temporary** host. Do not add Vercel-specific config to the repo — never create `vercel.json`, `api/` serverless functions, or anything else that couples the codebase to Vercel. Keep the build output generic (`pnpm build`, standard TanStack Start SSR bundle) so switching hosts later requires zero code changes.
+
 ## Commands
 
 ```sh
