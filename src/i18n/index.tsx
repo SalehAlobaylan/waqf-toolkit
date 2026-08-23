@@ -44,6 +44,11 @@ export function useI18n(): I18nValue {
   return value
 }
 
+/** Direct dictionary access for components rendered outside I18nProvider (e.g. notFoundComponent). */
+export function getDictionary(locale: Locale): Dictionary {
+  return dictionaries[locale]
+}
+
 /** Locale-aware href helper: href('/tools', locale) -> '/en/tools' */
 export function lhref(path: string, locale: Locale): string {
   return `/${locale}${path === '/' ? '' : path}`

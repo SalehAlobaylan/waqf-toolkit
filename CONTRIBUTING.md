@@ -23,7 +23,7 @@ pnpm dev
 
 1. Fork or branch from `main`.
 2. Make your change with tests where practical.
-3. Run `pnpm typecheck` and `pnpm build` locally — CI must pass.
+3. Run `pnpm lint`, `pnpm typecheck`, and `pnpm build` locally — CI must pass.
 4. Open a PR using the template and link any related issues.
 5. All PRs require at least one maintainer review before merge.
 

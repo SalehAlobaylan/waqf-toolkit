@@ -1,22 +1,39 @@
-import { Link } from '@tanstack/react-router'
-import { useI18n, lhref } from '@/i18n'
+import { Link, useRouterState } from '@tanstack/react-router'
+import { useI18n } from '@/i18n'
 import { GithubIcon } from './github-icon'
 
 export const GITHUB_REPO_URL = 'https://github.com/SalehAlobaylan/waqf-toolkit'
 
+function switchLocalePath(pathname: string, nextLocale: string): string {
+  const segments = pathname.split('/')
+  if (segments.length > 1) {
+    segments[1] = nextLocale
+  }
+  return segments.join('/') || `/${nextLocale}`
+}
+
 export function SiteHeader() {
   const { locale, t } = useI18n()
+  const pathname = useRouterState({ select: (s) => s.location.pathname })
+  const otherLocale = locale === 'en' ? 'ar' : 'en'
 
   const navItems = [
-    { href: lhref('/tools', locale), label: t.site.navTools },
-    { href: lhref('/contribute', locale), label: t.site.navContribute },
+    { to: '/$locale/tools', label: t.site.navTools },
+    { to: '/$locale/contribute', label: t.site.navContribute },
   ]
 
   return (
     <header className="sticky top-0 z-20 border-b border-line bg-paper/90 backdrop-blur">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:absolute focus:start-2 focus:top-2 focus:z-30 focus:rounded-md focus:bg-surface focus:px-3 focus:py-1.5 focus:text-sm focus:shadow"
+      >
+        {t.common.skipToContent}
+      </a>
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-4 px-4">
         <Link
-          to={lhref('/', locale)}
+          to="/$locale"
+          params={{ locale }}
           className="text-sm font-semibold tracking-tight hover:text-accent"
         >
           {t.site.name}
@@ -24,8 +41,9 @@ export function SiteHeader() {
         <nav className="flex items-center gap-1 text-sm" aria-label="Main navigation">
           {navItems.map((item) => (
             <Link
-              key={item.href}
-              to={item.href}
+              key={item.to}
+              to={item.to}
+              params={{ locale }}
               className="rounded-md px-3 py-1.5 text-muted transition-colors hover:bg-line/50 hover:text-ink"
               activeOptions={{ exact: false }}
             >
@@ -41,13 +59,13 @@ export function SiteHeader() {
           >
             <GithubIcon className="h-4 w-4" />
           </a>
-          <Link
-            to={lhref('/', locale === 'en' ? 'ar' : 'en')}
+          <a
+            href={switchLocalePath(pathname, otherLocale)}
             className="rounded-md px-3 py-1.5 font-medium transition-colors hover:bg-line/50"
             aria-label={t.site.languageSwitchLabel}
           >
             {t.site.languageSwitch}
-          </Link>
+          </a>
         </nav>
       </div>
     </header>

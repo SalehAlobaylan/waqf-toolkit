@@ -5,7 +5,6 @@ import { useI18n } from '@/i18n'
 import { Button, ButtonLink, Card } from '@/components/ui'
 import {
   useGoodFirstIssues,
-  useRepoStats,
   REPO_URL,
 } from '@/lib/use-github'
 import { GithubIcon } from '@/components/github-icon'
@@ -61,7 +60,6 @@ function ContributePage() {
 function GoodFirstIssues() {
   const { t } = useI18n()
   const issues = useGoodFirstIssues()
-  useRepoStats() // warms the shared stats cache
 
   return (
     <section className="mt-12">

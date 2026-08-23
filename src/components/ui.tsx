@@ -44,9 +44,13 @@ export function ButtonLink({
   external?: boolean
 }) {
   const styles = `inline-flex items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-accent ${buttonStyles[variant]} ${className}`
-  if (external) {
+  if (external || href.startsWith('#') || href.startsWith('http')) {
     return (
-      <a href={href} className={styles} target="_blank" rel="noreferrer">
+      <a
+        href={href}
+        className={styles}
+        {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}
+      >
         {children}
       </a>
     )

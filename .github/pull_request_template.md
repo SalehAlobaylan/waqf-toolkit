@@ -13,8 +13,7 @@
 
 ## Checklist
 
-- [ ] `pnpm typecheck` passes
-- [ ] `pnpm build` passes
+- [ ] `pnpm lint`, `pnpm typecheck`, and `pnpm build` pass
 - [ ] UI strings added in **both** `src/i18n/en.ts` and `src/i18n/ar.ts`
 - [ ] No secrets, tokens, or `.env` files committed
 - [ ] Privacy notes updated if processing/network behavior changed

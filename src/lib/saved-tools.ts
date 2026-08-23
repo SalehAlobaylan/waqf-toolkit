@@ -3,23 +3,30 @@ import { useCallback, useSyncExternalStore } from 'react'
 const STORAGE_KEY = 'waqf-toolkit:saved-tools'
 const CHANGE_EVENT = 'waqf-saved-tools-change'
 
-function read(): string[] {
+// Cached snapshot: getSnapshot must return a stable reference between changes.
+let snapshot: string[] = []
+
+function refresh(): string[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     const parsed: unknown = raw ? JSON.parse(raw) : []
-    return Array.isArray(parsed) ? parsed.filter((s) => typeof s === 'string') : []
+    snapshot = Array.isArray(parsed)
+      ? parsed.filter((item): item is string => typeof item === 'string')
+      : []
   } catch {
-    return []
+    snapshot = []
   }
+  return snapshot
 }
 
-function write(slugs: string[]) {
+function persist(slugs: string[]) {
+  snapshot = slugs
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(slugs))
-    window.dispatchEvent(new Event(CHANGE_EVENT))
   } catch {
     // Storage unavailable (private mode, quota). Saving is best-effort.
   }
+  window.dispatchEvent(new Event(CHANGE_EVENT))
 }
 
 const subscribe = (onChange: () => void) => {
@@ -32,11 +39,7 @@ const subscribe = (onChange: () => void) => {
 }
 
 export function useSavedTools() {
-  const slugs = useSyncExternalStore(
-    subscribe,
-    read,
-    () => [] as string[],
-  )
+  const slugs = useSyncExternalStore(subscribe, refresh, () => [])
 
   const isSaved = useCallback(
     (slug: string) => slugs.includes(slug),
@@ -44,10 +47,10 @@ export function useSavedTools() {
   )
 
   const toggle = useCallback((slug: string) => {
-    const current = read()
-    write(
+    const current = [...refresh()]
+    persist(
       current.includes(slug)
-        ? current.filter((s) => s !== slug)
+        ? current.filter((item) => item !== slug)
         : [...current, slug],
     )
   }, [])

@@ -44,6 +44,7 @@ Requires Node 20+ and [pnpm](https://pnpm.io).
 pnpm install
 pnpm dev        # start dev server on :3000
 pnpm build      # production build
+pnpm lint       # eslint
 pnpm typecheck  # type-check
 ```
 

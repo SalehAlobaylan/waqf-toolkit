@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useI18n, lhref } from '@/i18n'
-import { TOOLS, STATUS_ORDER } from '@/data/tools'
+import { TOOLS } from '@/data/tools'
 import { ButtonLink, Card } from '@/components/ui'
 import { ToolCard } from '@/components/tool-card'
 import { useRepoStats } from '@/lib/use-github'
@@ -21,7 +21,6 @@ export const Route = createFileRoute('/$locale/')({
 
 function HomePage() {
   const { locale, t } = useI18n()
-  const stats = useRepoStats()
   const featured = TOOLS.filter((tool) => tool.featured)
 
   const principles = [
@@ -40,7 +39,7 @@ function HomePage() {
             {t.home.heroTitle}
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted">
-            {t.site.tagline}
+            {t.home.heroSubtitle}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <ButtonLink href={lhref('/tools', locale)}>
@@ -81,8 +80,8 @@ function HomePage() {
       </section>
 
       {/* Principles */}
-      <section id="principles" className="border-y border-line bg-surface">
-        <div className="mx-auto max-w-5xl px-4 py-16 scroll-mt-14">
+      <section id="principles" className="scroll-mt-14 border-y border-line bg-surface">
+        <div className="mx-auto max-w-5xl px-4 py-16">
           <h2 className="text-2xl font-semibold tracking-tight">
             {t.home.principlesTitle}
           </h2>
@@ -140,7 +139,7 @@ function RepoStatsStrip() {
   }
 
   if (query.isError || !query.data) {
-    return null
+    return <p className="mt-12 text-sm text-muted">{t.home.statsUnavailable}</p>
   }
 
   const items = [

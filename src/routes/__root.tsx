@@ -21,11 +21,20 @@ export const Route = createRootRoute({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { name: 'theme-color', content: '#faf9f6' },
       { title: 'Waqf Toolkit' },
       {
         name: 'description',
         content:
           'Waqf Toolkit — a collection of free, open-source digital tools. Local-first, privacy-respecting, honestly labelled.',
+      },
+      { property: 'og:type', content: 'website' },
+      { property: 'og:site_name', content: 'Waqf Toolkit' },
+      { property: 'og:title', content: 'Waqf Toolkit' },
+      {
+        property: 'og:description',
+        content:
+          'Free, open-source digital tools. Local-first, privacy-respecting, honestly labelled.',
       },
     ],
     links: [
