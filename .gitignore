@@ -2,6 +2,7 @@ node_modules/
 dist/
 .output/
 .vite/
+.tanstack/
 *.tsbuildinfo
 .DS_Store
 .env
