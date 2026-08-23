@@ -14,9 +14,9 @@ It is intentionally independent from the private `waqf-platform` repo: no import
 
 ## Deployment
 
-Vercel is the **temporary** host. Do not add Vercel-specific config files — never create `vercel.json`, `api/` serverless functions, or anything else that couples the codebase to Vercel.
+**No host-specific configuration ever lives in this repository.** No `vercel.json`, no Nitro presets, no provider env-conditionals, no `api/` serverless functions — regardless of which host is used or how temporary it is. The repo must stay deployable to any Node host with a plain `pnpm install && pnpm build && node dist/server/server.js`.
 
-The only Vercel accommodation allowed is in `vite.config.ts`: the Nitro plugin with `preset: 'vercel'` activates **only** when `VERCEL=1` (set by Vercel's build runners). Local builds and any future host always get the standard Node server output (`dist/server/server.js`). If deployment ever moves, delete that conditional and nothing else.
+All hosting concerns (framework preset, build overrides, routing rules) are configured on the hosting provider's dashboard/CLI side, never in code.
 
 ## Commands
 
