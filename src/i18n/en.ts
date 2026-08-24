@@ -72,6 +72,7 @@ export const en = {
     status: 'Status',
     updated: 'Updated',
     repository: 'Source code',
+    openTool: 'Open the tool',
     repoUnavailable:
       'This project has not been published yet. The repository link will go live when the first version ships.',
     relatedTools: 'Related tools',
@@ -120,6 +121,18 @@ export const en = {
     anotherIdea: 'Submit another idea',
     validationName: 'Please describe the tool or task.',
     validationProblem: 'A sentence about the problem helps us prioritize.',
+  },
+  tryTool: {
+    title: 'Try it',
+    inputLabel: 'Paste a link',
+    inputPlaceholder: 'https://example.com/article?utm_source=news&id=42',
+    cleanLabel: 'Cleaned link',
+    copy: 'Copy',
+    copied: 'Copied',
+    removedTitle: 'Removed parameters',
+    noneRemoved: 'Nothing to remove — this link is already clean.',
+    invalidUrl: 'That does not look like a valid link.',
+    disclaimer: 'Runs entirely in your browser. The link is never sent anywhere.',
   },
   status: {
     available: 'Available',

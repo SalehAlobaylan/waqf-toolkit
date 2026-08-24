@@ -66,6 +66,14 @@ function ToolDetailPage() {
 
       <p className="mt-8 leading-relaxed">{tool.description}</p>
 
+      {tool.tryRoute && (
+        <div className="mt-6">
+          <ButtonLink href={lhref(`/tools/${tool.slug}/try`, locale)}>
+            {t.tool.openTool} →
+          </ButtonLink>
+        </div>
+      )}
+
       <dl className="mt-8 grid gap-4 sm:grid-cols-2">
         <Card className="p-5">
           <dt className="text-xs font-medium uppercase tracking-wide text-muted">

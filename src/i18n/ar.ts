@@ -74,6 +74,7 @@ export const ar: Dictionary = {
     status: 'الحالة',
     updated: 'آخر تحديث',
     repository: 'الكود المصدري',
+    openTool: 'افتح الأداة',
     repoUnavailable:
       'لم يُنشر هذا المشروع بعد. سيصبح الرابط متاحاً عند صدور النسخة الأولى.',
     relatedTools: 'أدوات ذات صلة',
@@ -121,6 +122,18 @@ export const ar: Dictionary = {
     anotherIdea: 'اقترح فكرة أخرى',
     validationName: 'يرجى وصف الأداة أو المهمة.',
     validationProblem: 'جملة عن المشكلة تساعدنا في ترتيب الأولويات.',
+  },
+  tryTool: {
+    title: 'جرّبها',
+    inputLabel: 'الصق رابطاً',
+    inputPlaceholder: 'https://example.com/article?utm_source=news&id=42',
+    cleanLabel: 'الرابط بعد التنظيف',
+    copy: 'نسخ',
+    copied: 'تم النسخ',
+    removedTitle: 'المعاملات المزالة',
+    noneRemoved: 'لا شيء لإزالته — هذا الرابط نظيف بالفعل.',
+    invalidUrl: 'لا يبدو هذا رابطاً صالحاً.',
+    disclaimer: 'تعمل الأداة داخل متصفحك بالكامل. لا يتم إرسال الرابط إلى أي جهة.',
   },
   status: {
     available: 'متاح',

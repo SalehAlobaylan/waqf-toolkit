@@ -13,6 +13,8 @@ export type Tool = {
   privacyNote: string
   supportedFormats: string[]
   featured: boolean
+  /** The tool has a runnable in-app interface at /tools/<slug>/try. */
+  tryRoute?: boolean
   updatedAt: string
   /** Set once the project repository is public. */
   repoUrl?: string
@@ -182,6 +184,7 @@ export const TOOLS: Tool[] = [
       'Links are cleaned in your browser. The list of known trackers ships with the app.',
     supportedFormats: [],
     featured: true,
+    tryRoute: true,
     updatedAt: '2026-08-01',
     // First shipped utility lives inside this repository under src/tools/miftah-link.
     repoUrl: 'https://github.com/SalehAlobaylan/waqf-toolkit',

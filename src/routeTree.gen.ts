@@ -16,6 +16,7 @@ import { Route as LocaleSplatRouteImport } from './routes/$locale/$'
 import { Route as LocaleContributeRouteImport } from './routes/$locale/contribute'
 import { Route as LocaleToolsIndexRouteImport } from './routes/$locale/tools.index'
 import { Route as LocaleToolsSlugRouteImport } from './routes/$locale/tools.$slug'
+import { Route as LocaleToolsSlugTryRouteImport } from './routes/$locale/tools.$slug_.try'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -52,6 +53,11 @@ const LocaleToolsSlugRoute = LocaleToolsSlugRouteImport.update({
   path: '/tools/$slug',
   getParentRoute: () => LocaleRouteRoute,
 } as any)
+const LocaleToolsSlugTryRoute = LocaleToolsSlugTryRouteImport.update({
+  id: '/tools/$slug_/try',
+  path: '/tools/$slug/try',
+  getParentRoute: () => LocaleRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/$locale/': typeof LocaleIndexRoute
   '/$locale/tools/$slug': typeof LocaleToolsSlugRoute
   '/$locale/tools/': typeof LocaleToolsIndexRoute
+  '/$locale/tools/$slug/try': typeof LocaleToolsSlugTryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -69,6 +76,7 @@ export interface FileRoutesByTo {
   '/$locale': typeof LocaleIndexRoute
   '/$locale/tools/$slug': typeof LocaleToolsSlugRoute
   '/$locale/tools': typeof LocaleToolsIndexRoute
+  '/$locale/tools/$slug/try': typeof LocaleToolsSlugTryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -79,6 +87,7 @@ export interface FileRoutesById {
   '/$locale/': typeof LocaleIndexRoute
   '/$locale/tools/$slug': typeof LocaleToolsSlugRoute
   '/$locale/tools/': typeof LocaleToolsIndexRoute
+  '/$locale/tools/$slug_/try': typeof LocaleToolsSlugTryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -90,6 +99,7 @@ export interface FileRouteTypes {
     | '/$locale/'
     | '/$locale/tools/$slug'
     | '/$locale/tools/'
+    | '/$locale/tools/$slug/try'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -98,6 +108,7 @@ export interface FileRouteTypes {
     | '/$locale'
     | '/$locale/tools/$slug'
     | '/$locale/tools'
+    | '/$locale/tools/$slug/try'
   id:
     | '__root__'
     | '/'
@@ -107,6 +118,7 @@ export interface FileRouteTypes {
     | '/$locale/'
     | '/$locale/tools/$slug'
     | '/$locale/tools/'
+    | '/$locale/tools/$slug_/try'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -165,6 +177,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LocaleToolsSlugRouteImport
       parentRoute: typeof LocaleRouteRoute
     }
+    '/$locale/tools/$slug_/try': {
+      id: '/$locale/tools/$slug_/try'
+      path: '/tools/$slug/try'
+      fullPath: '/$locale/tools/$slug/try'
+      preLoaderRoute: typeof LocaleToolsSlugTryRouteImport
+      parentRoute: typeof LocaleRouteRoute
+    }
   }
 }
 
@@ -174,6 +193,7 @@ interface LocaleRouteRouteChildren {
   LocaleIndexRoute: typeof LocaleIndexRoute
   LocaleToolsSlugRoute: typeof LocaleToolsSlugRoute
   LocaleToolsIndexRoute: typeof LocaleToolsIndexRoute
+  LocaleToolsSlugTryRoute: typeof LocaleToolsSlugTryRoute
 }
 
 const LocaleRouteRouteChildren: LocaleRouteRouteChildren = {
@@ -182,6 +202,7 @@ const LocaleRouteRouteChildren: LocaleRouteRouteChildren = {
   LocaleIndexRoute: LocaleIndexRoute,
   LocaleToolsSlugRoute: LocaleToolsSlugRoute,
   LocaleToolsIndexRoute: LocaleToolsIndexRoute,
+  LocaleToolsSlugTryRoute: LocaleToolsSlugTryRoute,
 }
 
 const LocaleRouteRouteWithChildren = LocaleRouteRoute._addFileChildren(
