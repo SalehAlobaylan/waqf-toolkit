@@ -1,5 +1,5 @@
 import { createFileRoute, notFound, Link } from '@tanstack/react-router'
-import { useI18n, lhref } from '@/i18n'
+import { useI18n, lhref, hreflangLinks } from '@/i18n'
 import { getTool } from '@/data/tools'
 import { TOOL_INTERFACES } from '@/tools/registry'
 import { Card } from '@/components/ui'
@@ -21,6 +21,7 @@ export const Route = createFileRoute('/$locale/tools/$slug_/try')({
             : 'Waqf Toolkit',
         },
       ],
+      links: hreflangLinks(`/tools/${params.slug}/try`),
     }
   },
   component: TryToolPage,

@@ -1,13 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://waqf-toolkit.vercel.app/en</loc></url>
-  <url><loc>https://waqf-toolkit.vercel.app/ar</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/en/tools</loc></url>
-  <url><loc>https://waqf-toolkit.vercel.app/ar/tools</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/en/contribute</loc></url>
-  <url><loc>https://waqf-toolkit.vercel.app/ar/contribute</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/saut</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/saut/try</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/mizan-captions</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/mizan-captions/try</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/athar-scrub</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/athar-scrub/try</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/amanah-blur</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/amanah-blur/try</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/safha-pdf</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/safha-pdf/try</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/qalam-pdf</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/qalam-pdf/try</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/wasl-audio</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/wasl-audio/try</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/sitr-redact</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/sitr-redact/try</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/en/tools/miftah-link</loc></url>
-  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/miftah-link</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/en/tools/miftah-link/try</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/salah-clock</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/salah-clock/try</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/contribute</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/saut</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/saut/try</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/mizan-captions</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/mizan-captions/try</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/athar-scrub</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/athar-scrub/try</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/amanah-blur</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/amanah-blur/try</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/safha-pdf</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/safha-pdf/try</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/qalam-pdf</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/qalam-pdf/try</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/wasl-audio</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/wasl-audio/try</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/sitr-redact</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/sitr-redact/try</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/miftah-link</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/ar/tools/miftah-link/try</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/salah-clock</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/salah-clock/try</loc></url>
 </urlset>

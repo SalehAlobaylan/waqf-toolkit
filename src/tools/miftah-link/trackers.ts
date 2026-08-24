@@ -58,7 +58,6 @@ export const TRACKER_PARAMS: readonly string[] = [
 
   // E-commerce / marketplaces
   'ascsubtag', // Amazon affiliate/subtag
-  'tag', // Amazon affiliate tag (removed only with other trackers? kept simple: always removed)
   'spm', // AliExpress/Alibaba page tracking
   'scm', // AliExpress/Alibaba funnel tracking
   'aff_platform', // AliExpress affiliate

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { readFileSync } from 'node:fs'
 import { CATEGORIES, STATUS_ORDER, TOOLS, getTool, relatedTools } from './tools'
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
@@ -60,5 +61,22 @@ describe('tool catalog invariants', () => {
     expect(related).toHaveLength(3)
     expect(new Set(related.map((candidate) => candidate.slug)).size).toBe(3)
     expect(related.map((candidate) => candidate.slug)).not.toContain('saut')
+  })
+
+  it('sitemap covers every tool in every locale', () => {
+    const sitemap = readFileSync('public/sitemap.xml', 'utf-8')
+    for (const locale of ['en', 'ar']) {
+      for (const path of ['', '/tools', '/contribute']) {
+        expect(sitemap).toContain(
+          `<loc>https://waqf-toolkit.vercel.app/${locale}${path}</loc>`,
+        )
+      }
+      for (const tool of TOOLS) {
+        expect(
+          sitemap,
+          `sitemap is missing /${locale}/tools/${tool.slug}`,
+        ).toContain(`https://waqf-toolkit.vercel.app/${locale}/tools/${tool.slug}<`)
+      }
+    }
   })
 })
