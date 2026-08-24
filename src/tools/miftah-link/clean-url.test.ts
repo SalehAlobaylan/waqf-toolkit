@@ -52,8 +52,7 @@ describe('cleanUrl', () => {
   it('rejects non-http(s) protocols and garbage', () => {
     expect(cleanUrl('javascript:alert(1)').ok).toBe(false)
     expect(cleanUrl('ftp://example.com').ok).toBe(false)
-    expect(cleanUrl('not a url at all ??')).ok
-    // "not a url" parses as host "not" — ensure truly invalid input fails:
+    // "not a url at all" parses as host "not" — ensure truly invalid input fails:
     expect(cleanUrl('http://').ok).toBe(false)
     expect(cleanUrl('').ok).toBe(false)
     expect(cleanUrl('   ').ok).toBe(false)

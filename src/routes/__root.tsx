@@ -10,6 +10,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useState } from 'react'
 import { dirFor, isLocale, DEFAULT_LOCALE } from '@/i18n'
 import { ButtonLink } from '@/components/ui'
+import { SITE_URL } from '@/lib/site'
 
 function localeFromPathname(pathname: string) {
   const segment = pathname.split('/')[1]
@@ -36,6 +37,9 @@ export const Route = createRootRoute({
         content:
           'Free, open-source digital tools. Local-first, privacy-respecting, honestly labelled.',
       },
+      { property: 'og:image', content: `${SITE_URL}/og.png` },
+      { property: 'og:image:width', content: '1200' },
+      { property: 'og:image:height', content: '630' },
     ],
     links: [
       { rel: 'preconnect', href: 'https://fonts.googleapis.com' },

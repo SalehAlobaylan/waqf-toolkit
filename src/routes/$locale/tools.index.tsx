@@ -1,22 +1,26 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useMemo, useState } from 'react'
-import { useI18n } from '@/i18n'
+import { useI18n, hreflangLinks } from '@/i18n'
 import { TOOLS, CATEGORIES, STATUS_ORDER, type ToolCategory, type ToolStatus } from '@/data/tools'
 import { Button, Card, ButtonLink } from '@/components/ui'
 import { ToolCard } from '@/components/tool-card'
 import { useSavedTools } from '@/lib/saved-tools'
 
 export const Route = createFileRoute('/$locale/tools/')({
-  head: ({ params }) => ({
-    meta: [
-      {
-        title:
-          params.locale === 'ar'
-            ? 'دليل الأدوات — صندوق وقف'
-            : 'Toolkit directory — Waqf Toolkit',
-      },
-    ],
-  }),
+  head: ({ params }) => {
+    const locale = params.locale === 'ar' ? 'ar' : 'en'
+    return {
+      meta: [
+        {
+          title:
+            locale === 'ar'
+              ? 'دليل الأدوات — صندوق وقف'
+              : 'Toolkit directory — Waqf Toolkit',
+        },
+      ],
+      links: hreflangLinks('/tools'),
+    }
+  },
   component: DirectoryPage,
 })
 

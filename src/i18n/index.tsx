@@ -1,6 +1,7 @@
 import { createContext, useContext, useMemo, type ReactNode } from 'react'
 import { en, type Dictionary } from './en'
 import { ar } from './ar'
+import { SITE_URL } from '@/lib/site'
 
 export const LOCALES = ['en', 'ar'] as const
 export type Locale = (typeof LOCALES)[number]
@@ -52,4 +53,19 @@ export function getDictionary(locale: Locale): Dictionary {
 /** Locale-aware href helper: href('/tools', locale) -> '/en/tools' */
 export function lhref(path: string, locale: Locale): string {
   return `/${locale}${path === '/' ? '' : path}`
+}
+
+/**
+ * hreflang <link> set for a localized page so search engines pair /en and /ar.
+ */
+export function hreflangLinks(
+  path: string,
+): Array<{ rel: string; hrefLang: string; href: string }> {
+  const suffix = path === '/' ? '' : path
+  return [
+    { rel: 'alternate', hrefLang: 'en', href: `${SITE_URL}/en${suffix}` },
+    { rel: 'alternate', hrefLang: 'ar', href: `${SITE_URL}/ar${suffix}` },
+    // English is the default language variant.
+    { rel: 'alternate', hrefLang: 'x-default', href: `${SITE_URL}/en${suffix}` },
+  ]
 }

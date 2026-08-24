@@ -1,5 +1,5 @@
 import { createFileRoute, notFound, Link } from '@tanstack/react-router'
-import { useI18n, lhref } from '@/i18n'
+import { useI18n, lhref, hreflangLinks } from '@/i18n'
 import { getTool, relatedTools } from '@/data/tools'
 import { Badge, Button, Card, ButtonLink } from '@/components/ui'
 import { StatusBadge, ToolCard } from '@/components/tool-card'
@@ -16,11 +16,14 @@ export const Route = createFileRoute('/$locale/tools/$slug')({
     const tool = getTool(params.slug)
     return {
       meta: [
-        { title: tool ? `${tool.name} — Waqf Toolkit` : 'Waqf Toolkit' },
+        {
+          title: tool ? `${tool.name} — Waqf Toolkit` : 'Waqf Toolkit',
+        },
         ...(tool
           ? [{ name: 'description', content: tool.shortDescription }]
           : []),
       ],
+      links: hreflangLinks(`/tools/${params.slug}`),
     }
   },
   component: ToolDetailPage,

@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useForm } from '@tanstack/react-form'
-import { useI18n } from '@/i18n'
+import { useI18n, hreflangLinks } from '@/i18n'
 import { Button, ButtonLink, Card } from '@/components/ui'
 import {
   useGoodFirstIssues,
@@ -10,16 +10,20 @@ import {
 import { GithubIcon } from '@/components/github-icon'
 
 export const Route = createFileRoute('/$locale/contribute')({
-  head: ({ params }) => ({
-    meta: [
-      {
-        title:
-          params.locale === 'ar'
-            ? 'شارك في التطوير — صندوق وقف'
-            : 'Contribute — Waqf Toolkit',
-      },
-    ],
-  }),
+  head: ({ params }) => {
+    const locale = params.locale === 'ar' ? 'ar' : 'en'
+    return {
+      meta: [
+        {
+          title:
+            locale === 'ar'
+              ? 'شارك في التطوير — صندوق وقف'
+              : 'Contribute — Waqf Toolkit',
+        },
+      ],
+      links: hreflangLinks(`/${locale}/contribute`),
+    }
+  },
   component: ContributePage,
 })
 

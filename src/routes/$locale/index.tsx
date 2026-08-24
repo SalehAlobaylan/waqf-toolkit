@@ -1,21 +1,25 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { useI18n, lhref } from '@/i18n'
+import { useI18n, lhref, hreflangLinks } from '@/i18n'
 import { TOOLS } from '@/data/tools'
 import { ButtonLink, Card } from '@/components/ui'
 import { ToolCard } from '@/components/tool-card'
 import { useRepoStats } from '@/lib/use-github'
 
 export const Route = createFileRoute('/$locale/')({
-  head: ({ params }) => ({
-    meta: [
-      {
-        title:
-          params.locale === 'ar'
-            ? 'صندوق وقف — أدوات مفتوحة بوظيفة واضحة'
-            : 'Waqf Toolkit — Open tools with a clear job',
-      },
-    ],
-  }),
+  head: ({ params }) => {
+    const locale = params.locale === 'ar' ? 'ar' : 'en'
+    return {
+      meta: [
+        {
+          title:
+            locale === 'ar'
+              ? 'صندوق وقف — أدوات مفتوحة بوظيفة واضحة'
+              : 'Waqf Toolkit — Open tools with a clear job',
+        },
+      ],
+      links: hreflangLinks('/'),
+    }
+  },
   component: HomePage,
 })
 
