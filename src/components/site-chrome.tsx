@@ -1,4 +1,4 @@
-import { Link, useRouterState } from '@tanstack/react-router'
+import { Link, useNavigate, useRouterState } from '@tanstack/react-router'
 import { useI18n } from '@/i18n'
 import { GithubIcon } from './github-icon'
 
@@ -15,6 +15,7 @@ function switchLocalePath(pathname: string, nextLocale: string): string {
 export function SiteHeader() {
   const { locale, t } = useI18n()
   const pathname = useRouterState({ select: (s) => s.location.pathname })
+  const navigate = useNavigate()
   const otherLocale = locale === 'en' ? 'ar' : 'en'
 
   const navItems = [
@@ -59,13 +60,16 @@ export function SiteHeader() {
           >
             <GithubIcon className="h-4 w-4" />
           </a>
-          <a
-            href={switchLocalePath(pathname, otherLocale)}
-            className="rounded-md px-3 py-1.5 font-medium transition-colors hover:bg-line/50"
+          <button
+            type="button"
+            onClick={() =>
+              navigate({ href: switchLocalePath(pathname, otherLocale) })
+            }
+            className="cursor-pointer rounded-md px-3 py-1.5 font-medium transition-colors hover:bg-line/50"
             aria-label={t.site.languageSwitchLabel}
           >
             {t.site.languageSwitch}
-          </a>
+          </button>
         </nav>
       </div>
     </header>
