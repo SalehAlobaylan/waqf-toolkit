@@ -14,9 +14,9 @@ It is intentionally independent from the private `waqf-platform` repo: no import
 
 ## Deployment
 
-**No host-specific configuration ever lives in this repository.** No `vercel.json`, no Nitro presets, no provider env-conditionals, no `api/` serverless functions — regardless of which host is used or how temporary it is. The repo must stay deployable to any Node host with a plain `pnpm install && pnpm build && node dist/server/server.js`.
+Vercel is the **temporary** host. No host-specific config files live in this repository — no `vercel.json`, no `api/` serverless functions.
 
-All hosting concerns (framework preset, build overrides, routing rules) are configured on the hosting provider's dashboard/CLI side, never in code.
+The single, deliberate exception is in `vite.config.ts`: the Nitro plugin with `preset: 'vercel'`, gated behind `process.env.VERCEL === '1'` so it activates **only** on Vercel's build runners. Vercel physically cannot serve TanStack Start SSR without it (the build must emit a serverless function). Local builds and every other host always produce the standard Node output (`dist/server/server.js`). When the project moves off Vercel, delete this conditional — nothing else changes.
 
 ## Commands
 
