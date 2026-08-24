@@ -1,12 +1,19 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useI18n } from '@/i18n'
 import { Button, Card } from '@/components/ui'
 import { cleanUrl } from './clean-url'
+
+const inputClasses =
+  'w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm text-ink outline-none transition-colors placeholder:text-muted/60 focus:border-accent focus:ring-4 focus:ring-accent/10'
 
 export default function MiftahLinkTry() {
   const { t } = useI18n()
   const [input, setInput] = useState('')
   const [copied, setCopied] = useState(false)
+  const [copyFailed, setCopyFailed] = useState(false)
+  const copyTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
+
+  useEffect(() => () => clearTimeout(copyTimer.current), [])
 
   const result = useMemo(() => {
     if (!input.trim()) return null
@@ -18,13 +25,18 @@ export default function MiftahLinkTry() {
 
   async function copy() {
     if (!cleaned) return
-    await navigator.clipboard.writeText(cleaned.url)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 1500)
+    try {
+      if (!navigator.clipboard) throw new Error('clipboard unavailable')
+      await navigator.clipboard.writeText(cleaned.url)
+      setCopyFailed(false)
+      setCopied(true)
+    } catch {
+      setCopied(false)
+      setCopyFailed(true)
+      return
+    }
+    copyTimer.current = setTimeout(() => setCopied(false), 1500)
   }
-
-  const inputClasses =
-    'w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-accent'
 
   return (
     <div className="space-y-4">
@@ -45,7 +57,7 @@ export default function MiftahLinkTry() {
       <p className="text-xs text-muted">{t.tryTool.disclaimer}</p>
 
       {error === 'invalid-url' && (
-        <Card className="border-red-200 bg-red-50 p-4 text-sm text-red-800">
+        <Card className="border-danger/30 bg-clay-soft p-4 text-sm text-danger">
           {t.tryTool.invalidUrl}
         </Card>
       )}
@@ -60,10 +72,13 @@ export default function MiftahLinkTry() {
               <code className="min-w-0 flex-1 overflow-x-auto rounded-lg border border-accent/30 bg-accent-soft/40 px-3 py-2 font-mono text-sm whitespace-nowrap">
                 {cleaned.url}
               </code>
-              <Button variant="secondary" onClick={copy} className="shrink-0">
+              <Button variant="outline" onClick={copy} className="shrink-0 px-4! py-2! text-xs">
                 {copied ? `✓ ${t.tryTool.copied}` : t.tryTool.copy}
               </Button>
             </div>
+            {copyFailed && (
+              <p className="mt-1.5 text-xs font-medium text-danger">{t.tryTool.copyFailed}</p>
+            )}
           </div>
 
           <div>
@@ -78,7 +93,7 @@ export default function MiftahLinkTry() {
                   <li
                     key={name}
                     dir="ltr"
-                    className="rounded-full bg-red-100 px-2.5 py-0.5 font-mono text-xs text-red-900 line-through"
+                    className="rounded-full bg-clay-soft px-2.5 py-1 font-mono text-xs text-danger line-through"
                   >
                     {name}
                   </li>

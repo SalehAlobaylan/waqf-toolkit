@@ -35,15 +35,23 @@ function LocaleNotFound() {
     <I18nProvider locale={locale}>
       <SiteHeader />
       <main id="main" className="flex flex-1 flex-col">
-        <div className="mx-auto flex max-w-5xl flex-1 flex-col items-center justify-center gap-4 px-4 py-24 text-center">
-          <p className="text-sm font-medium text-accent">404</p>
-          <h1 className="text-2xl font-semibold tracking-tight">
+        <div className="mx-auto flex min-h-[65vh] w-full max-w-[700px] flex-1 flex-col items-center justify-center px-5 text-center">
+          <p className="font-mono-ui animate-fade text-xs font-bold uppercase tracking-[0.1em] text-clay rtl:[letter-spacing:normal]">
+            {t.common.notFoundCode}
+          </p>
+          <h1 className="mt-4 font-display text-5xl font-semibold tracking-[-0.06em] rtl:tracking-normal">
             {t.common.notFoundTitle}
           </h1>
-          <p className="max-w-md text-muted">{t.common.notFoundBody}</p>
-          <ButtonLink href={`/${locale}/tools`} variant="secondary">
-            {t.directory.title}
-          </ButtonLink>
+          <p className="mt-4 max-w-md leading-relaxed text-muted">{t.common.notFoundBody}</p>
+          <div className="mt-7 flex flex-wrap justify-center gap-3">
+            <ButtonLink href={`/${locale}`}>{t.common.goHome}</ButtonLink>
+            <a
+              href={`/${locale}/tools`}
+              className="inline-flex items-center rounded-full border border-line bg-surface px-5 py-3.5 text-sm font-medium transition-colors hover:border-accent/40 hover:text-accent"
+            >
+              {t.directory.title}
+            </a>
+          </div>
         </div>
       </main>
       <SiteFooter />

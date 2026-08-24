@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { CATEGORIES, STATUS_ORDER, TOOLS, getTool, relatedTools } from './tools'
+import { TOOL_INTERFACES } from '@/tools/registry'
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
 
@@ -44,7 +45,7 @@ describe('tool catalog invariants', () => {
       expect(tool.shortDescription.length).toBeGreaterThan(10)
       expect(tool.privacyNote.length).toBeGreaterThan(10)
       expect(tool.stack.length).toBeGreaterThan(0)
-      expect(tool.license).toMatch(/^(MIT|Apache-2\.0|GPL-3\.0|AGPL-3\.0)$/)
+      expect(tool.license).toMatch(/^(MIT|Apache-2\.0|GPL-3\.0|AGPL-3\.0|MPL-2\.0)$/)
       expect(tool.updatedAt, tool.slug).toMatch(ISO_DATE)
       expect(typeof tool.featured).toBe('boolean')
     }
@@ -76,6 +77,34 @@ describe('tool catalog invariants', () => {
           sitemap,
           `sitemap is missing /${locale}/tools/${tool.slug}`,
         ).toContain(`https://waqf-toolkit.vercel.app/${locale}/tools/${tool.slug}<`)
+      }
+    }
+  })
+
+  it('sitemap only lists try-pages for tools with a shipped interface', () => {
+    const sitemap = readFileSync('public/sitemap.xml', 'utf-8')
+    const trySlugs = [
+      ...sitemap.matchAll(/\/tools\/([a-z0-9-]+)\/try</g),
+    ].map((match) => match[1])
+    for (const slug of trySlugs) {
+      expect(
+        TOOL_INTERFACES[slug],
+        `sitemap advertises /tools/${slug}/try but no interface is registered`,
+      ).toBeDefined()
+    }
+  })
+
+  it('tools marked tryRoute have a sitemap try-page in every locale', () => {
+    const sitemap = readFileSync('public/sitemap.xml', 'utf-8')
+    for (const tool of TOOLS) {
+      if (!tool.tryRoute) continue
+      for (const locale of ['en', 'ar']) {
+        expect(
+          sitemap,
+          `tryRoute tool ${tool.slug} is missing its try-page in the sitemap`,
+        ).toContain(
+          `<loc>https://waqf-toolkit.vercel.app/${locale}/tools/${tool.slug}/try</loc>`,
+        )
       }
     }
   })

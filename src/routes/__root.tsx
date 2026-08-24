@@ -8,9 +8,10 @@ import {
 } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useState } from 'react'
-import { dirFor, isLocale, DEFAULT_LOCALE } from '@/i18n'
+import { dirFor, getDictionary, isLocale, DEFAULT_LOCALE } from '@/i18n'
 import { ButtonLink } from '@/components/ui'
 import { SITE_URL } from '@/lib/site'
+import '@/styles/app.css'
 
 function localeFromPathname(pathname: string) {
   const segment = pathname.split('/')[1]
@@ -22,7 +23,7 @@ export const Route = createRootRoute({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { name: 'theme-color', content: '#faf9f6' },
+      { name: 'theme-color', content: '#f5f2ea' },
       { title: 'Waqf Toolkit' },
       {
         name: 'description',
@@ -42,16 +43,6 @@ export const Route = createRootRoute({
       { property: 'og:image:height', content: '630' },
     ],
     links: [
-      { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-      {
-        rel: 'preconnect',
-        href: 'https://fonts.gstatic.com',
-        crossOrigin: 'anonymous',
-      },
-      {
-        rel: 'stylesheet',
-        href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap',
-      },
       { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
     ],
   }),
@@ -87,7 +78,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       <head>
         <HeadContent />
       </head>
-      <body className="flex min-h-screen flex-col">
+      <body className="paper-noise flex min-h-screen flex-col">
         {children}
         <Scripts />
       </body>
@@ -98,20 +89,20 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 function NotFound() {
   const pathname = useRouterState({ select: (s) => s.location.pathname })
   const locale = localeFromPathname(pathname)
-  const en = locale === 'en'
+  const t = getDictionary(locale)
 
   return (
-    <main className="mx-auto flex max-w-5xl flex-1 flex-col items-center justify-center gap-4 px-4 py-24 text-center">
-      <p className="text-sm font-medium text-accent">404</p>
-      <h1 className="text-2xl font-semibold tracking-tight">
-        {en ? 'Page not found' : 'الصفحة غير موجودة'}
-      </h1>
-      <p className="max-w-md text-muted">
-        {en
-          ? 'The page may have moved, or the link may be incomplete. The toolkit directory is a good place to restart.'
-          : 'ربما انتقلت الصفحة أو كان الرابط ناقصاً. دليل الأدوات نقطة بداية جيدة.'}
+    <main className="mx-auto flex min-h-[65vh] max-w-[700px] flex-1 flex-col items-center justify-center px-5 text-center">
+      <p className="font-mono-ui animate-fade text-xs font-bold uppercase tracking-[0.1em] text-clay rtl:[letter-spacing:normal]">
+        {t.common.notFoundCode}
       </p>
-      <ButtonLink href={`/${locale}`}>{en ? 'Go home' : 'الذهاب للرئيسية'}</ButtonLink>
+      <h1 className="mt-4 font-display text-5xl font-semibold tracking-[-0.06em] rtl:tracking-normal">
+        {t.common.notFoundTitle}
+      </h1>
+      <p className="mt-4 max-w-md leading-relaxed text-muted">{t.common.notFoundBody}</p>
+      <div className="mt-7">
+        <ButtonLink href={`/${locale}`}>{t.common.goHome}</ButtonLink>
+      </div>
     </main>
   )
 }

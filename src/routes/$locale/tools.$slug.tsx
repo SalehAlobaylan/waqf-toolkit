@@ -1,10 +1,19 @@
 import { createFileRoute, notFound, Link } from '@tanstack/react-router'
 import { useI18n, lhref, hreflangLinks } from '@/i18n'
-import { getTool, relatedTools } from '@/data/tools'
-import { Badge, Button, Card, ButtonLink } from '@/components/ui'
-import { StatusBadge, ToolCard } from '@/components/tool-card'
+import { getTool } from '@/data/tools'
+import { ButtonLink, Eyebrow, InfoCard } from '@/components/ui'
+import { CategoryTile, StatusPill, SaveButton } from '@/components/tool-card'
 import { GITHUB_REPO_URL } from '@/components/site-chrome'
 import { useSavedTools } from '@/lib/saved-tools'
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  ShieldCheckIcon,
+  FileTextIcon,
+  LayersIcon,
+  CircleCheckIcon,
+} from '@/components/icons'
+import { GithubIcon } from '@/components/github-icon'
 
 export const Route = createFileRoute('/$locale/tools/$slug')({
   beforeLoad: ({ params }) => {
@@ -35,138 +44,166 @@ function ToolDetailPage() {
   const tool = getTool(slug)!
   const saved = useSavedTools()
 
-  const related = relatedTools(tool)
-
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12">
+    <main className="mx-auto max-w-[1060px] px-5 pb-20 pt-10 lg:px-8 lg:pt-14">
       <Link
-        to={lhref('/tools', locale)}
-        className="text-sm text-muted hover:text-ink"
+        to="/$locale/tools"
+        params={{ locale }}
+        data-testid="link-back-tools"
+        className="inline-flex items-center gap-2 text-xs font-semibold text-muted transition-colors hover:text-accent"
       >
-        ← {t.directory.backToDirectory}
+        <ArrowLeftIcon className="h-3.5 w-3.5" />
+        {t.directory.backToDirectory}
       </Link>
 
-      <div className="mt-6 flex flex-wrap items-start justify-between gap-4">
+      <div className="mt-10 grid gap-12 lg:grid-cols-[1fr_320px]">
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight">{tool.name}</h1>
-          <p className="mt-2 text-lg text-muted">{tool.shortDescription}</p>
-        </div>
-        <Button
-          variant={saved.isSaved(tool.slug) ? 'primary' : 'secondary'}
-          onClick={() => saved.toggle(tool.slug)}
-        >
-          {saved.isSaved(tool.slug) ? `★ ${t.tool.savedTool}` : `☆ ${t.tool.saveTool}`}
-        </Button>
-      </div>
-
-      <div className="mt-4 flex flex-wrap items-center gap-2">
-        <StatusBadge status={tool.status} />
-        <Badge>{t.category[tool.category]}</Badge>
-        <span className="text-xs text-muted">
-          {t.tool.updated}: <time dateTime={tool.updatedAt}>{tool.updatedAt}</time>
-        </span>
-      </div>
-
-      <p className="mt-8 leading-relaxed">{tool.description}</p>
-
-      {tool.tryRoute && (
-        <div className="mt-6">
-          <ButtonLink href={lhref(`/tools/${tool.slug}/try`, locale)}>
-            {t.tool.openTool} →
-          </ButtonLink>
-        </div>
-      )}
-
-      <dl className="mt-8 grid gap-4 sm:grid-cols-2">
-        <Card className="p-5">
-          <dt className="text-xs font-medium uppercase tracking-wide text-muted">
-            {t.tool.stack}
-          </dt>
-          <dd className="mt-2 flex flex-wrap gap-2">
-            {tool.stack.map((item) => (
-              <Badge key={item} tone="muted">
-                {item}
-              </Badge>
-            ))}
-          </dd>
-        </Card>
-
-        {tool.supportedFormats.length > 0 && (
-          <Card className="p-5">
-            <dt className="text-xs font-medium uppercase tracking-wide text-muted">
-              {t.tool.formats}
-            </dt>
-            <dd className="mt-2 flex flex-wrap gap-2">
-              {tool.supportedFormats.map((format) => (
-                <Badge key={format} tone="muted">
-                  {format}
-                </Badge>
-              ))}
-            </dd>
-          </Card>
-        )}
-
-        <Card className="p-5">
-          <dt className="text-xs font-medium uppercase tracking-wide text-muted">
-            {t.tool.license}
-          </dt>
-          <dd className="mt-2 font-mono text-sm">{tool.license}</dd>
-        </Card>
-
-        <Card className="border-accent/30 bg-accent-soft/40 p-5">
-          <dt className="text-xs font-medium uppercase tracking-wide text-accent">
-            {t.tool.privacyNote}
-          </dt>
-          <dd className="mt-2 text-sm leading-relaxed">{tool.privacyNote}</dd>
-        </Card>
-      </dl>
-
-      {/* Source code */}
-      <div className="mt-8 rounded-xl border border-line bg-surface p-5">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted">
-          {t.tool.repository}
-        </h2>
-        {tool.repoUrl ? (
-          <div className="mt-3 flex items-center gap-3">
-            <ButtonLink href={tool.repoUrl} external variant="secondary">
-              GitHub ↗
-            </ButtonLink>
-            <code className="text-xs text-muted">{tool.repoUrl}</code>
+          <div className="flex flex-wrap items-center gap-3">
+            <CategoryTile category={tool.category} large />
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="eyebrow text-muted">{t.category[tool.category]}</span>
+                <StatusPill status={tool.status} />
+              </div>
+              <h1 className="mt-2 font-display text-5xl font-semibold tracking-[-0.065em] rtl:tracking-normal sm:text-6xl">
+                {tool.name}
+              </h1>
+            </div>
           </div>
-        ) : (
-          <div className="mt-3 space-y-3">
-            <p className="text-sm text-muted">{t.tool.repoUnavailable}</p>
-            <div className="flex flex-wrap items-center gap-3">
-              <ButtonLink href={GITHUB_REPO_URL} external variant="secondary">
-                {t.contribute.viewOnGithub} ↗
+
+          <p className="mt-8 max-w-[680px] text-xl leading-8 text-muted">
+            {tool.description}
+          </p>
+
+          <div className="mt-9 flex flex-wrap gap-3">
+            {tool.tryRoute && (
+              <ButtonLink
+                href={lhref(`/tools/${tool.slug}/try`, locale)}
+                data-testid={`button-primary-${tool.slug}`}
+                className="group gap-3"
+              >
+                {t.tool.openTool}
+                <ArrowRightIcon className="transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
               </ButtonLink>
+            )}
+            {!tool.tryRoute && tool.trackingIssue && (
+              <ButtonLink
+                href={`${GITHUB_REPO_URL}/issues/${tool.trackingIssue}`}
+                external
+                variant="muted"
+                data-testid={`button-primary-${tool.slug}`}
+                className="group gap-3"
+              >
+                {t.tool.viewPlan}
+                <ArrowRightIcon className="transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
+              </ButtonLink>
+            )}
+            <SaveButton
+              saved={saved.isSaved(tool.slug)}
+              onToggle={() => saved.toggle(tool.slug)}
+              slug={tool.slug}
+            />
+            {tool.repoUrl && (
+              <ButtonLink
+                href={tool.repoUrl}
+                external
+                variant="outline"
+                data-testid={`link-repo-${tool.slug}`}
+                className="gap-2 px-4 py-3 text-xs font-medium"
+              >
+                <GithubIcon className="h-4 w-4" />
+                {t.contribute.viewOnGithub}
+              </ButtonLink>
+            )}
+          </div>
+
+          {/* What to expect */}
+          <div className="mt-14 border-t border-line pt-8">
+            <Eyebrow>{t.tool.expectEyebrow}</Eyebrow>
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              <InfoCard
+                icon={<ShieldCheckIcon className="h-5 w-5" />}
+                title={t.tool.filesStayHere}
+                body={tool.privacyNote}
+              />
+              {tool.supportedFormats.length > 0 && (
+                <InfoCard
+                  icon={<FileTextIcon className="h-5 w-5" />}
+                  title={t.tool.simpleHandoff}
+                  body={t.tool.formatsBody.replace(
+                    '{formats}',
+                    tool.supportedFormats.join(', '),
+                  )}
+                />
+              )}
+              <InfoCard
+                icon={<LayersIcon className="h-5 w-5" />}
+                title={t.tool.stack}
+                body={t.tool.stackBody.replace('{stack}', tool.stack.join(', '))}
+              />
+              <InfoCard
+                icon={<CircleCheckIcon className="h-5 w-5" />}
+                title={t.tool.shapeNextTitle}
+                body={t.tool.shapeNextBody}
+              />
+            </div>
+          </div>
+
+          {!tool.repoUrl && (
+            <div className="mt-10 rounded-2xl border border-dashed border-line p-6">
+              <p className="text-sm leading-relaxed text-muted">
+                {t.tool.repoUnavailable}
+              </p>
               {tool.trackingIssue && (
                 <ButtonLink
                   href={`${GITHUB_REPO_URL}/issues/${tool.trackingIssue}`}
                   external
-                  variant="ghost"
+                  variant="outline"
+                  className="mt-4 px-4 py-2 text-xs"
                 >
                   #{tool.trackingIssue} · {t.tool.roadmap}
                 </ButtonLink>
               )}
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
 
-      {/* Related */}
-      {related.length > 0 && (
-        <section className="mt-12">
-          <h2 className="mb-4 text-lg font-semibold tracking-tight">
-            {t.tool.relatedTools}
-          </h2>
-          <div className="grid gap-4 sm:grid-cols-3">
-            {related.map((candidate) => (
-              <ToolCard key={candidate.slug} tool={candidate} />
-            ))}
+        {/* Sidebar */}
+        <aside className="lg:pt-2">
+          <div className="rounded-2xl border border-line bg-surface p-5 shadow-card">
+            <div className="flex items-center justify-between">
+              <span className="eyebrow text-muted">{t.tool.recordEyebrow}</span>
+            </div>
+            <dl className="mt-6 divide-y divide-line/70">
+              {(
+                [
+                  [t.tool.license, tool.license],
+                  [t.tool.updated, tool.updatedAt],
+                  [
+                    t.tool.formats,
+                    tool.supportedFormats.length > 0
+                      ? tool.supportedFormats.join(', ')
+                      : '—',
+                  ],
+                  [t.tool.stack, tool.stack.join(', ')],
+                  [t.tool.status, t.status[tool.status]],
+                ] as const
+              ).map(([label, value]) => (
+                <div key={label} className="grid grid-cols-[82px_1fr] gap-3 py-3 first:pt-0 last:pb-0">
+                  <dt className="text-xs text-muted">{label}</dt>
+                  <dd className="text-right text-xs font-medium rtl:text-left">{value}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
-        </section>
-      )}
-    </div>
+
+          <div className="mt-4 rounded-2xl border border-accent/15 bg-accent-soft/45 p-5">
+            <ShieldCheckIcon className="h-5 w-5 text-accent" />
+            <p className="mt-4 text-sm font-semibold">{t.tool.privacyNote}</p>
+            <p className="mt-2 text-xs leading-5 text-muted">{tool.privacyNote}</p>
+          </div>
+        </aside>
+      </div>
+    </main>
   )
 }

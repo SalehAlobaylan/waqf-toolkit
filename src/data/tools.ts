@@ -48,16 +48,15 @@ export const TOOLS: Tool[] = [
     slug: 'saut',
     trackingIssue: 1,
     name: 'Saut',
-    shortDescription:
-      'Separate voice from background music in a video, locally.',
+    shortDescription: 'Remove background music from a video, locally.',
     description:
-      'Saut splits a video into a speech track and a background-music track so you can keep the voice and work with a cleaner source. Useful when preparing lectures and talks from raw recordings.',
+      'Saut separates speech and background music in a video so you can keep the voice track and work with a cleaner source.',
     category: 'Media',
     status: 'experimental',
     license: 'AGPL-3.0',
     stack: ['Python', 'FFmpeg', 'Demucs'],
     privacyNote:
-      'Processing runs in your browser session during the experiment. Nothing is uploaded.',
+      'Files stay in your browser session. Nothing is uploaded.',
     supportedFormats: ['MP4', 'MOV', 'WebM'],
     featured: true,
     updatedAt: '2026-08-10',
@@ -68,7 +67,7 @@ export const TOOLS: Tool[] = [
     shortDescription:
       'Clean subtitle files without changing their meaning.',
     description:
-      'Fix timing gaps, duplicate lines, and formatting noise in subtitle files. It keeps the words and removes the clutter — no rewriting, no retranslation.',
+      'Fix timing gaps, duplicate lines, and formatting noise in subtitle files. Keep the words, lose the clutter.',
     category: 'Media',
     status: 'experimental',
     license: 'GPL-3.0',
@@ -105,11 +104,11 @@ export const TOOLS: Tool[] = [
     description:
       'A careful video privacy pass for community footage. Mark areas frame by frame, then export a copy with those regions blurred.',
     category: 'Privacy',
-    status: 'planned',
+    status: 'experimental',
     license: 'MIT',
     stack: ['TypeScript', 'WebCodecs', 'OpenCV'],
     privacyNote:
-      'Processing is designed to run locally. Early builds may be slower than the final release.',
+      'Processing is designed to run locally. Experimental builds may be slower.',
     supportedFormats: ['MP4', 'MOV'],
     featured: true,
     updatedAt: '2026-07-02',
@@ -134,15 +133,15 @@ export const TOOLS: Tool[] = [
     slug: 'qalam-pdf',
     trackingIssue: 5,
     name: 'Qalam PDF',
-    shortDescription: 'Redact text and regions in PDFs properly.',
+    shortDescription: 'Extract pages and text from a PDF, offline.',
     description:
-      'True redaction, not just a black box drawn over the text. Qalam removes the underlying content so covered information cannot be recovered.',
-    category: 'Privacy',
+      'A focused PDF workbench for splitting pages, extracting text, and preparing documents for a handoff.',
+    category: 'Documents',
     status: 'planned',
-    license: 'MIT',
-    stack: ['Rust', 'WebAssembly', 'PDFium'],
+    license: 'MPL-2.0',
+    stack: ['Rust', 'PDFium'],
     privacyNote:
-      'Documents are processed locally. The planned desktop build keeps everything on-device.',
+      'The proposed desktop build will keep documents on-device.',
     supportedFormats: ['PDF'],
     featured: false,
     updatedAt: '2026-06-05',
@@ -202,13 +201,13 @@ export const TOOLS: Tool[] = [
     slug: 'salah-clock',
     trackingIssue: 8,
     name: 'Salah Clock',
-    shortDescription: 'Prayer times with an open, documented methodology.',
+    shortDescription: 'A small prayer time widget for your desktop.',
     description:
-      'Local prayer times and a simple clock, with every calculation parameter documented and reviewable. Calculation methods are explicit, never hidden defaults.',
+      'A quiet, configurable prayer time widget using a location you choose. Built for glancing, not nudging.',
     category: 'Everyday',
     status: 'planned',
     license: 'Apache-2.0',
-    stack: ['TypeScript'],
+    stack: ['Tauri', 'TypeScript'],
     privacyNote:
       'Location stays on your device. Times are computed locally from your coordinates.',
     supportedFormats: [],
