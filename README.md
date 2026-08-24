@@ -54,7 +54,15 @@ Contributions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) first — not
 
 ## Relationship to Waqf Platform
 
-Waqf Toolkit is an independent open-source project. It is showcased inside the [Waqf Platform](https://waqf-platform.vercel.app/) ecosystem via the `waqf.json` project manifest, but has no build-time or runtime dependency on it.
+Waqf Toolkit is an independent open-source project. It is showcased inside the [Waqf Platform](https://waqf-platform.vercel.app/) ecosystem via the [`waqf.json`](docs/waqf-json.md) project manifest, but has no build-time or runtime dependency on it.
+
+## Privacy stance on analytics
+
+This site collects **no analytics and no telemetry**. There are no trackers,
+no cookies, and no third-party requests beyond fonts. The only external API
+calls are read-only GitHub API requests for public repository data. If usage
+signals are ever needed, the decision will be documented here first —
+self-hosted, privacy-respecting solutions only.
 
 ## License
 

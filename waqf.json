@@ -1,5 +1,6 @@
 {
   "waqf": {
+    "specVersion": 1,
     "name": "Waqf Toolkit",
     "slug": "waqf-toolkit",
     "type": "open-source",

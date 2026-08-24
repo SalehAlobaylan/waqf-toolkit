@@ -75,6 +75,7 @@ export const ar: Dictionary = {
     updated: 'آخر تحديث',
     repository: 'الكود المصدري',
     openTool: 'افتح الأداة',
+    roadmap: 'نقاش خارطة الطريق',
     repoUnavailable:
       'لم يُنشر هذا المشروع بعد. سيصبح الرابط متاحاً عند صدور النسخة الأولى.',
     relatedTools: 'أدوات ذات صلة',

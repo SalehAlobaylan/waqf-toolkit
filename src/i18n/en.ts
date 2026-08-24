@@ -73,6 +73,7 @@ export const en = {
     updated: 'Updated',
     repository: 'Source code',
     openTool: 'Open the tool',
+    roadmap: 'Roadmap discussion',
     repoUnavailable:
       'This project has not been published yet. The repository link will go live when the first version ships.',
     relatedTools: 'Related tools',

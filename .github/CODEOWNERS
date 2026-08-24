@@ -1,0 +1,6 @@
+* @SalehAlobaylan
+
+# Sensitive-domain files require extra scrutiny
+# (prayer times, Hijri dates, Qibla, Zakat, inheritance, Quran/Hadith data)
+/docs/templates/ @SalehAlobaylan
+/src/tools/ @SalehAlobaylan

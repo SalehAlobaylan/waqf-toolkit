@@ -15,6 +15,8 @@ export type Tool = {
   featured: boolean
   /** The tool has a runnable in-app interface at /tools/<slug>/try. */
   tryRoute?: boolean
+  /** Roadmap issue tracking this tool's development. */
+  trackingIssue?: number
   updatedAt: string
   /** Set once the project repository is public. */
   repoUrl?: string
@@ -44,6 +46,7 @@ export const STATUS_ORDER: ToolStatus[] = [
 export const TOOLS: Tool[] = [
   {
     slug: 'saut',
+    trackingIssue: 1,
     name: 'Saut',
     shortDescription:
       'Separate voice from background music in a video, locally.',
@@ -78,6 +81,7 @@ export const TOOLS: Tool[] = [
   },
   {
     slug: 'athar-scrub',
+    trackingIssue: 2,
     name: 'Athar Scrub',
     shortDescription:
       'Remove hidden metadata from images before sharing them.',
@@ -95,6 +99,7 @@ export const TOOLS: Tool[] = [
   },
   {
     slug: 'amanah-blur',
+    trackingIssue: 3,
     name: 'Amanah Blur',
     shortDescription: 'Blur faces, screens, and sensitive areas in video.',
     description:
@@ -111,6 +116,7 @@ export const TOOLS: Tool[] = [
   },
   {
     slug: 'safha-pdf',
+    trackingIssue: 4,
     name: 'Safha PDF',
     shortDescription: 'Merge and reorder PDFs into one document.',
     description:
@@ -126,6 +132,7 @@ export const TOOLS: Tool[] = [
   },
   {
     slug: 'qalam-pdf',
+    trackingIssue: 5,
     name: 'Qalam PDF',
     shortDescription: 'Redact text and regions in PDFs properly.',
     description:
@@ -142,6 +149,7 @@ export const TOOLS: Tool[] = [
   },
   {
     slug: 'wasl-audio',
+    trackingIssue: 6,
     name: 'Wasl Audio',
     shortDescription: 'Trim and convert audio without uploading it.',
     description:
@@ -157,6 +165,7 @@ export const TOOLS: Tool[] = [
   },
   {
     slug: 'sitr-redact',
+    trackingIssue: 7,
     name: 'Sitr Redact',
     shortDescription: 'Blur or cover sensitive areas in screenshots.',
     description:
@@ -191,6 +200,7 @@ export const TOOLS: Tool[] = [
   },
   {
     slug: 'salah-clock',
+    trackingIssue: 8,
     name: 'Salah Clock',
     shortDescription: 'Prayer times with an open, documented methodology.',
     description:

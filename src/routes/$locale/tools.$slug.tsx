@@ -136,9 +136,20 @@ function ToolDetailPage() {
         ) : (
           <div className="mt-3 space-y-3">
             <p className="text-sm text-muted">{t.tool.repoUnavailable}</p>
-            <ButtonLink href={GITHUB_REPO_URL} external variant="secondary">
-              {t.contribute.viewOnGithub} ↗
-            </ButtonLink>
+            <div className="flex flex-wrap items-center gap-3">
+              <ButtonLink href={GITHUB_REPO_URL} external variant="secondary">
+                {t.contribute.viewOnGithub} ↗
+              </ButtonLink>
+              {tool.trackingIssue && (
+                <ButtonLink
+                  href={`${GITHUB_REPO_URL}/issues/${tool.trackingIssue}`}
+                  external
+                  variant="ghost"
+                >
+                  #{tool.trackingIssue} · {t.tool.roadmap}
+                </ButtonLink>
+              )}
+            </div>
           </div>
         )}
       </div>
