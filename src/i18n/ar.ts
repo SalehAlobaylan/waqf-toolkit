@@ -22,9 +22,8 @@ export const ar: Dictionary = {
     footerLicense: 'منشور تحت رخصة Apache-2.0.',
   },
   home: {
-    heroKicker: 'أدوات مفتوحة لعمل نافع',
     heroLine1: 'جد الأداة.',
-    heroLine2: 'احتفظ بالملف.',
+    heroLine2: 'ملفك معك.',
     heroSubtitle:
       'رفّ منسّق من الأدوات مفتوحة المصدر للوسائط والخصوصية والعمل الرقمي اليومي. واضحة بشأن ما يحدث لملفاتك.',
     browseTools: 'استعرض الدليل',

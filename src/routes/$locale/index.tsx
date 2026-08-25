@@ -51,28 +51,59 @@ function HomePage() {
 
   return (
     <main>
-      {/* Hero */}
-      <section className="shell-grid relative overflow-hidden border-b border-line/70">
-        <div className="mx-auto grid max-w-[1240px] items-end gap-12 px-5 py-12 lg:grid-cols-[1fr_390px] lg:px-8 lg:py-16">
-          <div className="animate-rise">
-            <div className="mb-4 flex items-center gap-3 text-xs text-muted">
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-accent-soft text-accent">
-                <SparklesIcon className="h-3.5 w-3.5" />
-              </span>
-              <span className="font-mono-ui font-bold uppercase tracking-[0.12em] rtl:[letter-spacing:normal]">
-                {t.home.heroKicker}
-              </span>
+      {/* Hero — dawn panel with floating category tiles */}
+      <section className="mx-auto max-w-[1240px] px-3 pt-3 sm:px-5 sm:pt-5 lg:px-8">
+        <div className="bg-dawn relative overflow-hidden rounded-[32px] border border-line/70 px-5 pb-14 pt-14 sm:pb-16 sm:pt-16 lg:pt-20">
+          <div
+            aria-hidden="true"
+            className="absolute -start-14 -top-14 h-52 w-52 rounded-full border-[26px] border-olive/30"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute -bottom-24 -end-10 h-56 w-56 rounded-full border border-olive/50"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 hidden select-none lg:block"
+          >
+            <div className="absolute start-[6%] top-[24%] -rotate-6 animate-drift drop-shadow-[0_14px_28px_hsl(160_25%_20%/0.14)]">
+              <CategoryTile category="Media" large />
             </div>
-            <h1 className="max-w-[16ch] font-display text-[clamp(2.25rem,5vw,3.75rem)] font-semibold leading-[0.95] tracking-[-0.05em] rtl:max-w-none rtl:leading-[1.15] rtl:tracking-normal">
+            <div className="absolute bottom-[14%] start-[13%] rotate-6 animate-drift drop-shadow-[0_14px_28px_hsl(160_25%_20%/0.14)] [animation-delay:-2s]">
+              <CategoryTile category="Privacy" large />
+            </div>
+            <div className="absolute end-[6%] top-[18%] rotate-6 animate-drift drop-shadow-[0_14px_28px_hsl(160_25%_20%/0.14)] [animation-delay:-4s]">
+              <CategoryTile category="Documents" large />
+            </div>
+            <div className="absolute bottom-[18%] end-[13%] -rotate-6 animate-drift drop-shadow-[0_14px_28px_hsl(160_25%_20%/0.14)] [animation-delay:-6s]">
+              <CategoryTile category="Everyday" large />
+            </div>
+            <div className="absolute start-[26%] top-[13%] rotate-3 animate-drift [animation-delay:-3s]">
+              <CategoryTile category="Everyday" />
+            </div>
+            <div className="absolute end-[26%] top-[11%] -rotate-3 animate-drift [animation-delay:-5s]">
+              <CategoryTile category="Media" />
+            </div>
+          </div>
+
+          <div className="relative mx-auto flex max-w-[760px] flex-col items-center text-center">
+            <h1
+              className="animate-rise font-display text-[clamp(2rem,4.5vw,3.25rem)] font-semibold leading-[1.05] tracking-[-0.04em] rtl:leading-[1.2] rtl:tracking-normal"
+              style={{ animationDelay: '60ms' }}
+            >
               {t.home.heroLine1}
               <br />
-              <span className="text-accent">{t.home.heroLine2}</span>
+              <span className="text-clay-deep">{t.home.heroLine2}</span>
             </h1>
-            <p className="mt-4 max-w-[530px] text-sm leading-6 text-muted sm:text-base">
+            <p
+              className="animate-rise mt-5 max-w-[520px] text-sm leading-6 text-muted sm:text-base"
+              style={{ animationDelay: '120ms' }}
+            >
               {t.home.heroSubtitle}
             </p>
             <form
-              className="mt-5 flex w-full max-w-[420px] items-center gap-3 rounded-full border border-line bg-surface px-4 py-2.5 shadow-card transition-colors focus-within:border-accent/50 focus-within:ring-2 focus-within:ring-accent/10"
+              className="animate-rise mt-7 flex w-full max-w-[560px] items-center gap-3 rounded-full border border-line bg-surface px-5 py-3.5 shadow-float transition-colors focus-within:border-accent/50 focus-within:ring-2 focus-within:ring-accent/10"
+              style={{ animationDelay: '180ms' }}
               onSubmit={(event) => {
                 event.preventDefault()
                 const q = heroQuery.trim()
@@ -80,7 +111,7 @@ function HomePage() {
                 navigate({ to: '/$locale/tools', params: { locale }, search: { q } })
               }}
             >
-              <SearchIcon className="h-4 w-4 shrink-0 text-muted" />
+              <SearchIcon className="h-5 w-5 shrink-0 text-muted" />
               <input
                 value={heroQuery}
                 onChange={(event) => setHeroQuery(event.target.value)}
@@ -88,46 +119,21 @@ function HomePage() {
                 placeholder={t.directory.searchPlaceholder}
                 aria-label={t.directory.searchPlaceholder}
                 data-testid="input-hero-search"
-                className="w-full bg-transparent text-sm outline-none placeholder:text-muted/70"
+                className="w-full bg-transparent text-base outline-none placeholder:text-muted/70"
               />
             </form>
-            <div className="mt-5 flex flex-wrap items-center gap-3">
-              <ButtonLink
-                href={`/${locale}/tools`}
-                variant="outline"
-                data-testid="link-hero-browse"
-                className="group gap-3"
-              >
-                {t.home.browseTools}
-                <ArrowRightIcon className="transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
-              </ButtonLink>
-              <ButtonLink
-                href={`/${locale}/contribute`}
-                variant="outline"
-                data-testid="link-hero-contribute"
-              >
-                {t.home.buildWithUs}
-              </ButtonLink>
-            </div>
-          </div>
 
-          {/* Usable tools card — same forest design, tools instead of steps */}
-          <div className="relative animate-rise" style={{ animationDelay: '120ms' }}>
-            <div className="relative overflow-hidden rounded-[26px] border border-accent/20 bg-forest p-6 text-paper shadow-float">
-              <div
-                aria-hidden="true"
-                className="absolute -end-16 -top-16 h-48 w-48 rounded-full border-[24px] border-olive/20"
-              />
-              <div
-                aria-hidden="true"
-                className="absolute -bottom-20 -start-8 h-48 w-48 rounded-full border border-olive/20"
-              />
-              <div className="relative">
-                <div className="flex items-center justify-between border-b border-forest-border pb-4">
-                  <span className="eyebrow text-olive">{t.home.mostUsed}</span>
-                  <SparklesIcon className="h-4 w-4 text-paper/45" />
+            {/* Most-used glass card floating over the gradient */}
+            <div
+              className="animate-rise mt-9 w-full max-w-[460px]"
+              style={{ animationDelay: '300ms' }}
+            >
+              <div className="overflow-hidden rounded-[22px] border border-line/80 bg-paper/60 shadow-float backdrop-blur-md">
+                <div className="flex items-center justify-between border-b border-line/70 px-5 py-3.5">
+                  <span className="eyebrow text-accent">{t.home.mostUsed}</span>
+                  <SparklesIcon className="h-4 w-4 text-clay" />
                 </div>
-                <ul className="mt-3">
+                <ul className="p-2">
                   {USABLE_TOOLS.map((tool) => {
                     const toolText = localizedTool(tool, locale)
                     return (
@@ -136,21 +142,21 @@ function HomePage() {
                           to="/$locale/tools/$slug"
                           params={{ locale, slug: tool.slug }}
                           data-testid={`hero-tool-${tool.slug}`}
-                          className="group -mx-2 flex items-start gap-3 rounded-xl p-2.5 transition-colors hover:bg-white/5"
+                          className="group -mx-1 flex items-start gap-3 rounded-xl p-2.5 transition-colors hover:bg-accent-soft/50"
                         >
                           <CategoryTile category={tool.category} />
-                          <span className="min-w-0 flex-1">
+                          <span className="min-w-0 flex-1 text-start">
                             <span className="flex items-center gap-2">
                               <span className="truncate text-sm font-semibold">
                                 {toolText.name}
                               </span>
                               <StatusDot status={tool.status} />
                             </span>
-                            <span className="mt-0.5 block truncate text-xs leading-5 text-paper/60">
+                            <span className="mt-0.5 block truncate text-xs leading-5 text-muted">
                               {toolText.shortDescription}
                             </span>
                           </span>
-                          <ArrowRightIcon className="mt-1 h-3.5 w-3.5 shrink-0 text-paper/45 transition-transform group-hover:translate-x-0.5 rtl:-scale-x-100 rtl:group-hover:-translate-x-0.5" />
+                          <ArrowRightIcon className="mt-1 h-3.5 w-3.5 shrink-0 text-muted transition-transform group-hover:translate-x-0.5 rtl:-scale-x-100 rtl:group-hover:-translate-x-0.5" />
                         </Link>
                       </li>
                     )
@@ -160,16 +166,13 @@ function HomePage() {
                   to="/$locale/tools"
                   params={{ locale }}
                   data-testid="link-hero-all-tools"
-                  className="mt-2 flex items-center justify-between gap-2 rounded-xl border-t border-forest-border px-2 pb-1 pt-4 text-xs font-semibold text-olive transition-colors hover:text-paper"
+                  className="group flex items-center justify-between border-t border-line/70 px-5 py-3.5 text-xs font-semibold text-accent transition-colors hover:text-accent-strong"
                 >
                   {t.home.seeAllCount.replace('{count}', String(TOOLS.length))}
+                  <ArrowRightIcon className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 rtl:-scale-x-100 rtl:group-hover:-translate-x-0.5" />
                 </Link>
               </div>
             </div>
-            <span className="absolute -bottom-5 -start-5 hidden rounded-xl border border-line bg-surface px-4 py-3 text-xs shadow-card sm:block">
-              <span className="me-2 inline-block h-2 w-2 rounded-full bg-accent" />
-              {t.home.noAccount}
-            </span>
           </div>
         </div>
       </section>

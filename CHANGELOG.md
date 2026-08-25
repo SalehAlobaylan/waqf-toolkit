@@ -8,6 +8,11 @@ and the project adheres to [Semantic Versioning](https://semver.org).
 
 ### Changed
 
+- Home page redesigned around a full-width "dawn" gradient hero panel:
+  centered headline, search bar as the primary action, floating category
+  tiles, an honest stat row (tools / 0 uploads / on-device), and a glass
+  "Most used" card overlapping the panel edge. The header is transparent
+  over the hero and gains its paper surface on scroll.
 - Tools renamed from brand-style names to descriptive names, in both
   languages and in their URL slugs (e.g. `Saut` → `Video Music Remover`,
   `Miftah Link` → `Link Cleaner` at `/tools/link-cleaner`). Old slugs are

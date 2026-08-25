@@ -183,6 +183,7 @@
   --color-forest-accent: hsl(155 24% 27%);
   --color-olive: hsl(73 47% 69%);
   --color-clay: hsl(24 62% 54%);
+  --color-clay-deep: hsl(24 52% 38%);
   --color-clay-soft: hsl(25 55% 93%);
   --color-danger: hsl(3 53% 42%);
 
@@ -202,6 +203,7 @@
   /* Motion */
   --animate-rise: rise 0.55s cubic-bezier(0.2, 0.75, 0.25, 1) both;
   --animate-fade: fade 0.45s ease-out both;
+  --animate-drift: drift 8s ease-in-out infinite;
 
   @keyframes rise {
     from {
@@ -220,6 +222,16 @@
     }
     to {
       opacity: 1;
+    }
+  }
+
+  @keyframes drift {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-12px);
     }
   }
 }
@@ -273,6 +285,28 @@ select:focus-visible {
     linear-gradient(hsl(42 18% 83% / 0.35) 1px, transparent 1px),
     linear-gradient(90deg, hsl(42 18% 83% / 0.35) 1px, transparent 1px);
   background-size: 40px 40px;
+}
+
+/* Dawn gradient for the home hero panel: paper light rising into olive,
+   with a warm clay glow low on one horizon. Token-derived only. */
+.bg-dawn {
+  background-image:
+    radial-gradient(
+      90% 70% at 85% 108%,
+      hsl(24 62% 54% / 0.18),
+      transparent 62%
+    ),
+    radial-gradient(
+      70% 60% at 12% -10%,
+      hsl(73 47% 69% / 0.4),
+      transparent 60%
+    ),
+    linear-gradient(
+      170deg,
+      var(--color-surface) 0%,
+      var(--color-accent-soft) 58%,
+      var(--color-clay-soft) 100%
+    );
 }
 
 /* Subtle paper grain over the whole page */

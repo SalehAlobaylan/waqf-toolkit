@@ -20,7 +20,6 @@ export const en = {
     footerLicense: 'Released under the Apache-2.0 license.',
   },
   home: {
-    heroKicker: 'Open tools for useful work',
     heroLine1: 'Find the tool.',
     heroLine2: 'Keep the file.',
     heroSubtitle:

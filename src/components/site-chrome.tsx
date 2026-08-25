@@ -132,9 +132,27 @@ export function SiteHeader() {
   const otherLocale = locale === 'en' ? 'ar' : 'en'
   const saved = useSavedTools()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  // On the locale home the header starts transparent over the dawn hero
+  // panel and gains its paper surface as soon as the page scrolls.
+  const transparent = pathname === `/${locale}` && !scrolled
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line/80 bg-paper/90 backdrop-blur-xl">
+    <header
+      className={`sticky top-0 z-40 border-b transition-colors duration-300 ${
+        transparent
+          ? 'border-transparent bg-transparent'
+          : 'border-line/80 bg-paper/90 backdrop-blur-xl'
+      }`}
+    >
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:start-2 focus:top-2 focus:z-30 focus:rounded-md focus:bg-surface focus:px-3 focus:py-1.5 focus:text-sm focus:shadow-card"
@@ -204,7 +222,7 @@ export function SiteHeader() {
       </div>
 
       {menuOpen && (
-        <div className="border-t border-line/70 px-5 py-3 md:hidden">
+        <div className="border-t border-line/70 bg-paper px-5 py-3 md:hidden">
           <Link
             to="/$locale/tools"
             params={{ locale }}
