@@ -6,6 +6,13 @@ and the project adheres to [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Changed
+
+- Tools renamed from brand-style names to descriptive names, in both
+  languages and in their URL slugs (e.g. `Saut` → `Video Music Remover`,
+  `Miftah Link` → `Link Cleaner` at `/tools/link-cleaner`). Old slugs are
+  not redirected.
+
 ## [0.1.0] — 2026-08-24
 
 ### Added
@@ -13,8 +20,8 @@ and the project adheres to [Semantic Versioning](https://semver.org).
 - Bilingual (English/Arabic, RTL) marketing and directory site built on
   TanStack Start: home, toolkit directory with search/filters/saved tools,
   tool detail pages, contribute page with live GitHub data.
-- **Miftah Link** — first runnable tool: strips known tracking parameters
-  from links, fully client-side (`/tools/miftah-link/try`).
+- **Link Cleaner** — first runnable tool: strips known tracking parameters
+  from links, fully client-side (`/tools/link-cleaner/try`).
 - Tool catalog of ten utilities with honest status labels
   (Available / Experimental / Planned).
 - Test suite (Vitest) covering catalog invariants, i18n key parity,

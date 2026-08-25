@@ -9,8 +9,8 @@ describe('switchLocalePath', () => {
   it('preserves nested paths', () => {
     expect(switchLocalePath('/en/tools', 'ar')).toBe('/ar/tools')
     expect(
-      switchLocalePath('/en/tools/miftah-link/try', 'ar'),
-    ).toBe('/ar/tools/miftah-link/try')
+      switchLocalePath('/en/tools/link-cleaner/try', 'ar'),
+    ).toBe('/ar/tools/link-cleaner/try')
   })
 
   it('keeps trailing slashes where present', () => {

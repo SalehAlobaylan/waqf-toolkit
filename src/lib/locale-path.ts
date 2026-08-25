@@ -1,6 +1,6 @@
 /**
  * Swap the locale segment of a localized path, e.g.
- * switchLocalePath('/en/tools/miftah-link', 'ar') -> '/ar/tools/miftah-link'.
+ * switchLocalePath('/en/tools/link-cleaner', 'ar') -> '/ar/tools/link-cleaner'.
  *
  * Used by the header language switch, which must preserve the current path
  * (typed <Link> cannot express that without recomputing params per route).

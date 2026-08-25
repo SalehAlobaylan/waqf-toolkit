@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
-import { CATEGORIES, STATUS_ORDER, TOOLS, getTool, relatedTools } from './tools'
+import { CATEGORIES, STATUS_ORDER, TOOLS, getTool, localizedTool, relatedTools } from './tools'
 import { TOOL_INTERFACES } from '@/tools/registry'
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
+const ARABIC_SCRIPT = /[\u0600-\u06FF]/
 
 describe('tool catalog invariants', () => {
   it('slugs are unique and kebab-case', () => {
@@ -28,7 +29,7 @@ describe('tool catalog invariants', () => {
   it('tools with an in-app interface are marked tryRoute', () => {
     for (const tool of TOOLS) {
       // Inverse check is done against the registry import-free via convention:
-      // only miftah-link currently ships an interface.
+      // only link-cleaner currently ships an interface.
       if (tool.tryRoute) {
         expect(tool.status === 'available' || tool.status === 'experimental').toBe(
           true,
@@ -51,17 +52,45 @@ describe('tool catalog invariants', () => {
     }
   })
 
+  it('every tool carries a complete Arabic translation', () => {
+    for (const tool of TOOLS) {
+      const { name, shortDescription, description, privacyNote } =
+        tool.translations.ar
+      expect(name.trim(), `${tool.slug}: ar.name is empty`).not.toBe('')
+      expect(
+        ARABIC_SCRIPT.test(shortDescription),
+        `${tool.slug}: ar.shortDescription is not Arabic`,
+      ).toBe(true)
+      expect(
+        ARABIC_SCRIPT.test(description),
+        `${tool.slug}: ar.description is not Arabic`,
+      ).toBe(true)
+      expect(
+        ARABIC_SCRIPT.test(privacyNote),
+        `${tool.slug}: ar.privacyNote is not Arabic`,
+      ).toBe(true)
+    }
+  })
+
+  it('localizedTool falls back to English copy', () => {
+    const tool = getTool('link-cleaner')!
+    expect(localizedTool(tool, 'en').name).toBe(tool.name)
+    expect(localizedTool(tool, 'ar').name).toBe(tool.translations.ar.name)
+  })
+
   it('getTool resolves every slug and nothing else', () => {
-    expect(getTool('miftah-link')?.name).toBe('Miftah Link')
+    expect(getTool('link-cleaner')?.name).toBe('Link Cleaner')
     expect(getTool('does-not-exist')).toBeUndefined()
   })
 
   it('relatedTools excludes the current tool and dedupes', () => {
-    const tool = getTool('saut')!
+    const tool = getTool('video-music-remover')!
     const related = relatedTools(tool)
     expect(related).toHaveLength(3)
     expect(new Set(related.map((candidate) => candidate.slug)).size).toBe(3)
-    expect(related.map((candidate) => candidate.slug)).not.toContain('saut')
+    expect(related.map((candidate) => candidate.slug)).not.toContain(
+      'video-music-remover',
+    )
   })
 
   it('sitemap covers every tool in every locale', () => {

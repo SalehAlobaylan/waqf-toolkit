@@ -6,7 +6,7 @@ import { cleanUrl } from './clean-url'
 const inputClasses =
   'w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm text-ink outline-none transition-colors placeholder:text-muted/60 focus:border-accent focus:ring-4 focus:ring-accent/10'
 
-export default function MiftahLinkTry() {
+export default function LinkCleanerTry() {
   const { t } = useI18n()
   const [input, setInput] = useState('')
   const [copied, setCopied] = useState(false)

@@ -1,5 +1,5 @@
 /**
- * Known URL tracking parameters stripped by Miftah Link.
+ * Known URL tracking parameters stripped by the link cleaner.
  *
  * Each entry documents what it tracks and where it comes from, so the list
  * stays auditable. When adding a parameter, include a source reference.

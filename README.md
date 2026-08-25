@@ -15,16 +15,16 @@ A collection of free, open-source digital tools for the Muslim community. Local-
 
 | Tool | Category | Status | What it does |
 |---|---|---|---|
-| Miftah Link | Everyday | Available | Clean tracking parameters out of shared links |
-| Saut | Media | Experimental | Separate voice from background music in video |
-| Mizan Captions | Media | Experimental | Clean subtitle files without changing meaning |
-| Athar Scrub | Privacy | Planned | Remove hidden metadata from images |
-| Amanah Blur | Privacy | Planned | Blur sensitive areas in video |
-| Safha PDF | Documents | Planned | Merge and reorder PDFs |
-| Qalam PDF | Privacy | Planned | True redaction in PDFs |
-| Wasl Audio | Media | Planned | Trim and convert audio locally |
-| Sitr Redact | Privacy | Planned | Blur sensitive areas in screenshots |
-| Salah Clock | Everyday | Planned | Prayer times with documented methodology |
+| Link Cleaner | Everyday | Available | Clean tracking parameters out of shared links |
+| Video Music Remover | Media | Experimental | Separate voice from background music in video |
+| Subtitle Cleaner | Media | Experimental | Clean subtitle files without changing meaning |
+| Image Metadata Remover | Privacy | Planned | Remove hidden metadata from images |
+| Video Face Blur | Privacy | Planned | Blur sensitive areas in video |
+| PDF Merger | Documents | Planned | Merge and reorder PDFs |
+| PDF Page & Text Extractor | Documents | Planned | Split pages and extract text from PDFs |
+| Audio Trimmer & Converter | Media | Planned | Trim and convert audio locally |
+| Image Redaction | Privacy | Planned | Blur sensitive areas in screenshots |
+| Prayer Times Widget | Everyday | Planned | Prayer times with documented methodology |
 
 The catalog lives in [`src/data/tools.ts`](src/data/tools.ts). Editing rules are documented at the top of that file.
 

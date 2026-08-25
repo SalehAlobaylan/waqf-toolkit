@@ -5,6 +5,8 @@ import {
   TOOLS,
   CATEGORIES,
   STATUS_ORDER,
+  localizedTool,
+  type Tool,
   type ToolCategory,
   type ToolStatus,
 } from '@/data/tools'
@@ -63,6 +65,17 @@ function DirectoryPage() {
   )
 }
 
+// Searchable in both languages regardless of the active locale, so an Arabic
+// query still finds a tool whose English copy matches (and vice versa).
+function searchHaystack(tool: Tool): string {
+  return [localizedTool(tool, 'en'), localizedTool(tool, 'ar')]
+    .flatMap((text) => Object.values(text))
+    .join(' ')
+    .toLowerCase()
+}
+
+const haystacks = new Map(TOOLS.map((tool) => [tool.slug, searchHaystack(tool)]))
+
 function DirectoryView({
   initialQuery,
   initialSavedOnly,
@@ -98,15 +111,12 @@ function DirectoryView({
       if (savedOnly && !saved.savedSlugs.includes(tool.slug)) return false
       if (!term) return true
       return [
-        tool.name,
-        tool.shortDescription,
-        tool.description,
+        haystacks.get(tool.slug)!,
         tool.category,
         ...tool.stack,
         ...tool.supportedFormats,
       ]
         .join(' ')
-        .toLowerCase()
         .includes(term)
     })
   }, [search, category, status, savedOnly, saved.savedSlugs])

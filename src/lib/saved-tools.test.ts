@@ -14,22 +14,22 @@ describe('useSavedTools', () => {
   it('starts empty', () => {
     const { result } = renderHook(() => useSavedTools())
     expect(result.current.savedSlugs).toEqual([])
-    expect(result.current.isSaved('miftah-link')).toBe(false)
+    expect(result.current.isSaved('link-cleaner')).toBe(false)
   })
 
   it('toggles a tool and persists across hook instances', () => {
     const first = renderHook(() => useSavedTools())
-    act(() => first.result.current.toggle('miftah-link'))
-    expect(first.result.current.isSaved('miftah-link')).toBe(true)
+    act(() => first.result.current.toggle('link-cleaner'))
+    expect(first.result.current.isSaved('link-cleaner')).toBe(true)
 
     const second = renderHook(() => useSavedTools())
-    expect(second.result.current.savedSlugs).toEqual(['miftah-link'])
+    expect(second.result.current.savedSlugs).toEqual(['link-cleaner'])
   })
 
   it('untoggling removes the entry', () => {
     const { result } = renderHook(() => useSavedTools())
-    act(() => result.current.toggle('saut'))
-    act(() => result.current.toggle('saut'))
+    act(() => result.current.toggle('video-music-remover'))
+    act(() => result.current.toggle('video-music-remover'))
     expect(result.current.savedSlugs).toEqual([])
   })
 

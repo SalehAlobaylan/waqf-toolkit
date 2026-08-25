@@ -1,6 +1,6 @@
 import { createFileRoute, notFound, Link } from '@tanstack/react-router'
-import { useI18n, lhref, hreflangLinks } from '@/i18n'
-import { getTool } from '@/data/tools'
+import { useI18n, lhref, hreflangLinks, type Locale } from '@/i18n'
+import { getTool, localizedTool } from '@/data/tools'
 import { ButtonLink, Eyebrow, InfoCard } from '@/components/ui'
 import { CategoryTile, StatusPill, SaveButton } from '@/components/tool-card'
 import { GITHUB_REPO_URL } from '@/components/site-chrome'
@@ -23,13 +23,19 @@ export const Route = createFileRoute('/$locale/tools/$slug')({
   },
   head: ({ params }) => {
     const tool = getTool(params.slug)
+    const locale: Locale = params.locale === 'ar' ? 'ar' : 'en'
+    const text = tool ? localizedTool(tool, locale) : undefined
     return {
       meta: [
         {
-          title: tool ? `${tool.name} — Waqf Toolkit` : 'Waqf Toolkit',
+          title: text
+            ? locale === 'ar'
+              ? `${text.name} — صندوق وقف`
+              : `${text.name} — Waqf Toolkit`
+            : 'Waqf Toolkit',
         },
-        ...(tool
-          ? [{ name: 'description', content: tool.shortDescription }]
+        ...(text
+          ? [{ name: 'description', content: text.shortDescription }]
           : []),
       ],
       links: hreflangLinks(`/tools/${params.slug}`),
@@ -42,6 +48,7 @@ function ToolDetailPage() {
   const { locale, t } = useI18n()
   const { slug } = Route.useParams()
   const tool = getTool(slug)!
+  const text = localizedTool(tool, locale)
   const saved = useSavedTools()
 
   return (
@@ -66,13 +73,13 @@ function ToolDetailPage() {
                 <StatusPill status={tool.status} />
               </div>
               <h1 className="mt-2 font-display text-5xl font-semibold tracking-[-0.065em] rtl:tracking-normal sm:text-6xl">
-                {tool.name}
+                {text.name}
               </h1>
             </div>
           </div>
 
           <p className="mt-8 max-w-[680px] text-xl leading-8 text-muted">
-            {tool.description}
+            {text.description}
           </p>
 
           <div className="mt-9 flex flex-wrap gap-3">
@@ -124,7 +131,7 @@ function ToolDetailPage() {
               <InfoCard
                 icon={<ShieldCheckIcon className="h-5 w-5" />}
                 title={t.tool.filesStayHere}
-                body={tool.privacyNote}
+                body={text.privacyNote}
               />
               {tool.supportedFormats.length > 0 && (
                 <InfoCard
@@ -200,7 +207,7 @@ function ToolDetailPage() {
           <div className="mt-4 rounded-2xl border border-accent/15 bg-accent-soft/45 p-5">
             <ShieldCheckIcon className="h-5 w-5 text-accent" />
             <p className="mt-4 text-sm font-semibold">{t.tool.privacyNote}</p>
-            <p className="mt-2 text-xs leading-5 text-muted">{tool.privacyNote}</p>
+            <p className="mt-2 text-xs leading-5 text-muted">{text.privacyNote}</p>
           </div>
         </aside>
       </div>

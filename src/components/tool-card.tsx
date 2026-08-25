@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { useI18n } from '@/i18n'
-import type { Tool, ToolCategory, ToolStatus } from '@/data/tools'
+import { localizedTool, type Tool, type ToolCategory, type ToolStatus } from '@/data/tools'
 import { ArrowRightIcon, FilmIcon, ShieldIcon, FileTextIcon, ClockIcon, StarIcon } from './icons'
 
 const CATEGORY_ICONS: Record<ToolCategory, typeof FilmIcon> = {
@@ -100,6 +100,7 @@ export function ToolCard({
   onToggleSave: (slug: string) => void
 }) {
   const { locale, t } = useI18n()
+  const text = localizedTool(tool, locale)
   return (
     <article
       data-testid={`card-tool-${tool.slug}`}
@@ -126,11 +127,11 @@ export function ToolCard({
           data-testid={`link-tool-${tool.slug}`}
           className="mt-3 block"
         >
-          <h3 className="font-display text-[23px] font-semibold tracking-[-0.035em] transition-colors group-hover:text-accent">
-            {tool.name}
+          <h3 className="font-display text-[23px] font-semibold tracking-[-0.035em] transition-colors group-hover:text-accent rtl:tracking-normal">
+            {text.name}
           </h3>
           <p className="mt-1.5 max-w-[28ch] text-sm leading-5 text-muted">
-            {tool.shortDescription}
+            {text.shortDescription}
           </p>
         </Link>
       </div>

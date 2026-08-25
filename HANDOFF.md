@@ -44,7 +44,7 @@ user-facing string exists in English and Arabic.
 |---|---|
 | `src/data/tools.ts` | The tool catalog (10 tools). Editing rules in the header comment |
 | `src/i18n/en.ts`, `src/i18n/ar.ts` | All UI strings. Must stay key-identical (test-enforced) |
-| `src/tools/miftah-link/` | First runnable tool: tracker list + `cleanUrl()` logic |
+| `src/tools/link-cleaner/` | First runnable tool: tracker list + `cleanUrl()` logic |
 | `src/tools/registry.tsx` | Maps tool slug → runnable interface component |
 | `src/routes/$locale/…` | Localized pages (home, directory, detail, try, contribute, splat 404) |
 | `src/lib/site.ts` | `SITE_URL` canonical origin constant |
@@ -90,11 +90,12 @@ https://waqf-platform.vercel.app/ar):
 
 ### 2. Ship the remaining tools
 
-Roadmap issues #1–#8 track each one (Saut, Athar Scrub, Amanah Blur,
-Safha PDF, Qalam PDF, Wasl Audio, Sitr Redact, Salah Clock).
-Mizan Captions (experimental, no issue yet) also needs finishing.
+Roadmap issues #1–#8 track each one (Video Music Remover, Image Metadata
+Remover, Video Face Blur, PDF Merger, PDF Page & Text Extractor, Audio
+Trimmer & Converter, Image Redaction, Prayer Times Widget).
+Subtitle Cleaner (experimental, no issue yet) also needs finishing.
 Rules: small scope, client-side processing, honest status labels.
-**Salah Clock (issue #8) is calculation-sensitive** — must complete
+**Prayer Times Widget (issue #8) is calculation-sensitive** — must complete
 `docs/templates/calculation-methodology.md` and pass domain review per
 CONTRIBUTING.md before merge.
 

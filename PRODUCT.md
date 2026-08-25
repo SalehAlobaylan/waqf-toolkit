@@ -66,16 +66,16 @@ public. The catalog currently tracks ten utilities:
 
 | Tool | Job | Status |
 |---|---|---|
-| Miftah Link | Strip tracking parameters from shared links | **Available** (in-app) |
-| Saut | Separate voice from background music in video | Experimental |
-| Mizan Captions | Clean subtitle files without changing meaning | Experimental |
-| Athar Scrub | Remove hidden metadata from images | Planned |
-| Amanah Blur | Blur faces/screens/sensitive areas in video | Planned |
-| Safha PDF | Merge and reorder PDFs | Planned |
-| Qalam PDF | True redaction (content removed, not covered) | Planned |
-| Wasl Audio | Trim and convert audio locally | Planned |
-| Sitr Redact | Cover sensitive areas in screenshots | Planned |
-| Salah Clock | Prayer times with fully documented methodology | Planned |
+| Link Cleaner | Strip tracking parameters from shared links | **Available** (in-app) |
+| Video Music Remover | Separate voice from background music in video | Experimental |
+| Subtitle Cleaner | Clean subtitle files without changing meaning | Experimental |
+| Image Metadata Remover | Remove hidden metadata from images | Planned |
+| Video Face Blur | Blur faces/screens/sensitive areas in video | Planned |
+| PDF Merger | Merge and reorder PDFs | Planned |
+| PDF Page & Text Extractor | Split pages and extract text from PDFs | Planned |
+| Audio Trimmer & Converter | Trim and convert audio locally | Planned |
+| Image Redaction | Cover sensitive areas in screenshots | Planned |
+| Prayer Times Widget | Prayer times with fully documented methodology | Planned |
 
 Every planned/experimental item has a public tracking issue; progress happens
 in the open.
@@ -117,16 +117,17 @@ other's code. Other projects can adopt the same manifest format.
 ## 8. Roadmap
 
 **Near term**
-- Finish and promote the two experimental tools (Saut, Mizan Captions)
-- Grow in-app runnable tools following the Miftah Link pattern
+- Finish and promote the two experimental tools (Video Music Remover, Subtitle Cleaner)
+- Grow in-app runnable tools following the Link Cleaner pattern
 - Complete the project card inside Waqf Platform (metadata + Explore /
   Contribute buttons + live good-first-issues feed)
 
 **Mid term**
-- Ship the six planned utility tools (Athar Scrub, Amanah Blur, Safha PDF,
-  Qalam PDF, Wasl Audio, Sitr Redact)
-- Build Salah Clock under the enhanced domain-review process, with every
-  calculation convention explicit and testable
+- Ship the six planned utility tools (Image Metadata Remover, Video Face Blur,
+  PDF Merger, PDF Page & Text Extractor, Audio Trimmer & Converter,
+  Image Redaction)
+- Build the Prayer Times Widget under the enhanced domain-review process,
+  with every calculation convention explicit and testable
 
 **Long term**
 - Make `waqf.json` a reusable standard other projects adopt
