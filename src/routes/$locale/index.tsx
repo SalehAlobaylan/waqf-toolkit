@@ -1,17 +1,29 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { useState } from 'react'
 import { useI18n, hreflangLinks } from '@/i18n'
-import { TOOLS } from '@/data/tools'
+import { localizedTool, STATUS_ORDER, TOOLS, type ToolStatus } from '@/data/tools'
 import { ButtonLink, Eyebrow, InfoCard } from '@/components/ui'
-import { ToolCard } from '@/components/tool-card'
+import { CategoryTile, ToolCard } from '@/components/tool-card'
+import { StatusDot } from '@/components/site-chrome'
 import { useSavedTools } from '@/lib/saved-tools'
 import {
   ArrowRightIcon,
+  SearchIcon,
   ShieldCheckIcon,
   CircleCheckIcon,
   CodeIcon,
-  FileTextIcon,
   SparklesIcon,
 } from '@/components/icons'
+
+/** Most important + most usable tools for the hero card: available first. */
+const USABLE_TOOLS = TOOLS.filter((tool) => tool.status !== 'planned')
+  .sort(
+    (a, b) =>
+      STATUS_ORDER.indexOf(a.status as ToolStatus) -
+        STATUS_ORDER.indexOf(b.status as ToolStatus) ||
+      b.updatedAt.localeCompare(a.updatedAt),
+  )
+  .slice(0, 3)
 
 export const Route = createFileRoute('/$locale/')({
   head: ({ params }) => {
@@ -33,15 +45,17 @@ export const Route = createFileRoute('/$locale/')({
 
 function HomePage() {
   const { locale, t } = useI18n()
+  const navigate = useNavigate()
+  const [heroQuery, setHeroQuery] = useState('')
   const featured = TOOLS.filter((tool) => tool.featured)
 
   return (
     <main>
       {/* Hero */}
       <section className="shell-grid relative overflow-hidden border-b border-line/70">
-        <div className="mx-auto grid max-w-[1240px] items-end gap-12 px-5 pb-20 pt-16 sm:pt-24 lg:grid-cols-[1fr_390px] lg:px-8 lg:pb-28 lg:pt-24">
+        <div className="mx-auto grid max-w-[1240px] items-end gap-12 px-5 py-12 lg:grid-cols-[1fr_390px] lg:px-8 lg:py-16">
           <div className="animate-rise">
-            <div className="mb-7 flex items-center gap-3 text-xs text-muted">
+            <div className="mb-4 flex items-center gap-3 text-xs text-muted">
               <span className="flex h-7 w-7 items-center justify-center rounded-full bg-accent-soft text-accent">
                 <SparklesIcon className="h-3.5 w-3.5" />
               </span>
@@ -49,17 +63,38 @@ function HomePage() {
                 {t.home.heroKicker}
               </span>
             </div>
-            <h1 className="max-w-[14ch] font-display text-[clamp(3.5rem,9vw,7.7rem)] font-semibold leading-[0.88] tracking-[-0.075em] rtl:max-w-none rtl:leading-[1.05] rtl:tracking-normal">
+            <h1 className="max-w-[16ch] font-display text-[clamp(2.25rem,5vw,3.75rem)] font-semibold leading-[0.95] tracking-[-0.05em] rtl:max-w-none rtl:leading-[1.15] rtl:tracking-normal">
               {t.home.heroLine1}
               <br />
               <span className="text-accent">{t.home.heroLine2}</span>
             </h1>
-            <p className="mt-8 max-w-[530px] text-base leading-7 text-muted sm:text-lg">
+            <p className="mt-4 max-w-[530px] text-sm leading-6 text-muted sm:text-base">
               {t.home.heroSubtitle}
             </p>
-            <div className="mt-9 flex flex-wrap items-center gap-3">
+            <form
+              className="mt-5 flex w-full max-w-[420px] items-center gap-3 rounded-full border border-line bg-surface px-4 py-2.5 shadow-card transition-colors focus-within:border-accent/50 focus-within:ring-2 focus-within:ring-accent/10"
+              onSubmit={(event) => {
+                event.preventDefault()
+                const q = heroQuery.trim()
+                if (!q) return
+                navigate({ to: '/$locale/tools', params: { locale }, search: { q } })
+              }}
+            >
+              <SearchIcon className="h-4 w-4 shrink-0 text-muted" />
+              <input
+                value={heroQuery}
+                onChange={(event) => setHeroQuery(event.target.value)}
+                type="search"
+                placeholder={t.directory.searchPlaceholder}
+                aria-label={t.directory.searchPlaceholder}
+                data-testid="input-hero-search"
+                className="w-full bg-transparent text-sm outline-none placeholder:text-muted/70"
+              />
+            </form>
+            <div className="mt-5 flex flex-wrap items-center gap-3">
               <ButtonLink
                 href={`/${locale}/tools`}
+                variant="outline"
                 data-testid="link-hero-browse"
                 className="group gap-3"
               >
@@ -76,7 +111,7 @@ function HomePage() {
             </div>
           </div>
 
-          {/* How it works card */}
+          {/* Usable tools card — same forest design, tools instead of steps */}
           <div className="relative animate-rise" style={{ animationDelay: '120ms' }}>
             <div className="relative overflow-hidden rounded-[26px] border border-accent/20 bg-forest p-6 text-paper shadow-float">
               <div
@@ -89,24 +124,46 @@ function HomePage() {
               />
               <div className="relative">
                 <div className="flex items-center justify-between border-b border-forest-border pb-4">
-                  <span className="eyebrow text-olive">{t.home.howItWorksTitle}</span>
-                  <FileTextIcon className="h-4 w-4 text-paper/45" />
+                  <span className="eyebrow text-olive">{t.home.mostUsed}</span>
+                  <SparklesIcon className="h-4 w-4 text-paper/45" />
                 </div>
-                <ol className="mt-7 space-y-6">
-                  {[
-                    { n: '01', title: t.home.step1Title, body: t.home.step1Body },
-                    { n: '02', title: t.home.step2Title, body: t.home.step2Body },
-                    { n: '03', title: t.home.step3Title, body: t.home.step3Body },
-                  ].map((step) => (
-                    <li key={step.n} className="flex gap-4">
-                      <span className="font-mono-ui text-xs text-olive">{step.n}</span>
-                      <div>
-                        <p className="text-sm font-semibold">{step.title}</p>
-                        <p className="mt-1 text-xs leading-5 text-paper/60">{step.body}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ol>
+                <ul className="mt-3">
+                  {USABLE_TOOLS.map((tool) => {
+                    const toolText = localizedTool(tool, locale)
+                    return (
+                      <li key={tool.slug}>
+                        <Link
+                          to="/$locale/tools/$slug"
+                          params={{ locale, slug: tool.slug }}
+                          data-testid={`hero-tool-${tool.slug}`}
+                          className="group -mx-2 flex items-start gap-3 rounded-xl p-2.5 transition-colors hover:bg-white/5"
+                        >
+                          <CategoryTile category={tool.category} />
+                          <span className="min-w-0 flex-1">
+                            <span className="flex items-center gap-2">
+                              <span className="truncate text-sm font-semibold">
+                                {toolText.name}
+                              </span>
+                              <StatusDot status={tool.status} />
+                            </span>
+                            <span className="mt-0.5 block truncate text-xs leading-5 text-paper/60">
+                              {toolText.shortDescription}
+                            </span>
+                          </span>
+                          <ArrowRightIcon className="mt-1 h-3.5 w-3.5 shrink-0 text-paper/45 transition-transform group-hover:translate-x-0.5 rtl:-scale-x-100 rtl:group-hover:-translate-x-0.5" />
+                        </Link>
+                      </li>
+                    )
+                  })}
+                </ul>
+                <Link
+                  to="/$locale/tools"
+                  params={{ locale }}
+                  data-testid="link-hero-all-tools"
+                  className="mt-2 flex items-center justify-between gap-2 rounded-xl border-t border-forest-border px-2 pb-1 pt-4 text-xs font-semibold text-olive transition-colors hover:text-paper"
+                >
+                  {t.home.seeAllCount.replace('{count}', String(TOOLS.length))}
+                </Link>
               </div>
             </div>
             <span className="absolute -bottom-5 -start-5 hidden rounded-xl border border-line bg-surface px-4 py-3 text-xs shadow-card sm:block">
@@ -135,7 +192,7 @@ function HomePage() {
             <ArrowRightIcon />
           </Link>
         </div>
-        <div className="mt-9 grid gap-4 lg:grid-cols-3">
+        <div className="mt-9 grid gap-3 lg:grid-cols-3">
           {featured.map((tool, index) => (
             <div
               key={tool.slug}

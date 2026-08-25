@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useI18n, hreflangLinks } from '@/i18n'
 import {
   TOOLS,
@@ -54,12 +54,12 @@ export const Route = createFileRoute('/$locale/tools/')({
 
 function DirectoryPage() {
   const { q, filter } = Route.useSearch()
-  // Remount (and reset local filter state) whenever the URL query changes,
-  // e.g. when arriving from another page.
+  // No keyed remount: the view owns query state and syncs with the URL in
+  // both directions, so typing never loses focus.
   return (
     <DirectoryView
-      key={`${q ?? ''}-${filter ?? ''}`}
       initialQuery={q ?? ''}
+      urlQuery={q}
       initialSavedOnly={filter === 'saved'}
     />
   )
@@ -76,19 +76,57 @@ function searchHaystack(tool: Tool): string {
 
 const haystacks = new Map(TOOLS.map((tool) => [tool.slug, searchHaystack(tool)]))
 
+const STATUS_RANK: Record<ToolStatus, number> = {
+  available: 0,
+  experimental: 1,
+  planned: 2,
+}
+
 function DirectoryView({
   initialQuery,
+  urlQuery,
   initialSavedOnly,
 }: {
   initialQuery: string
+  urlQuery?: string
   initialSavedOnly: boolean
 }) {
   const { locale, t } = useI18n()
+  const navigate = Route.useNavigate()
   const [search, setSearch] = useState(initialQuery)
   const [category, setCategory] = useState<ToolCategory | 'all'>('all')
   const [status, setStatus] = useState<ToolStatus | 'all'>('all')
   const [savedOnly, setSavedOnly] = useState(initialSavedOnly)
+  const [sortMode, setSortMode] = useState<'ready' | 'recent'>('ready')
   const saved = useSavedTools()
+
+  // URL -> state (back button, links from other pages), using the
+  // adjust-state-during-render pattern so typing never loses focus.
+  const [prevUrlQuery, setPrevUrlQuery] = useState(urlQuery)
+  if (urlQuery !== prevUrlQuery) {
+    setPrevUrlQuery(urlQuery)
+    if (urlQuery !== undefined && urlQuery !== search) {
+      setSearch(urlQuery)
+    }
+  }
+
+  // State -> URL on every keystroke (shareable searches). `replace` keeps
+  // history clean; the local state above stays authoritative while typing.
+  const onSearchChange = (value: string) => {
+    setSearch(value)
+    void navigate({
+      search: (prev) => ({ ...prev, q: value.trim() || undefined }),
+      replace: true,
+    })
+  }
+
+  // Focus the search field on desktop only — mobile keyboards should stay down.
+  const searchInputRef = useRef<HTMLInputElement>(null)
+  useEffect(() => {
+    if (window.matchMedia('(min-width: 1024px)').matches) {
+      searchInputRef.current?.focus({ preventScroll: true })
+    }
+  }, [])
 
   const categoryCounts = useMemo(() => {
     const counts = new Map<ToolCategory | 'all', number>()
@@ -105,7 +143,7 @@ function DirectoryView({
 
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase()
-    return TOOLS.filter((tool) => {
+    const list = TOOLS.filter((tool) => {
       if (category !== 'all' && tool.category !== category) return false
       if (status !== 'all' && tool.status !== status) return false
       if (savedOnly && !saved.savedSlugs.includes(tool.slug)) return false
@@ -119,36 +157,46 @@ function DirectoryView({
         .join(' ')
         .includes(term)
     })
-  }, [search, category, status, savedOnly, saved.savedSlugs])
+    if (sortMode === 'recent') {
+      return [...list].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+    }
+    return [...list].sort(
+      (a, b) =>
+        STATUS_RANK[a.status] - STATUS_RANK[b.status] ||
+        b.updatedAt.localeCompare(a.updatedAt),
+    )
+  }, [search, category, status, savedOnly, sortMode, saved.savedSlugs])
 
   const clearAll = () => {
     setSearch('')
+    void navigate({ search: (prev) => ({ ...prev, q: undefined }), replace: true })
     setCategory('all')
     setStatus('all')
     setSavedOnly(false)
   }
 
   return (
-    <main className="mx-auto max-w-[1240px] px-5 pb-20 pt-12 lg:px-8 lg:pt-16">
+    <main className="mx-auto max-w-[1240px] px-5 pb-20 pt-8 lg:px-8 lg:pt-10">
       {/* Head */}
-      <div className="flex flex-col gap-7 border-b border-line pb-10 lg:flex-row lg:items-end lg:justify-between">
+      <div className="flex flex-col gap-5 border-b border-line pb-6 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <Eyebrow>
             {t.directory.directoryEyebrow.replace('{count}', String(TOOLS.length))}
           </Eyebrow>
-          <h1 className="mt-3 font-display text-5xl font-semibold tracking-[-0.06em] rtl:tracking-normal sm:text-6xl">
+          <h1 className="mt-2 font-display text-3xl font-semibold tracking-[-0.04em] rtl:tracking-normal sm:text-4xl">
             {t.directory.heading}
           </h1>
-          <p className="mt-4 max-w-xl text-base leading-6 text-muted">
+          <p className="mt-2 max-w-xl text-sm leading-5 text-muted">
             {t.directory.subtitle}
           </p>
         </div>
         <div className="w-full max-w-md">
-          <label className="flex h-12 w-full items-center gap-3 rounded-xl border border-line bg-surface px-4 text-muted shadow-card transition-colors focus-within:border-accent/50 focus-within:ring-2 focus-within:ring-accent/10">
+          <label className="flex h-11 w-full items-center gap-3 rounded-xl border border-line bg-surface px-4 text-muted shadow-card transition-colors focus-within:border-accent/50 focus-within:ring-2 focus-within:ring-accent/10">
             <SearchIcon className="h-4 w-4 shrink-0" />
             <input
+              ref={searchInputRef}
               value={search}
-              onChange={(event) => setSearch(event.target.value)}
+              onChange={(event) => onSearchChange(event.target.value)}
               type="search"
               placeholder={t.directory.searchPlaceholder}
               className="w-full bg-transparent text-sm outline-none placeholder:text-muted/70"
@@ -162,8 +210,22 @@ function DirectoryView({
         </div>
       </div>
 
+      {/* Suggest band */}
+      <div className="mt-6 flex flex-col items-start justify-between gap-4 rounded-[24px] border border-line bg-accent-soft/40 p-5 sm:flex-row sm:items-center sm:p-6">
+        <div>
+          <Eyebrow>{t.home.ctaEyebrow}</Eyebrow>
+          <p className="mt-2 max-w-xl text-sm leading-5 text-muted">{t.home.ctaBody}</p>
+        </div>
+        <a
+          href={`/${locale}/contribute`}
+          className="shrink-0 rounded-full border border-line bg-surface px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:border-accent/40 hover:text-accent"
+        >
+          {t.home.suggestCta}
+        </a>
+      </div>
+
       {/* Filters + results */}
-      <div className="flex flex-col gap-8 py-8 lg:flex-row">
+      <div className="flex flex-col gap-6 pt-6 lg:flex-row">
         <aside className="w-full shrink-0 lg:w-[190px]">
           <div className="flex items-center justify-between lg:block">
             <div className="flex items-center gap-2 text-xs font-semibold">
@@ -292,8 +354,41 @@ function DirectoryView({
         </aside>
 
         <div className="min-w-0 flex-1">
+          {/* Sort */}
+          <div
+            role="group"
+            aria-label={t.directory.sortLabel}
+            className="mb-3 flex items-center gap-1.5"
+          >
+            <button
+              type="button"
+              onClick={() => setSortMode('ready')}
+              aria-pressed={sortMode === 'ready'}
+              data-testid="button-sort-ready"
+              className={`cursor-pointer rounded-full px-3 py-1.5 text-xs transition-colors ${
+                sortMode === 'ready'
+                  ? 'bg-accent font-semibold text-paper'
+                  : 'text-muted hover:bg-line/60 hover:text-ink'
+              }`}
+            >
+              {t.directory.sortReadyFirst}
+            </button>
+            <button
+              type="button"
+              onClick={() => setSortMode('recent')}
+              aria-pressed={sortMode === 'recent'}
+              data-testid="button-sort-recent"
+              className={`cursor-pointer rounded-full px-3 py-1.5 text-xs transition-colors ${
+                sortMode === 'recent'
+                  ? 'bg-accent font-semibold text-paper'
+                  : 'text-muted hover:bg-line/60 hover:text-ink'
+              }`}
+            >
+              {t.directory.sortRecent}
+            </button>
+          </div>
           {filtered.length > 0 ? (
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {filtered.map((tool) => (
                 <ToolCard
                   key={tool.slug}
@@ -311,20 +406,6 @@ function DirectoryView({
             />
           )}
         </div>
-      </div>
-
-      {/* Suggest band */}
-      <div className="mt-6 flex flex-col items-start justify-between gap-5 rounded-[28px] border border-line bg-accent-soft/40 p-7 sm:flex-row sm:items-center sm:p-9">
-        <div>
-          <Eyebrow>{t.home.ctaEyebrow}</Eyebrow>
-          <p className="mt-3 max-w-xl text-sm leading-6 text-muted">{t.home.ctaBody}</p>
-        </div>
-        <a
-          href={`/${locale}/contribute`}
-          className="shrink-0 rounded-full border border-line bg-surface px-5 py-3 text-sm font-medium text-ink transition-colors hover:border-accent/40 hover:text-accent"
-        >
-          {t.home.suggestCta}
-        </a>
       </div>
     </main>
   )

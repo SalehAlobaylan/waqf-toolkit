@@ -36,6 +36,14 @@ export function ArrowRightIcon({ className }: IconProps) {
   )
 }
 
+export function ChevronDownIcon({ className }: IconProps) {
+  return (
+    <Icon className={`transition-transform ${className ?? ''}`}>
+      <path d="m6 9 6 6 6-6" />
+    </Icon>
+  )
+}
+
 export function ArrowLeftIcon({ className }: IconProps) {
   return (
     <Icon className={`rtl:-scale-x-100 ${className ?? ''}`}>

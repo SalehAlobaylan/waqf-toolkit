@@ -1,8 +1,9 @@
 import { createFileRoute, notFound, Link } from '@tanstack/react-router'
 import { useI18n, lhref, hreflangLinks, type Locale } from '@/i18n'
-import { getTool, localizedTool } from '@/data/tools'
+import { getTool, localizedTool, relatedTools } from '@/data/tools'
+import { TOOL_INTERFACES } from '@/tools/registry'
 import { ButtonLink, Eyebrow, InfoCard } from '@/components/ui'
-import { CategoryTile, StatusPill, SaveButton } from '@/components/tool-card'
+import { CategoryTile, StatusPill, SaveButton, ToolCard } from '@/components/tool-card'
 import { GITHUB_REPO_URL } from '@/components/site-chrome'
 import { useSavedTools } from '@/lib/saved-tools'
 import {
@@ -49,6 +50,8 @@ function ToolDetailPage() {
   const { slug } = Route.useParams()
   const tool = getTool(slug)!
   const text = localizedTool(tool, locale)
+  const ToolInterface = TOOL_INTERFACES[slug]
+  const related = relatedTools(tool)
   const saved = useSavedTools()
 
   return (
@@ -83,7 +86,7 @@ function ToolDetailPage() {
           </p>
 
           <div className="mt-9 flex flex-wrap gap-3">
-            {tool.tryRoute && (
+            {tool.tryRoute && !ToolInterface && (
               <ButtonLink
                 href={lhref(`/tools/${tool.slug}/try`, locale)}
                 data-testid={`button-primary-${tool.slug}`}
@@ -123,6 +126,25 @@ function ToolDetailPage() {
               </ButtonLink>
             )}
           </div>
+
+          {/* Runnable interface, embedded for zero extra clicks */}
+          {ToolInterface && (
+            <div
+              className="mt-10 overflow-hidden rounded-2xl border border-accent/25 bg-accent-soft/30"
+              data-testid={`panel-embed-${tool.slug}`}
+            >
+              <div className="flex items-center justify-between border-b border-accent/15 px-5 py-4">
+                <span className="flex items-center gap-2 text-sm font-semibold">
+                  <ShieldCheckIcon className="h-4 w-4 text-accent" />
+                  {text.name}
+                </span>
+                <span className="eyebrow text-accent">{t.tryTool.title}</span>
+              </div>
+              <div className="bg-surface p-5 sm:p-7">
+                <ToolInterface />
+              </div>
+            </div>
+          )}
 
           {/* What to expect */}
           <div className="mt-14 border-t border-line pt-8">
@@ -211,6 +233,21 @@ function ToolDetailPage() {
           </div>
         </aside>
       </div>
+
+      {/* Related tools */}
+      <section className="mt-16 border-t border-line pt-10">
+        <Eyebrow>{t.tool.relatedTitle}</Eyebrow>
+        <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {related.map((candidate) => (
+            <ToolCard
+              key={candidate.slug}
+              tool={candidate}
+              saved={saved.isSaved(candidate.slug)}
+              onToggleSave={saved.toggle}
+            />
+          ))}
+        </div>
+      </section>
     </main>
   )
 }

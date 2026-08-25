@@ -10,6 +10,21 @@ continuation context see [HANDOFF.md](HANDOFF.md); for contribution rules see
 
 ---
 
+## 0. The goal
+
+**Make tools reachable and clean.**
+
+- **Reachable** — a visitor gets to the right tool in seconds, from any page,
+  in either language: tools listed directly in the navigation, search on the
+  home page, usable (`Available` / `Experimental`) tools sorted first in the
+  directory, runnable tools embedded on their own detail pages.
+- **Clean** — no clutter, no branding theater. Tool names describe what the
+  tool does, pages lead with the work rather than marketing copy, and every
+  element earns its place. Clean surfaces signal trustworthy software.
+
+Every design and copy decision should be checked against these two words.
+When reachability and polish conflict, reachability wins.
+
 ## 1. The problem
 
 Muslim communities produce and consume a lot of digital material — recorded

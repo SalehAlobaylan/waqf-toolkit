@@ -35,6 +35,7 @@ export const en = {
     step3Title: 'Use or contribute',
     step3Body: 'Open the utility or help make it better.',
     noAccount: 'No account required',
+    mostUsed: 'Most used',
     featuredEyebrow: 'Start here',
     featuredHeading: 'Tools with a clear job.',
     seeAllCount: 'See all {count} tools',
@@ -75,6 +76,9 @@ export const en = {
     emptyQuery: 'No tools match “{query}”. Try a broader task or format.',
     emptyGeneric: 'Try another category or clear the filters.',
     backToDirectory: 'Back to directory',
+    sortReadyFirst: 'Ready first',
+    sortRecent: 'Recently updated',
+    sortLabel: 'Sort',
   },
   tool: {
     privacyNote: 'Privacy note',
@@ -102,6 +106,7 @@ export const en = {
     recordEyebrow: 'Tool record',
     saveTool: 'Save',
     savedTool: 'Saved',
+    relatedTitle: 'Related tools',
   },
   contribute: {
     title: 'Contribute',

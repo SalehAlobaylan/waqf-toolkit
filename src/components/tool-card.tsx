@@ -21,11 +21,11 @@ export function CategoryTile({
   const Icon = CATEGORY_ICONS[category]
   return (
     <span
-      className={`flex shrink-0 items-center justify-center rounded-2xl border border-line/80 bg-accent-soft/60 text-accent [&>svg]:stroke-[1.5] ${
-        large ? 'h-16 w-16' : 'h-11 w-11'
+      className={`flex shrink-0 items-center justify-center rounded-xl border border-line/80 bg-accent-soft/60 text-accent [&>svg]:stroke-[1.5] ${
+        large ? 'h-16 w-16' : 'h-9 w-9'
       }`}
     >
-      <Icon className={large ? 'h-7 w-7' : 'h-5 w-5'} />
+      <Icon className={large ? 'h-7 w-7' : 'h-4 w-4'} />
     </span>
   )
 }
@@ -104,19 +104,25 @@ export function ToolCard({
   return (
     <article
       data-testid={`card-tool-${tool.slug}`}
-      className="group relative flex min-h-[258px] flex-col justify-between rounded-2xl border border-line/90 bg-surface p-5 shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-accent/35 hover:shadow-float"
+      className={`group relative flex min-h-[204px] flex-col justify-between rounded-2xl border bg-surface p-4 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-float ${
+        tool.status === 'available'
+          ? 'border-accent/35 hover:border-accent/60'
+          : 'border-line/90 hover:border-accent/35'
+      }`}
     >
       <div>
         <div className="flex items-start justify-between gap-3">
           <CategoryTile category={tool.category} />
-          <SaveButton
-            saved={saved}
-            onToggle={() => onToggleSave(tool.slug)}
-            slug={tool.slug}
-            compact
-          />
+          <span className="relative z-10">
+            <SaveButton
+              saved={saved}
+              onToggle={() => onToggleSave(tool.slug)}
+              slug={tool.slug}
+              compact
+            />
+          </span>
         </div>
-        <div className="mt-6 flex items-center gap-2">
+        <div className="mt-3.5 flex items-center gap-2">
           <span className="eyebrow text-muted">{t.category[tool.category]}</span>
           <span className="h-1 w-1 rounded-full bg-line" aria-hidden="true" />
           <StatusPill status={tool.status} />
@@ -125,17 +131,17 @@ export function ToolCard({
           to="/$locale/tools/$slug"
           params={{ locale, slug: tool.slug }}
           data-testid={`link-tool-${tool.slug}`}
-          className="mt-3 block"
+          className="mt-2 after:absolute after:inset-0 after:rounded-2xl after:content-['']"
         >
-          <h3 className="font-display text-[23px] font-semibold tracking-[-0.035em] transition-colors group-hover:text-accent rtl:tracking-normal">
+          <h3 className="font-display text-[19px] font-semibold tracking-[-0.03em] transition-colors group-hover:text-accent rtl:tracking-normal">
             {text.name}
           </h3>
-          <p className="mt-1.5 max-w-[28ch] text-sm leading-5 text-muted">
+          <p className="mt-1 max-w-[30ch] text-[13px] leading-[1.35] text-muted">
             {text.shortDescription}
           </p>
         </Link>
       </div>
-      <div className="mt-5 flex items-center justify-between border-t border-line/70 pt-4">
+      <div className="relative mt-3.5 flex items-center justify-between border-t border-line/70 pt-3">
         <span className="font-mono-ui text-[10px] text-muted">
           {t.tool.updated} {tool.updatedAt}
         </span>

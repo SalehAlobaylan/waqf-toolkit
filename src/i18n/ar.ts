@@ -37,6 +37,7 @@ export const ar: Dictionary = {
     step3Title: 'استخدم أو ساهم',
     step3Body: 'افتح الأداة أو ساهم في تحسينها.',
     noAccount: 'بدون حساب',
+    mostUsed: 'الأكثر استخداماً',
     featuredEyebrow: 'ابدأ من هنا',
     featuredHeading: 'أدوات بوظيفة واضحة.',
     seeAllCount: 'عرض كل الأدوات ({count})',
@@ -76,6 +77,9 @@ export const ar: Dictionary = {
     emptyQuery: 'لا أدوات تطابق «{query}». جرّب مهمة أو صيغة أوسع.',
     emptyGeneric: 'جرّب فئة أخرى أو امسح عوامل التصفية.',
     backToDirectory: 'عودة إلى الدليل',
+    sortReadyFirst: 'الجاهز أولاً',
+    sortRecent: 'الأحدث تحديثاً',
+    sortLabel: 'الترتيب',
   },
   tool: {
     privacyNote: 'ملاحظة الخصوصية',
@@ -102,6 +106,7 @@ export const ar: Dictionary = {
     recordEyebrow: 'بطاقة الأداة',
     saveTool: 'احفظ',
     savedTool: 'محفوظة',
+    relatedTitle: 'أدوات ذات صلة',
   },
   contribute: {
     title: 'شارك في التطوير',
