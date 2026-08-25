@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { useI18n } from '@/i18n'
 import { localizedTool, type Tool, type ToolCategory, type ToolStatus } from '@/data/tools'
+import { useSheen } from '@/lib/use-sheen'
 import { ArrowRightIcon, FilmIcon, ShieldIcon, FileTextIcon, ClockIcon, StarIcon } from './icons'
 
 const CATEGORY_ICONS: Record<ToolCategory, typeof FilmIcon> = {
@@ -21,8 +22,10 @@ export function CategoryTile({
   const Icon = CATEGORY_ICONS[category]
   return (
     <span
-      className={`flex shrink-0 items-center justify-center rounded-xl border border-line/80 bg-accent-soft/60 text-accent [&>svg]:stroke-[1.5] ${
-        large ? 'h-16 w-16' : 'h-9 w-9'
+      className={`flex shrink-0 items-center justify-center rounded-xl border text-accent [&>svg]:stroke-[1.5] ${
+        large
+          ? 'h-16 w-16 border-white/70 bg-surface/55 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] backdrop-blur-md'
+          : 'h-9 w-9 border-line/80 bg-accent-soft/60'
       }`}
     >
       <Icon className={large ? 'h-7 w-7' : 'h-4 w-4'} />
@@ -100,11 +103,13 @@ export function ToolCard({
   onToggleSave: (slug: string) => void
 }) {
   const { locale, t } = useI18n()
+  const sheen = useSheen<HTMLElement>()
   const text = localizedTool(tool, locale)
   return (
     <article
       data-testid={`card-tool-${tool.slug}`}
-      className={`group relative flex min-h-[204px] flex-col justify-between rounded-2xl border bg-surface p-4 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-float ${
+      onPointerMove={sheen}
+      className={`glass-card group relative flex min-h-[204px] flex-col justify-between rounded-2xl border p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-float ${
         tool.status === 'available'
           ? 'border-accent/35 hover:border-accent/60'
           : 'border-line/90 hover:border-accent/35'

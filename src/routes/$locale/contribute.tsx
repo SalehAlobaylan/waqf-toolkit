@@ -4,6 +4,7 @@ import { useForm } from '@tanstack/react-form'
 import { useI18n, hreflangLinks } from '@/i18n'
 import { ButtonLink, Eyebrow } from '@/components/ui'
 import { useGoodFirstIssues, REPO_URL } from '@/lib/use-github'
+import { useSheen } from '@/lib/use-sheen'
 import { GithubIcon } from '@/components/github-icon'
 import {
   ArrowRightIcon,
@@ -145,7 +146,7 @@ function GoodFirstIssues() {
                 href={issue.url}
                 target="_blank"
                 rel="noreferrer"
-                className="group flex items-center justify-between gap-4 rounded-xl border border-line bg-surface px-5 py-4 text-sm shadow-card transition-all hover:-translate-y-0.5 hover:border-accent/40"
+                className="glass-card group flex items-center justify-between gap-4 rounded-xl border border-line/70 px-5 py-4 text-sm transition-all hover:-translate-y-0.5 hover:border-accent/40"
               >
                 <span className="truncate font-medium transition-colors group-hover:text-accent">
                   <span className="font-mono-ui text-[11px] text-muted">#{issue.number}</span>{' '}
@@ -172,6 +173,7 @@ function SuggestToolForm() {
   const { t } = useI18n()
   const [submitted, setSubmitted] = useState(false)
   const [sentTo, setSentTo] = useState('')
+  const sheen = useSheen<HTMLDivElement>()
 
   const form = useForm({
     defaultValues: {
@@ -188,7 +190,7 @@ function SuggestToolForm() {
 
   if (submitted) {
     return (
-      <div className="h-fit rounded-2xl border border-line bg-surface p-6 shadow-card sm:p-7">
+      <div className="glass-card h-fit rounded-2xl border border-line/70 p-6 sm:p-7">
         <div
           role="status"
           data-testid="status-contribution-success"
@@ -226,7 +228,10 @@ function SuggestToolForm() {
   }
 
   return (
-    <div className="h-fit rounded-2xl border border-line bg-surface p-6 shadow-card sm:p-7">
+    <div
+      className="glass-card h-fit rounded-2xl border border-line/70 p-6 sm:p-7"
+      onPointerMove={sheen}
+    >
       <div className="flex items-start justify-between">
         <div>
           <p className="font-display text-2xl font-semibold tracking-[-0.035em] rtl:tracking-normal">

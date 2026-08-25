@@ -191,7 +191,7 @@ function DirectoryView({
           </p>
         </div>
         <div className="w-full max-w-md">
-          <label className="flex h-11 w-full items-center gap-3 rounded-xl border border-line bg-surface px-4 text-muted shadow-card transition-colors focus-within:border-accent/50 focus-within:ring-2 focus-within:ring-accent/10">
+          <label className="glass-card flex h-11 w-full items-center gap-3 rounded-xl border border-line/70 px-4 text-muted transition-colors focus-within:border-accent/50 focus-within:ring-2 focus-within:ring-accent/10">
             <SearchIcon className="h-4 w-4 shrink-0" />
             <input
               ref={searchInputRef}
@@ -211,7 +211,7 @@ function DirectoryView({
       </div>
 
       {/* Suggest band */}
-      <div className="mt-6 flex flex-col items-start justify-between gap-4 rounded-[24px] border border-line bg-accent-soft/40 p-5 sm:flex-row sm:items-center sm:p-6">
+      <div className="mt-6 flex flex-col items-start justify-between gap-4 rounded-[24px] border border-line/70 bg-accent-soft/40 p-5 backdrop-blur-md sm:flex-row sm:items-center sm:p-6">
         <div>
           <Eyebrow>{t.home.ctaEyebrow}</Eyebrow>
           <p className="mt-2 max-w-xl text-sm leading-5 text-muted">{t.home.ctaBody}</p>

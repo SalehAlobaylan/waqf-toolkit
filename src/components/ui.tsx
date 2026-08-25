@@ -6,7 +6,7 @@ export type ButtonVariant = 'primary' | 'outline' | 'muted' | 'ghost'
 const buttonStyles: Record<ButtonVariant, string> = {
   primary: 'bg-accent text-paper shadow-card hover:bg-accent-strong hover:-translate-y-0.5',
   outline:
-    'border border-line bg-surface/70 text-ink hover:border-accent/40 hover:text-accent',
+    'border border-line/80 bg-surface/60 text-ink backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] hover:border-accent/40 hover:text-accent',
   muted: 'bg-[hsl(42_20%_89%)] text-ink hover:brightness-95',
   ghost: 'bg-transparent text-muted hover:bg-line/40 hover:text-ink',
 }
@@ -72,7 +72,7 @@ export function Card({
   className?: string
 }) {
   return (
-    <div className={`rounded-2xl border border-line/90 bg-surface shadow-card ${className}`}>
+    <div className={`glass-card rounded-2xl border border-line/70 ${className}`}>
       {children}
     </div>
   )
@@ -116,7 +116,9 @@ export function InfoCard({
   return (
     <div
       className={`rounded-2xl border p-5 ${
-        dark ? 'border-forest-border bg-forest-accent/45' : 'border-line bg-surface'
+        dark
+          ? 'border-forest-border bg-forest-accent/45'
+          : 'glass-card border-line/70'
       } ${className}`}
     >
       <div className={dark ? 'text-olive' : 'text-accent'}>{icon}</div>
@@ -133,4 +135,4 @@ export function InfoCard({
 }
 
 export const inputClasses =
-  'w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm text-ink outline-none transition-colors placeholder:text-muted/60 focus:border-accent focus:ring-4 focus:ring-accent/10'
+  'w-full rounded-xl border border-line/80 bg-surface/70 px-4 py-3 text-sm text-ink outline-none transition-colors placeholder:text-muted/60 focus:border-accent focus:ring-4 focus:ring-accent/10'

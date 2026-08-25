@@ -140,7 +140,7 @@ function ToolDetailPage() {
                 </span>
                 <span className="eyebrow text-accent">{t.tryTool.title}</span>
               </div>
-              <div className="bg-surface p-5 sm:p-7">
+              <div className="bg-surface/70 p-5 backdrop-blur-sm sm:p-7">
                 <ToolInterface />
               </div>
             </div>
@@ -199,7 +199,7 @@ function ToolDetailPage() {
 
         {/* Sidebar */}
         <aside className="lg:pt-2">
-          <div className="rounded-2xl border border-line bg-surface p-5 shadow-card">
+          <div className="glass-card rounded-2xl border border-line/70 p-5">
             <div className="flex items-center justify-between">
               <span className="eyebrow text-muted">{t.tool.recordEyebrow}</span>
             </div>
@@ -226,7 +226,7 @@ function ToolDetailPage() {
             </dl>
           </div>
 
-          <div className="mt-4 rounded-2xl border border-accent/15 bg-accent-soft/45 p-5">
+          <div className="mt-4 rounded-2xl border border-accent/15 bg-accent-soft/45 p-5 backdrop-blur-md">
             <ShieldCheckIcon className="h-5 w-5 text-accent" />
             <p className="mt-4 text-sm font-semibold">{t.tool.privacyNote}</p>
             <p className="mt-2 text-xs leading-5 text-muted">{text.privacyNote}</p>

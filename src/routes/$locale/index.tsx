@@ -6,6 +6,7 @@ import { ButtonLink, Eyebrow, InfoCard } from '@/components/ui'
 import { CategoryTile, ToolCard } from '@/components/tool-card'
 import { StatusDot } from '@/components/site-chrome'
 import { useSavedTools } from '@/lib/saved-tools'
+import { useSheen } from '@/lib/use-sheen'
 import {
   ArrowRightIcon,
   SearchIcon,
@@ -47,10 +48,33 @@ function HomePage() {
   const { locale, t } = useI18n()
   const navigate = useNavigate()
   const [heroQuery, setHeroQuery] = useState('')
+  const sheen = useSheen<HTMLFormElement>()
   const featured = TOOLS.filter((tool) => tool.featured)
 
   return (
     <main>
+      {/* Refraction source for the .lens backdrop filter on the hero
+          glass card (Chromium). Zero-size, purely a filter definition. */}
+      <svg aria-hidden="true" className="absolute h-0 w-0">
+        <filter id="liquid-lens" x="-20%" y="-20%" width="140%" height="140%">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.008 0.012"
+            numOctaves="2"
+            seed="7"
+            result="noise"
+          />
+          <feGaussianBlur in="noise" stdDeviation="6" result="soft" />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="soft"
+            scale="30"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
+        </filter>
+      </svg>
+
       {/* Hero — dawn panel with floating category tiles */}
       <section className="mx-auto max-w-[1240px] px-3 pt-3 sm:px-5 sm:pt-5 lg:px-8">
         <div className="bg-dawn relative overflow-hidden rounded-[32px] border border-line/70 px-5 pb-14 pt-14 sm:pb-16 sm:pt-16 lg:pt-20">
@@ -102,8 +126,9 @@ function HomePage() {
               {t.home.heroSubtitle}
             </p>
             <form
-              className="animate-rise mt-7 flex w-full max-w-[560px] items-center gap-3 rounded-full border border-line bg-surface px-5 py-3.5 shadow-float transition-colors focus-within:border-accent/50 focus-within:ring-2 focus-within:ring-accent/10"
+              className="glass-card animate-rise mt-7 flex w-full max-w-[560px] items-center gap-3 rounded-full border border-white/70 px-5 py-3.5 transition-colors focus-within:border-accent/50 focus-within:ring-2 focus-within:ring-accent/10"
               style={{ animationDelay: '180ms' }}
+              onPointerMove={sheen}
               onSubmit={(event) => {
                 event.preventDefault()
                 const q = heroQuery.trim()
@@ -128,7 +153,7 @@ function HomePage() {
               className="animate-rise mt-9 w-full max-w-[460px]"
               style={{ animationDelay: '300ms' }}
             >
-              <div className="overflow-hidden rounded-[22px] border border-line/80 bg-paper/60 shadow-float backdrop-blur-md">
+              <div className="glass-panel lens overflow-hidden rounded-[22px] border border-line/70">
                 <div className="flex items-center justify-between border-b border-line/70 px-5 py-3.5">
                   <span className="eyebrow text-accent">{t.home.mostUsed}</span>
                   <SparklesIcon className="h-4 w-4 text-clay" />
@@ -242,7 +267,7 @@ function HomePage() {
 
       {/* Suggest CTA */}
       <section className="mx-auto max-w-[1240px] px-5 py-16 lg:px-8 lg:py-20">
-        <div className="grid items-center gap-8 rounded-[28px] border border-line bg-accent-soft/40 p-7 sm:p-10 lg:grid-cols-[1fr_auto]">
+        <div className="grid items-center gap-8 rounded-[28px] border border-line/70 bg-accent-soft/40 p-7 backdrop-blur-md sm:p-10 lg:grid-cols-[1fr_auto]">
           <div>
             <Eyebrow>{t.home.ctaEyebrow}</Eyebrow>
             <h2 className="mt-3 font-display text-3xl font-semibold tracking-[-0.04em] rtl:tracking-normal sm:text-4xl">

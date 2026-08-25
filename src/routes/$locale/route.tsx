@@ -18,8 +18,19 @@ function LocaleLayout() {
   const { locale } = Route.useParams()
   return (
     <I18nProvider locale={locale as 'en' | 'ar'}>
+      {/* Liquid-glass backdrop stage: ambient washes plus slow-drifting
+          blurred color blobs. Everything frosted refracts this layer. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+      >
+        <div className="bg-ambient absolute inset-0" />
+        <div className="animate-blob absolute -top-48 start-[-10%] h-[36rem] w-[36rem] rounded-full bg-olive/50 blur-[110px]" />
+        <div className="animate-blob absolute end-[-12%] top-1/3 h-[30rem] w-[30rem] rounded-full bg-clay/40 blur-[110px] [animation-delay:-9s]" />
+        <div className="animate-blob absolute bottom-[-14rem] start-1/3 h-[32rem] w-[32rem] rounded-full bg-accent/25 blur-[120px] [animation-delay:-17s]" />
+      </div>
       <SiteHeader />
-      <main id="main" className="flex-1">
+      <main id="main" className="relative z-10 flex-1">
         <Outlet />
       </main>
       <SiteFooter />

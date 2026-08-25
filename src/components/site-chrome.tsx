@@ -92,7 +92,7 @@ function ToolsMenu() {
         <div
           role="menu"
           aria-label={t.site.navTools}
-          className="absolute end-0 top-full z-50 mt-2 w-64 rounded-2xl border border-line bg-surface p-2 shadow-float"
+          className="glass-panel absolute end-0 top-full z-50 mt-2 w-64 rounded-2xl border border-line/70 p-2"
         >
           {MENU_TOOLS.map((tool) => {
             const text = localizedTool(tool, locale)
@@ -222,7 +222,7 @@ export function SiteHeader() {
       </div>
 
       {menuOpen && (
-        <div className="border-t border-line/70 bg-paper px-5 py-3 md:hidden">
+        <div className="border-t border-line/70 bg-paper/85 px-5 py-3 backdrop-blur-xl md:hidden">
           <Link
             to="/$locale/tools"
             params={{ locale }}
@@ -300,7 +300,7 @@ export function SiteFooter() {
   const { locale, t } = useI18n()
 
   return (
-    <footer className="border-t border-line/80 bg-accent-soft/35">
+    <footer className="relative z-10 border-t border-line/80 bg-accent-soft/35">
       <div className="mx-auto grid max-w-[1240px] gap-10 px-5 py-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-8">
         <div>
           <div className="flex items-center gap-3">
