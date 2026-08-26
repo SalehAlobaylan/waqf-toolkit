@@ -5,7 +5,7 @@
 
 This document defines what Waqf Toolkit is, who it serves, how it grows, and
 what it will never do. For developer setup see [README](README.md); for
-continuation context see [HANDOFF.md](HANDOFF.md); for contribution rules see
+agent instructions see [AGENTS.md](AGENTS.md); for contribution rules see
 [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---

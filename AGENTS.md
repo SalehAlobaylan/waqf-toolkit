@@ -57,10 +57,13 @@ src/
 
 **Bilingual or it doesn't ship.** Every user-facing string goes in BOTH `src/i18n/en.ts` and `src/i18n/ar.ts`. Arabic copy must read naturally, not machine-translated. The dictionary types enforce key parity — if `tsc` passes, keys match. Never hardcode UI text in components.
 
+**Tone:** formal but slightly casual. No Islamic slogans or decorative religiosity — plain, honest language only.
+
 **Catalog edits (`src/data/tools.ts`):**
 - `status: 'available'` only when the tool is usable end-to-end here on the site.
 - `repoUrl` must point to a real, public repository; omit it otherwise (the UI shows "not published yet").
 - Keep `processingNote` literally accurate about where processing happens; set `processing` (`browser` | `server` | `cloud-api`) accordingly, and name providers under `providers` when third-party APIs are involved.
+- Adding a tool also means adding it to `public/sitemap.xml` in both locales (a test fails CI if a slug is missing) plus strings in both dictionaries and a roadmap issue.
 
 **Cloud integrations (future):** provider keys (LLMs, Deepgram, Tavily, …) live only in server environment variables behind our own server functions/proxy — never in client code. Each tool page must disclose which services receive data before use.
 
@@ -70,6 +73,7 @@ src/
 
 ## Known gotchas
 
+- **Server-only imports**: never import `@tanstack/react-start/server` directly in a route file — the client bundle fails with an import-protection error. Wrap with `createIsomorphicFn()` (see `src/routes/index.tsx` Accept-Language negotiation).
 - **`notFoundComponent` renders outside the layout** — so outside `I18nProvider`. Use `getDictionary(locale)` from `@/i18n` there, never `useI18n()` (SSR will crash).
 - **Typed router links**: prefer `<Link to="/$locale" params={{ locale }}>`. Template-literal hrefs like `` to={`/${locale}`} `` fail typecheck under TS 5.9. For dynamic path switching (e.g., language toggle preserving the current path), use a plain `<a>`.
 - **Hash/external links**: `ButtonLink` handles `#…` and `http…` hrefs as plain anchors automatically; don't route them through `<Link>`.
