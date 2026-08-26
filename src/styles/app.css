@@ -330,17 +330,17 @@ select:focus-visible {
   background-image:
     radial-gradient(
       70% 52% at 4% -6%,
-      hsl(73 47% 69% / 0.5),
+      hsl(73 47% 69% / 0.32),
       transparent 66%
     ),
     radial-gradient(
       56% 44% at 100% 26%,
-      hsl(24 62% 54% / 0.3),
+      hsl(24 62% 54% / 0.18),
       transparent 62%
     ),
     radial-gradient(
       80% 56% at 46% 114%,
-      hsl(157 19% 86% / 0.8),
+      hsl(157 19% 86% / 0.6),
       transparent 64%
     );
 }
@@ -352,26 +352,26 @@ select:focus-visible {
    reads as light bending around the edge. Text stays solid ink. */
 .glass-card {
   position: relative;
-  background-color: hsl(45 43% 97% / 0.38);
-  -webkit-backdrop-filter: blur(32px) saturate(1.8) brightness(1.04);
-  backdrop-filter: blur(32px) saturate(1.8) brightness(1.04);
+  background-color: hsl(45 43% 97% / 0.52);
+  -webkit-backdrop-filter: blur(22px) saturate(1.5) brightness(1.02);
+  backdrop-filter: blur(22px) saturate(1.5) brightness(1.02);
   box-shadow:
-    inset 0 1.5px 0 hsl(0 0% 100% / 0.8),
-    inset 0 -10px 18px -14px hsl(160 25% 20% / 0.3),
-    0 24px 60px hsl(160 25% 20% / 0.16),
-    0 6px 80px hsl(73 47% 55% / 0.14);
+    inset 0 1.5px 0 hsl(0 0% 100% / 0.7),
+    inset 0 -10px 18px -14px hsl(160 25% 20% / 0.22),
+    0 20px 50px hsl(160 25% 20% / 0.12),
+    0 6px 60px hsl(73 47% 55% / 0.09);
 }
 
 .glass-panel {
   position: relative;
-  background-color: hsl(44 38% 94% / 0.55);
-  -webkit-backdrop-filter: blur(40px) saturate(1.7) brightness(1.03);
-  backdrop-filter: blur(40px) saturate(1.7) brightness(1.03);
+  background-color: hsl(44 38% 94% / 0.66);
+  -webkit-backdrop-filter: blur(28px) saturate(1.45) brightness(1.02);
+  backdrop-filter: blur(28px) saturate(1.45) brightness(1.02);
   box-shadow:
-    inset 0 1.5px 0 hsl(0 0% 100% / 0.85),
-    inset 0 -12px 20px -16px hsl(160 25% 20% / 0.28),
-    0 30px 70px hsl(160 25% 20% / 0.2),
-    0 8px 90px hsl(73 47% 55% / 0.16);
+    inset 0 1.5px 0 hsl(0 0% 100% / 0.75),
+    inset 0 -12px 20px -16px hsl(160 25% 20% / 0.2),
+    0 24px 60px hsl(160 25% 20% / 0.15),
+    0 8px 70px hsl(73 47% 55% / 0.1);
 }
 
 /* Specular rim: a conic light-to-dark sweep masked to a thin ring, so the
@@ -414,7 +414,7 @@ select:focus-visible {
   border-radius: inherit;
   background: radial-gradient(
     220px circle at var(--sheen-x, 50%) var(--sheen-y, 0%),
-    hsl(0 0% 100% / 0.24),
+    hsl(0 0% 100% / 0.16),
     transparent 65%
   );
   opacity: 0;

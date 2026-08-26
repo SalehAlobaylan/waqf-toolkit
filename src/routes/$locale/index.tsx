@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
+import type { ReactNode } from 'react'
 import { useI18n, hreflangLinks } from '@/i18n'
 import { localizedTool, STATUS_ORDER, TOOLS, type ToolStatus } from '@/data/tools'
 import { ButtonLink, Eyebrow, InfoCard } from '@/components/ui'
@@ -13,7 +14,6 @@ import {
   ShieldCheckIcon,
   CircleCheckIcon,
   CodeIcon,
-  SparklesIcon,
 } from '@/components/icons'
 
 /** Most important + most usable tools for the hero card: available first. */
@@ -150,15 +150,22 @@ function HomePage() {
 
             {/* Most-used glass card floating over the gradient */}
             <div
-              className="animate-rise mt-9 w-full max-w-[460px]"
+              className="animate-rise mt-9 w-full max-w-[420px]"
               style={{ animationDelay: '300ms' }}
             >
               <div className="glass-panel lens overflow-hidden rounded-[22px] border border-line/70">
-                <div className="flex items-center justify-between border-b border-line/70 px-5 py-3.5">
+                <div className="flex items-center justify-between border-b border-line/60 py-2.5 ps-5 pe-2.5">
                   <span className="eyebrow text-accent">{t.home.mostUsed}</span>
-                  <SparklesIcon className="h-4 w-4 text-clay" />
+                  <Link
+                    to="/$locale/tools"
+                    params={{ locale }}
+                    data-testid="link-hero-all-tools"
+                    className="rounded-full px-3 py-1.5 text-xs font-semibold text-accent transition-colors hover:bg-accent-soft/50 hover:text-accent-strong"
+                  >
+                    {t.home.seeAllCount.replace('{count}', String(TOOLS.length))}
+                  </Link>
                 </div>
-                <ul className="p-2">
+                <ul className="p-1.5">
                   {USABLE_TOOLS.map((tool) => {
                     const toolText = localizedTool(tool, locale)
                     return (
@@ -167,7 +174,7 @@ function HomePage() {
                           to="/$locale/tools/$slug"
                           params={{ locale, slug: tool.slug }}
                           data-testid={`hero-tool-${tool.slug}`}
-                          className="group -mx-1 flex items-start gap-3 rounded-xl p-2.5 transition-colors hover:bg-accent-soft/50"
+                          className="group -mx-1 flex items-start gap-3 rounded-xl p-2 transition-colors hover:bg-accent-soft/50"
                         >
                           <CategoryTile category={tool.category} />
                           <span className="min-w-0 flex-1 text-start">
@@ -181,21 +188,11 @@ function HomePage() {
                               {toolText.shortDescription}
                             </span>
                           </span>
-                          <ArrowRightIcon className="mt-1 h-3.5 w-3.5 shrink-0 text-muted transition-transform group-hover:translate-x-0.5 rtl:-scale-x-100 rtl:group-hover:-translate-x-0.5" />
                         </Link>
                       </li>
                     )
                   })}
                 </ul>
-                <Link
-                  to="/$locale/tools"
-                  params={{ locale }}
-                  data-testid="link-hero-all-tools"
-                  className="group flex items-center justify-between border-t border-line/70 px-5 py-3.5 text-xs font-semibold text-accent transition-colors hover:text-accent-strong"
-                >
-                  {t.home.seeAllCount.replace('{count}', String(TOOLS.length))}
-                  <ArrowRightIcon className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 rtl:-scale-x-100 rtl:group-hover:-translate-x-0.5" />
-                </Link>
               </div>
             </div>
           </div>
@@ -204,22 +201,20 @@ function HomePage() {
 
       {/* Featured tools */}
       <section className="mx-auto max-w-[1240px] px-5 py-16 lg:px-8 lg:py-20">
-        <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-          <div>
-            <Eyebrow>{t.home.featuredEyebrow}</Eyebrow>
-            <h2 className="mt-3 font-display text-4xl font-semibold tracking-[-0.05em] rtl:tracking-normal sm:text-5xl">
-              {t.home.featuredHeading}
-            </h2>
-          </div>
-          <Link
-            to="/$locale/tools"
-            params={{ locale }}
-            className="flex items-center gap-2 text-sm font-semibold text-accent transition-all hover:gap-3"
-          >
-            {t.home.seeAllCount.replace('{count}', String(TOOLS.length))}
-            <ArrowRightIcon />
-          </Link>
-        </div>
+        <SectionIntro
+          eyebrow={t.home.featuredEyebrow}
+          title={t.home.featuredHeading}
+          action={
+            <ButtonLink
+              href={`/${locale}/tools`}
+              variant="outline"
+              className="group shrink-0 gap-2 px-4 py-2.5 text-xs"
+            >
+              {t.home.seeAllCount.replace('{count}', String(TOOLS.length))}
+              <ArrowRightIcon className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
+            </ButtonLink>
+          }
+        />
         <div className="mt-9 grid gap-3 lg:grid-cols-3">
           {featured.map((tool, index) => (
             <div
@@ -233,7 +228,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Privacy band */}
+      {/* Transparency band */}
       <section className="bg-forest text-paper">
         <div className="mx-auto grid max-w-[1240px] gap-10 px-5 py-16 lg:grid-cols-[0.8fr_1.2fr] lg:px-8 lg:py-20">
           <div>
@@ -292,5 +287,31 @@ function FeaturedCard({ slug }: { slug: string }) {
       saved={saved.isSaved(tool.slug)}
       onToggleSave={() => saved.toggle(tool.slug)}
     />
+  )
+}
+
+/**
+ * Glass intro bar for a content section: eyebrow + heading on the start
+ * side, an optional action (button/link) anchored on the end side.
+ */
+function SectionIntro({
+  eyebrow,
+  title,
+  action,
+}: {
+  eyebrow: string
+  title: string
+  action?: ReactNode
+}) {
+  return (
+    <div className="glass-card flex flex-col gap-4 rounded-[24px] border border-line/40 p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:p-6">
+      <div className="min-w-0">
+        <p className="eyebrow text-accent">{eyebrow}</p>
+        <h2 className="mt-1.5 font-display text-2xl font-semibold tracking-[-0.03em] rtl:tracking-normal sm:text-3xl">
+          {title}
+        </h2>
+      </div>
+      {action && <div className="shrink-0 self-start sm:self-auto">{action}</div>}
+    </div>
   )
 }
