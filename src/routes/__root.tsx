@@ -28,7 +28,7 @@ export const Route = createRootRoute({
       {
         name: 'description',
         content:
-          'Waqf Toolkit — a collection of free, open-source digital tools. Local-first, privacy-respecting, honestly labelled.',
+          'Waqf Toolkit — free, open-source web tools you can use instantly in your browser. Nothing to install, honest about your data.',
       },
       { property: 'og:type', content: 'website' },
       { property: 'og:site_name', content: 'Waqf Toolkit' },
@@ -36,7 +36,7 @@ export const Route = createRootRoute({
       {
         property: 'og:description',
         content:
-          'Free, open-source digital tools. Local-first, privacy-respecting, honestly labelled.',
+          'Free, open-source web tools. Open your browser and use them instantly — nothing to install.',
       },
       { property: 'og:image', content: `${SITE_URL}/og.png` },
       { property: 'og:image:width', content: '1200' },

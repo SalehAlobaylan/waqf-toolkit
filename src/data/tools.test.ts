@@ -44,7 +44,8 @@ describe('tool catalog invariants', () => {
       expect(STATUS_ORDER).toContain(tool.status)
       expect(tool.name.trim()).not.toBe('')
       expect(tool.shortDescription.length).toBeGreaterThan(10)
-      expect(tool.privacyNote.length).toBeGreaterThan(10)
+      expect(tool.processingNote.length).toBeGreaterThan(10)
+      expect(['browser', 'server', 'cloud-api']).toContain(tool.processing)
       expect(tool.stack.length).toBeGreaterThan(0)
       expect(tool.license).toMatch(/^(MIT|Apache-2\.0|GPL-3\.0|AGPL-3\.0|MPL-2\.0)$/)
       expect(tool.updatedAt, tool.slug).toMatch(ISO_DATE)
@@ -54,7 +55,7 @@ describe('tool catalog invariants', () => {
 
   it('every tool carries a complete Arabic translation', () => {
     for (const tool of TOOLS) {
-      const { name, shortDescription, description, privacyNote } =
+      const { name, shortDescription, description, processingNote } =
         tool.translations.ar
       expect(name.trim(), `${tool.slug}: ar.name is empty`).not.toBe('')
       expect(
@@ -66,8 +67,8 @@ describe('tool catalog invariants', () => {
         `${tool.slug}: ar.description is not Arabic`,
       ).toBe(true)
       expect(
-        ARABIC_SCRIPT.test(privacyNote),
-        `${tool.slug}: ar.privacyNote is not Arabic`,
+        ARABIC_SCRIPT.test(processingNote),
+        `${tool.slug}: ar.processingNote is not Arabic`,
       ).toBe(true)
     }
   })

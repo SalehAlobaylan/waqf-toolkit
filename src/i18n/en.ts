@@ -2,7 +2,7 @@ export const en = {
   site: {
     name: 'Waqf Toolkit',
     tagline:
-      'Free, open-source digital tools for everyday needs. Local-first, privacy-respecting, honestly labelled.',
+      'Free, open-source web tools for everyday needs. Nothing to install — open your browser and use them instantly.',
     navTools: 'Directory',
     navContribute: 'Contribute',
     navGithub: 'GitHub',
@@ -21,16 +21,16 @@ export const en = {
   },
   home: {
     heroLine1: 'Find the tool.',
-    heroLine2: 'Keep the file.',
+    heroLine2: 'Open and use.',
     heroSubtitle:
-      'A considered shelf of open-source utilities for media, privacy, and everyday digital work. Clear about what happens to your files.',
+      'Free, open-source utilities for media, documents, privacy, and everyday digital work — right in your browser, wherever you are.',
     browseTools: 'Browse the directory',
     buildWithUs: 'Build with us',
     howItWorksTitle: 'How it works',
     step1Title: 'Choose a task',
     step1Body: 'Search by the thing you need to get done.',
     step2Title: 'Read the limits',
-    step2Body: 'Know what is local, experimental, or planned.',
+    step2Body: 'Know what is live, experimental, or planned.',
     step3Title: 'Use or contribute',
     step3Body: 'Open the utility or help make it better.',
     noAccount: 'No account required',
@@ -39,17 +39,18 @@ export const en = {
     featuredHeading: 'Tools with a clear job.',
     seeAllCount: 'See all {count} tools',
     privacyEyebrow: 'Before you open anything',
-    privacyHeading: 'Privacy should be part of the interface.',
-    privacyPoint1Body: 'We prefer tools that keep your files on your device.',
+    privacyHeading: 'You always know where your data goes.',
+    privacyPoint1Body:
+      'Every tool states exactly where processing happens — your browser, our server, or a third-party API.',
     privacyPoint2Body: 'Planned and experimental work is labelled plainly.',
     privacyPoint3Body: 'Inspect the code, open an issue, or make a change.',
     ctaEyebrow: 'Have a useful little tool?',
     ctaHeading: 'Put it on the shelf.',
     ctaBody:
-      'We are collecting small, well-scoped projects that respect people’s files and time.',
+      'We are collecting small, well-scoped web tools that respect people’s time and data.',
     suggestCta: 'Suggest a tool',
     principlesTitle: 'Principles',
-    principle1Title: 'Local first',
+    principle1Title: 'Instant & everywhere',
     principle2Title: 'Honest status',
     principle3Title: 'Limits are visible',
     principle4Title: 'Open stack',
@@ -57,7 +58,7 @@ export const en = {
   directory: {
     title: 'Toolkit directory',
     subtitle:
-      'Every tool in one place. Search by task or format, filter by category and status, and check the privacy note before you commit to anything.',
+      'Every tool in one place. Search by task or format, filter by category and status, and check where each one processes your data before you commit.',
     heading: 'Pick a task.',
     directoryEyebrow: 'Directory / {count} tools',
     searchPlaceholder: 'Search by task, format, or tool name',
@@ -80,7 +81,7 @@ export const en = {
     sortLabel: 'Sort',
   },
   tool: {
-    privacyNote: 'Privacy note',
+    processingNote: 'Where processing happens',
     formats: 'Formats',
     stack: 'Stack',
     license: 'License',
@@ -95,7 +96,9 @@ export const en = {
     repoUnavailable:
       'This project has not been published yet. The repository link will go live when the first version ships.',
     expectEyebrow: 'What to expect',
-    filesStayHere: 'Files stay here',
+    processingBrowser: 'Runs in your browser',
+    processingServer: 'Processed on our server',
+    processingCloudApi: 'Uses a third-party API',
     simpleHandoff: 'Simple handoff',
     formatsBody: 'Works with {formats} files. Export a copy when you are done.',
     stackBody: 'Built with {stack}.',
@@ -120,9 +123,9 @@ export const en = {
     way1Title: 'Name the small problem',
     way1Body:
       'Tell us what you needed to do, who it helps, and why the current options are not a good fit.',
-    way2Title: 'Make privacy legible',
+    way2Title: 'Make data handling legible',
     way2Body:
-      'Describe where files go, what is retained, and which parts are still experimental. Clear limits are a feature.',
+      'Describe where data goes, what is retained, and which parts are still experimental. Clear limits are a feature.',
     way3Title: 'Share the working surface',
     way3Body:
       'A repository, short demo, or even a rough proof of concept gives others something useful to respond to.',
@@ -134,7 +137,7 @@ export const en = {
       'Documentation, translation, testing, and thoughtful issue reports are contributions too.',
     formTitle: 'Start a conversation',
     formCaption: 'No pitch deck needed.',
-    suggestBody: 'This is a local demo form. It does not send data anywhere.',
+    suggestBody: 'This is a demo form. It does not send data anywhere.',
     fieldEmail: 'Your email',
     fieldProblem: 'Tell us about the tool',
     fieldProblemPlaceholder: 'What does it help someone do?',

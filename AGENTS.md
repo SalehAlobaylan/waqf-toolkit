@@ -4,11 +4,11 @@ Instructions for AI coding agents working in this repository.
 
 ## What this project is
 
-Waqf Toolkit is a public, open-source collection of digital tools for the Muslim community. It is a **tool directory website** (this repo) that showcases individual tool projects. Principles that must survive every change:
+Waqf Toolkit is a public, open-source collection of digital tools for the Muslim community. It is a **web tools site** (this repo): a directory plus in-browser runnable tools. Every tool is a website — open the link and use it instantly from any device, nothing to install. Principles that must survive every change:
 
-1. **Local first** — tools run on the user's device; any network call must be explicit.
+1. **Instant & everywhere** — tools are web pages; no installs, no accounts required.
 2. **Honest status** — never label unfinished work as `Available`.
-3. **Limits are visible** — calculation methodology and data sources are documented.
+3. **Limits are visible** — calculation methodology, data sources, AND exactly where processing happens (the user's browser / our server / a named third-party API) are documented on every tool page.
 
 It is intentionally independent from the private `waqf-platform` repo: no imports, no shared builds, no secrets linking them. Integration happens only through the public `waqf.json` manifest and GitHub metadata.
 
@@ -58,9 +58,11 @@ src/
 **Bilingual or it doesn't ship.** Every user-facing string goes in BOTH `src/i18n/en.ts` and `src/i18n/ar.ts`. Arabic copy must read naturally, not machine-translated. The dictionary types enforce key parity — if `tsc` passes, keys match. Never hardcode UI text in components.
 
 **Catalog edits (`src/data/tools.ts`):**
-- `status: 'available'` only when the repository is public and usable end-to-end.
+- `status: 'available'` only when the tool is usable end-to-end here on the site.
 - `repoUrl` must point to a real, public repository; omit it otherwise (the UI shows "not published yet").
-- Keep privacy notes literally accurate about where processing happens.
+- Keep `processingNote` literally accurate about where processing happens; set `processing` (`browser` | `server` | `cloud-api`) accordingly, and name providers under `providers` when third-party APIs are involved.
+
+**Cloud integrations (future):** provider keys (LLMs, Deepgram, Tavily, …) live only in server environment variables behind our own server functions/proxy — never in client code. Each tool page must disclose which services receive data before use.
 
 **Sensitive domain changes** (prayer times, Hijri dates, Qibla, Zakat, inheritance, Quran/Hadith data): document methodology + named data sources in code or README, expect extra review, never merge without a domain-knowledgeable maintainer sign-off.
 

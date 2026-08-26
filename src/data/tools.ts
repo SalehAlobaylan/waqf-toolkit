@@ -4,6 +4,14 @@ export type ToolStatus = 'available' | 'experimental' | 'planned'
 export type ToolCategory = 'Media' | 'Privacy' | 'Documents' | 'Everyday'
 
 /**
+ * Where a tool's processing happens. Disclosed on every tool page:
+ * - `browser`   — everything runs in the user's browser; no uploads.
+ * - `server`    — processed by our own server (server functions/proxy).
+ * - `cloud-api` — data is sent to a named third-party service.
+ */
+export type ToolProcessing = 'browser' | 'server' | 'cloud-api'
+
+/**
  * Locale-specific display text for a tool. The English copy lives directly on
  * the tool; every other supported locale is required under `translations`.
  */
@@ -11,7 +19,7 @@ export type ToolTranslation = {
   name: string
   shortDescription: string
   description: string
-  privacyNote: string
+  processingNote: string
 }
 
 export type Tool = {
@@ -23,7 +31,12 @@ export type Tool = {
   status: ToolStatus
   license: string
   stack: string[]
-  privacyNote: string
+  /** Where processing happens — surfaced verbatim alongside processingNote. */
+  processing: ToolProcessing
+  /** Third-party services involved when `processing` is `cloud-api`. */
+  providers?: string[]
+  /** Plain-language statement of exactly where data goes. */
+  processingNote: string
   translations: { ar: ToolTranslation }
   supportedFormats: string[]
   featured: boolean
@@ -53,9 +66,13 @@ export const STATUS_ORDER: ToolStatus[] = [
  * Tool catalog.
  *
  * Rules for editing this file:
- * - Only set `status: 'available'` when the repository is public and usable.
+ * - Only set `status: 'available'` when the tool is usable end-to-end here
+ *   on the site.
  * - `repoUrl` must point at a real, public repository.
- * - Keep privacy notes accurate: state exactly where processing happens.
+ * - Every tool is a web tool: reachable in the browser, nothing to install.
+ * - `processing` + `processingNote` must state exactly where data goes
+ *   (the user's browser, our server, or a named third-party API). Never
+ *   imply local-only handling unless it is actually true.
  * - Every tool ships with an Arabic translation under `translations.ar`.
  */
 export const TOOLS: Tool[] = [
@@ -63,23 +80,24 @@ export const TOOLS: Tool[] = [
     slug: 'video-music-remover',
     trackingIssue: 1,
     name: 'Video Music Remover',
-    shortDescription: 'Remove background music from a video, locally.',
+    shortDescription: 'Remove background music from a video, right in your browser.',
     description:
       'Separates speech and background music in a video so you can keep the voice track and work with a cleaner source.',
     category: 'Media',
     status: 'experimental',
     license: 'AGPL-3.0',
     stack: ['Python', 'FFmpeg', 'Demucs'],
-    privacyNote:
-      'Files stay in your browser session. Nothing is uploaded.',
+    processing: 'browser',
+    processingNote:
+      'Processing happens inside your browser session — nothing is uploaded. If a future version adds cloud assistance, this note will say exactly what is sent.',
     translations: {
       ar: {
         name: 'إزالة الموسيقى من الفيديو',
-        shortDescription: 'إزالة موسيقى الخلفية من الفيديو، محلياً على جهازك.',
+        shortDescription: 'إزالة موسيقى الخلفية من الفيديو، مباشرة داخل متصفحك.',
         description:
           'فصل الكلام عن موسيقى الخلفية في مقطع الفيديو، للاحتفاظ بمسار الصوت والعمل على مصدر أنظف.',
-        privacyNote:
-          'تبقى الملفات داخل جلسة المتصفح. لا يُرفع أي شيء.',
+        processingNote:
+          'تتم المعالجة داخل جلسة متصفحك — لا يُرفع أي شيء. إن أُضيفت معالجة سحابية مستقبلاً، ستوضّح هذه الملاحظة بالضبط ما يُرسَل وإلى أين.',
       },
     },
     supportedFormats: ['MP4', 'MOV', 'WebM'],
@@ -97,16 +115,17 @@ export const TOOLS: Tool[] = [
     status: 'experimental',
     license: 'GPL-3.0',
     stack: ['Rust', 'WebAssembly'],
-    privacyNote:
-      'Subtitle files are parsed in your browser and never leave your device.',
+    processing: 'browser',
+    processingNote:
+      'Subtitles are parsed in your browser — the file never leaves it.',
     translations: {
       ar: {
         name: 'تنظيف ملفات الترجمة النصية',
         shortDescription: 'تنظيف ملفات الترجمة النصية دون المساس بالمعنى.',
         description:
           'صحّح فجوات التوقيت والأسطر المكررة وشوائب التنسيق في ملفات الترجمة. تبقى الكلمات كما هي، ويذهب العشواء.',
-        privacyNote:
-          'تُقرأ ملفات الترجمة داخل متصفحك ولا تغادر جهازك أبداً.',
+        processingNote:
+          'تُقرأ ملفات الترجمة داخل متصفحك — لا يغادر الملف متصفحك أبداً.',
       },
     },
     supportedFormats: ['SRT', 'VTT', 'ASS'],
@@ -125,16 +144,17 @@ export const TOOLS: Tool[] = [
     status: 'planned',
     license: 'MIT',
     stack: ['TypeScript', 'Web Workers'],
-    privacyNote:
-      'Images are read and rewritten on your device. No network request is needed.',
+    processing: 'browser',
+    processingNote:
+      'Planned to run entirely in your browser: images are read and rewritten locally, with no network request.',
     translations: {
       ar: {
         name: 'إزالة البيانات الوصفية من الصور',
         shortDescription: 'إزالة البيانات الوصفية المخفية من الصور قبل مشاركتها.',
         description:
           'افحص بيانات EXIF واحذفها — كالموقع الجغرافي وطراز الجهاز وأوقات الالتقاط — قبل أن تغادر الصورة يديك. خطوة صغيرة تستحق العناء.',
-        privacyNote:
-          'تُقرأ الصور وتُعاد كتابتها على جهازك. لا حاجة إلى أي اتصال بالشبكة.',
+        processingNote:
+          'مخطط لها أن تعمل داخل متصفحك بالكامل: تُقرأ الصور وتُعاد كتابتها محلياً، دون أي طلب شبكة.',
       },
     },
     supportedFormats: ['JPG', 'PNG', 'HEIC'],
@@ -152,16 +172,17 @@ export const TOOLS: Tool[] = [
     status: 'experimental',
     license: 'MIT',
     stack: ['TypeScript', 'WebCodecs', 'OpenCV'],
-    privacyNote:
-      'Processing is designed to run locally. Experimental builds may be slower.',
+    processing: 'browser',
+    processingNote:
+      'Designed to run in your browser during the experiment. Experimental builds may be slower.',
     translations: {
       ar: {
         name: 'تشويش الوجوه في الفيديو',
         shortDescription: 'تشويش الوجوه والشاشات والمواضع الحساسة في الفيديو.',
         description:
           'خطوة خصوصية دقيقة لمقاطع المجتمع. حدّد المواضع إطاراً بإطار، ثم صدّر نسخة تكون تلك المناطق فيها مموّهة.',
-        privacyNote:
-          'صُممت المعالجة لتعمل محلياً على جهازك. النسخ التجريبية قد تكون أبطأ.',
+        processingNote:
+          'صُممت لتعمل داخل متصفحك خلال المرحلة التجريبية. النسخ التجريبية قد تكون أبطأ.',
       },
     },
     supportedFormats: ['MP4', 'MOV'],
@@ -179,15 +200,17 @@ export const TOOLS: Tool[] = [
     status: 'planned',
     license: 'MIT',
     stack: ['TypeScript', 'PDF.js'],
-    privacyNote: 'PDFs stay on your device. Merging happens in the browser.',
+    processing: 'browser',
+    processingNote:
+      'Merging will happen in your browser — PDFs are not uploaded.',
     translations: {
       ar: {
         name: 'دمج ملفات PDF',
         shortDescription: 'دمج ملفات PDF وإعادة ترتيبها في مستند واحد.',
         description:
           'اجمع الصفحات الممسوحة ضوئياً وملفات PDF المنفصلة في مستند واحد مرتّب، ثم أعد ترتيب الصفحات حتى يستقيم القراءة.',
-        privacyNote:
-          'تبقى ملفات PDF على جهازك. عملية الدمج تتم داخل المتصفح.',
+        processingNote:
+          'سيتم الدمج داخل متصفحك — لا تُرفع ملفات PDF.',
       },
     },
     supportedFormats: ['PDF'],
@@ -198,23 +221,24 @@ export const TOOLS: Tool[] = [
     slug: 'pdf-extractor',
     trackingIssue: 5,
     name: 'PDF Page & Text Extractor',
-    shortDescription: 'Extract pages and text from a PDF, offline.',
+    shortDescription: 'Extract pages and text from a PDF in your browser.',
     description:
       'A focused PDF workbench for splitting pages, extracting text, and preparing documents for a handoff.',
     category: 'Documents',
     status: 'planned',
     license: 'MPL-2.0',
-    stack: ['Rust', 'PDFium'],
-    privacyNote:
-      'The proposed desktop build will keep documents on-device.',
+    stack: ['TypeScript', 'PDF.js'],
+    processing: 'browser',
+    processingNote:
+      'Planned as an in-browser workbench: split pages and extract text without uploading anything.',
     translations: {
       ar: {
         name: 'استخراج صفحات PDF ونصوصها',
-        shortDescription: 'استخراج الصفحات والنصوص من ملف PDF دون اتصال.',
+        shortDescription: 'استخراج الصفحات والنصوص من ملف PDF داخل متصفحك.',
         description:
           'مساحة عمل مركّزة لملفات PDF: تقسيم الصفحات، واستخراج النصوص، وتجهيز المستندات للتسليم.',
-        privacyNote:
-          'ستُبقي نسخة سطح المكتب المقترحة المستندات على الجهاز.',
+        processingNote:
+          'مخطط لها كمساحة عمل داخل المتصفح: قسّم الصفحات واستخرج النصوص دون رفع أي شيء.',
       },
     },
     supportedFormats: ['PDF'],
@@ -225,22 +249,24 @@ export const TOOLS: Tool[] = [
     slug: 'audio-trimmer-converter',
     trackingIssue: 6,
     name: 'Audio Trimmer & Converter',
-    shortDescription: 'Trim and convert audio without uploading it.',
+    shortDescription: 'Trim and convert audio right in your browser.',
     description:
       'Cut silence, trim clips, and convert between common audio formats. Built for long lecture recordings that other tools struggle with.',
     category: 'Media',
     status: 'planned',
     license: 'MIT',
     stack: ['TypeScript', 'Web Audio API'],
-    privacyNote: 'Audio never leaves your device. Trimming runs in-browser.',
+    processing: 'browser',
+    processingNote:
+      'Trimming and conversion will run in your browser — the audio never leaves it.',
     translations: {
       ar: {
         name: 'اقتطاب الصوت وتحويل صيغه',
-        shortDescription: 'اقتطاب المقاطع الصوتية وتحويل صيغها دون رفعها.',
+        shortDescription: 'اقتطاب المقاطع الصوتية وتحويل صيغها داخل متصفحك.',
         description:
           'احذف فترات الصمت، واقتطاب المقاطع، وحوّل بين صيغ الصوت الشائعة. صُمّمت للمحاضرات الطويلة التي تعجز عنها أدوات أخرى.',
-        privacyNote:
-          'لا يغادر الصوت جهازك أبداً. الاقتطاب يعمل داخل المتصفح.',
+        processingNote:
+          'سيتم الاقتطاب والتحويل داخل متصفحك — لا يغادر الصوت متصفحك أبداً.',
       },
     },
     supportedFormats: ['MP3', 'M4A', 'WAV', 'OGG'],
@@ -258,15 +284,16 @@ export const TOOLS: Tool[] = [
     status: 'planned',
     license: 'MIT',
     stack: ['TypeScript', 'Canvas API'],
-    privacyNote: 'Images are edited entirely in your browser.',
+    processing: 'browser',
+    processingNote: 'Editing will happen entirely in your browser.',
     translations: {
       ar: {
         name: 'تغطية المواضع الحساسة في الصور',
         shortDescription: 'تشويش أو تغطية المواضع الحساسة في لقطات الشاشة.',
         description:
           'إخفاء الأسماء والرسائل والتفاصيل الخاصة في الصور قبل نشرها علناً، بأدوات تحديد سريعة وخيارات افتراضية معقولة.',
-        privacyNote:
-          'تُحرَّر الصور داخل متصفحك بالكامل.',
+        processingNote:
+          'سيتم التحرير داخل متصفحك بالكامل.',
       },
     },
     supportedFormats: ['PNG', 'JPG', 'WebP'],
@@ -283,16 +310,17 @@ export const TOOLS: Tool[] = [
     status: 'available',
     license: 'Apache-2.0',
     stack: ['TypeScript'],
-    privacyNote:
-      'Links are cleaned in your browser. The list of known trackers ships with the app.',
+    processing: 'browser',
+    processingNote:
+      'Links are cleaned entirely in your browser. Nothing is sent anywhere.',
     translations: {
       ar: {
         name: 'تنظيف الروابط من التتبّع',
         shortDescription: 'تنظيف معاملات التتبّع من الروابط المشتركة.',
         description:
           'احذف معاملات تتبّع النقرات والمراقبة من الروابط قبل مشاركتها. الصق، نظّف، انسخ.',
-        privacyNote:
-          'تُنظَّف الروابط داخل متصفحك. قائمة المتتبّعات المعروفة تأتي مرفقة مع التطبيق.',
+        processingNote:
+          'تُنظَّف الروابط داخل متصفحك بالكامل. لا يُرسل شيء إلى أي جهة.',
       },
     },
     supportedFormats: [],
@@ -306,23 +334,24 @@ export const TOOLS: Tool[] = [
     slug: 'prayer-times-widget',
     trackingIssue: 8,
     name: 'Prayer Times Widget',
-    shortDescription: 'A small prayer time widget for your desktop.',
+    shortDescription: 'Prayer times for your location, right on the web.',
     description:
-      'A quiet, configurable prayer time widget using a location you choose. Built for glancing, not nudging.',
+      'A quiet, configurable prayer time page that opens in any browser. Built for glancing, not nudging, with every calculation convention documented.',
     category: 'Everyday',
     status: 'planned',
     license: 'Apache-2.0',
-    stack: ['Tauri', 'TypeScript'],
-    privacyNote:
-      'Location stays on your device. Times are computed locally from your coordinates.',
+    stack: ['TypeScript', 'Web APIs'],
+    processing: 'browser',
+    processingNote:
+      'Times will be computed in your browser from coordinates you choose or allow. Your location is never stored or sent anywhere.',
     translations: {
       ar: {
         name: 'مواقيت الصلاة',
-        shortDescription: 'أداة صغيرة لمواعيد الصلاة على سطح مكتبك.',
+        shortDescription: 'مواقيت الصلاة لموقعك، مباشرة على الويب.',
         description:
-          'وديعة هادئة لمواعيد الصلاة، قابلة للضبط، وتعمل بموقع تختاره بنفسك. صُمّمت للنظرة السريعة لا للإلحاح.',
-        privacyNote:
-          'يبقى الموقع على جهازك. تُحسب المواقيت محلياً من إحداثياتك.',
+          'وديعة هادئة لمواعيد الصلاة تفتح في أي متصفح، قابلة للضبط، صُمّمت للنظرة السريعة لا للإلحاح، وبتفاصيل حسابية موثّقة بالكامل.',
+        processingNote:
+          'ستُحسب المواقيت داخل متصفحك من إحداثيات تختارها أو تسمح بها. لا يُخزَّن موقعك ولا يُرسل إلى أي جهة.',
       },
     },
     supportedFormats: [],
@@ -338,7 +367,7 @@ export function getTool(slug: string): Tool | undefined {
 
 export type ToolText = Pick<
   Tool,
-  'name' | 'shortDescription' | 'description' | 'privacyNote'
+  'name' | 'shortDescription' | 'description' | 'processingNote'
 >
 
 function englishText(tool: Tool): ToolText {
@@ -346,7 +375,7 @@ function englishText(tool: Tool): ToolText {
     name: tool.name,
     shortDescription: tool.shortDescription,
     description: tool.description,
-    privacyNote: tool.privacyNote,
+    processingNote: tool.processingNote,
   }
 }
 

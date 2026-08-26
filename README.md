@@ -1,14 +1,14 @@
 # Waqf Toolkit
 
-A collection of free, open-source digital tools for the Muslim community. Local-first, privacy-respecting, and honestly labelled — every project states what it does today and what it does not do yet.
+A collection of free, open-source web tools for the Muslim community. Nothing to install — every tool opens right in your browser, states exactly where your data goes, and is labelled honestly about what works today.
 
 **Status:** early development. The site is live; most tools are in the design or experimental phase. See the [tool directory](https://github.com/SalehAlobaylan/waqf-toolkit#readme) for per-project status.
 
 ## Principles
 
-1. **Local first** — tools process your files on your own device. If a tool needs a network call, the interface says so before you use it.
+1. **Instant & everywhere** — tools are websites: open the link and use them from any device. No installs, no accounts.
 2. **Honest status** — every project is labelled `Available`, `Experimental`, or `Planned`. Unfinished work is never presented as finished.
-3. **Limits are visible** — each tool documents its calculation methodology and data sources.
+3. **Limits are visible** — each tool documents its calculation methodology, its data sources, and exactly where processing happens: your browser, our server, or a named third-party API.
 4. **Open stack** — everything is open source under OSI-approved licenses (Apache-2.0, MIT, GPL-3.0, AGPL-3.0 depending on the project).
 
 ## Tools
@@ -19,10 +19,10 @@ A collection of free, open-source digital tools for the Muslim community. Local-
 | Video Music Remover | Media | Experimental | Separate voice from background music in video |
 | Subtitle Cleaner | Media | Experimental | Clean subtitle files without changing meaning |
 | Image Metadata Remover | Privacy | Planned | Remove hidden metadata from images |
-| Video Face Blur | Privacy | Planned | Blur sensitive areas in video |
+| Video Face Blur | Privacy | Experimental | Blur sensitive areas in video |
 | PDF Merger | Documents | Planned | Merge and reorder PDFs |
 | PDF Page & Text Extractor | Documents | Planned | Split pages and extract text from PDFs |
-| Audio Trimmer & Converter | Media | Planned | Trim and convert audio locally |
+| Audio Trimmer & Converter | Media | Planned | Trim and convert audio in the browser |
 | Image Redaction | Privacy | Planned | Blur sensitive areas in screenshots |
 | Prayer Times Widget | Everyday | Planned | Prayer times with documented methodology |
 
@@ -60,8 +60,13 @@ Waqf Toolkit is an independent open-source project. It is showcased inside the [
 
 This site collects **no analytics and no telemetry**. There are no trackers,
 no cookies, and no third-party requests beyond fonts. The only external API
-calls are read-only GitHub API requests for public repository data. If usage
-signals are ever needed, the decision will be documented here first —
+calls today are read-only GitHub API requests for public repository data.
+
+If tools gain cloud capabilities (e.g. AI providers such as Deepgram,
+Tavily, DeepSeek, or OpenAI), requests will run through our own server proxy:
+provider keys will never touch the browser, and each tool page will disclose
+exactly which services receive data *before* you use the tool. If usage
+signals are ever needed, that decision will be documented here first —
 self-hosted, privacy-respecting solutions only.
 
 ## License

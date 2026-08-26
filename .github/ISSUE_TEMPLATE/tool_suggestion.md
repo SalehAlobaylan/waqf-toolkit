@@ -16,9 +16,9 @@ Who deals with this task and how often?
 
 Rough idea of inputs and outputs. Keep the scope small — one job done well.
 
-**Local first check**
+**Data flow check**
 
-Could this run entirely on the user's device? If not, explain why a network call is unavoidable.
+Could this run entirely in the user's browser? If not, explain what processing is needed, whether it goes through our own server or a third-party API (name it), and why that network call is unavoidable.
 
 **Anything else**
 

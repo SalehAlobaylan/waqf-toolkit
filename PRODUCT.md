@@ -1,7 +1,7 @@
 # PRODUCT.md — Waqf Toolkit
 
-> Free, open-source digital tools for the Muslim community. Local-first,
-> privacy-respecting, honestly labelled.
+> Free, open-source web tools for the Muslim community. Instant to use in the
+> browser, transparent about your data, honestly labelled.
 
 This document defines what Waqf Toolkit is, who it serves, how it grows, and
 what it will never do. For developer setup see [README](README.md); for
@@ -54,13 +54,16 @@ prayer-time apps — and the mainstream tooling around these tasks is hostile:
 These four rules govern every tool accepted into the toolkit. They are also
 stated publicly on the website — they are commitments, not marketing.
 
-1. **Local first.** Tools process files on the user's device. If a tool ever
-   needs a network call, the interface says so plainly *before* use.
+1. **Instant & everywhere.** Tools are websites — reachable from any device,
+   nothing to install, no accounts. A visitor goes from search result to a
+   working tool in seconds.
 2. **Honest status.** Every project is labelled `Available`, `Experimental`,
    or `Planned`. Unfinished work is never presented as finished.
-3. **Limits are visible.** Each tool documents its methodology and data
-   sources. Anything involving religious calculations requires named sources,
-   explicit conventions, and stricter review (see CONTRIBUTING.md).
+3. **Limits are visible.** Each tool documents its methodology, its data
+   sources, and exactly where processing happens — the user's browser, our
+   server, or a named third-party API. Anything involving religious
+   calculations requires named sources, explicit conventions, and stricter
+   review (see CONTRIBUTING.md).
 4. **Open stack.** Everything is open source under OSI-approved licenses.
    Inspectable, forkable, auditable.
 
@@ -70,14 +73,16 @@ Two layers, deliberately separated:
 
 **a) The directory (shipped).** A bilingual (English / Arabic, full RTL)
 website that catalogs every tool with its status, stack, license, formats,
-and privacy note. Users can search by task or format, filter by category and
-status, and save tools for later. No account, no cookies, no tracking.
+and processing note (exactly where data goes). Users can search by task or
+format, filter by category and status, and save tools for later. No account,
+no cookies, no tracking.
 
-**b) Runnable tools (growing).** Tools whose processing fits in a browser run
-*inside* this site — no install, nothing leaves the device (pattern:
-`src/tools/` registry). Larger or compute-heavy tools live as separate
-repositories under their own licenses and are linked from the directory once
-public. The catalog currently tracks ten utilities:
+**b) Runnable tools (growing).** Tools run *inside* this site — open the page
+and use them, no install (pattern: `src/tools/` registry). Compute-heavy
+features can delegate to cloud providers (speech separation, transcription,
+AI assistance) through our own server functions, with provider keys kept
+server-side and each tool disclosing exactly which services receive data.
+The catalog currently tracks ten utilities:
 
 | Tool | Job | Status |
 |---|---|---|
@@ -85,10 +90,10 @@ public. The catalog currently tracks ten utilities:
 | Video Music Remover | Separate voice from background music in video | Experimental |
 | Subtitle Cleaner | Clean subtitle files without changing meaning | Experimental |
 | Image Metadata Remover | Remove hidden metadata from images | Planned |
-| Video Face Blur | Blur faces/screens/sensitive areas in video | Planned |
+| Video Face Blur | Blur faces/screens/sensitive areas in video | Experimental |
 | PDF Merger | Merge and reorder PDFs | Planned |
 | PDF Page & Text Extractor | Split pages and extract text from PDFs | Planned |
-| Audio Trimmer & Converter | Trim and convert audio locally | Planned |
+| Audio Trimmer & Converter | Trim and convert audio in the browser | Planned |
 | Image Redaction | Cover sensitive areas in screenshots | Planned |
 | Prayer Times Widget | Prayer times with fully documented methodology | Planned |
 
@@ -99,9 +104,9 @@ in the open.
 
 A clear, small job beats a big promise. Concretely, an accepted tool:
 
-- Does one task end-to-end without accounts or uploads (or documents exactly
-  why it cannot)
-- States its privacy behavior in one plain sentence
+- Does one task end-to-end without accounts (or documents exactly why it
+  cannot)
+- States in one plain sentence where processing happens and where data goes
 - Works in English and Arabic (RTL included)
 - Is maintainable by a small team: boring tech choices, tested logic
 - If it computes anything religiously significant: documents every convention
@@ -109,9 +114,14 @@ A clear, small job beats a big promise. Concretely, an accepted tool:
 
 ## 6. Non-goals
 
-- **No accounts, servers, or databases.** Nothing to log into, nothing to leak.
-- **No analytics or telemetry** — including "privacy-friendly" ones, until the
-  decision is revisited publicly (stance documented in README).
+- **No accounts required.** Tools work without sign-ups. Server-side
+  processing, when used, stays free-tier friendly and rate-limited rather
+  than account-gated.
+- **No hidden data flows.** No analytics or telemetry — including
+  "privacy-friendly" ones — and no tool sends data to any third party without
+  stating so on its own page (stance documented in README).
+- **No client-side secrets.** Provider API keys live only in server
+  environment variables behind our own proxy; they never ship to the browser.
 - **No religious rulings.** Tools present documented calculations and
   conventions; they never present themselves as authoritative verdicts.
 - **No growth at the cost of honesty.** A tool stays `Planned` until it truly
@@ -146,8 +156,9 @@ other's code. Other projects can adopt the same manifest format.
 
 **Long term**
 - Make `waqf.json` a reusable standard other projects adopt
-- Desktop builds (e.g. Tauri) for heavier tools so "local first" holds even
-  for demanding processing
+- Cloud-assisted instant tools (e.g. Deepgram, Tavily, LLMs such as DeepSeek
+  or OpenAI) exposed as ordinary web utilities behind server-function proxies
+  with hosted keys and per-tool disclosure of every data flow
 - Contributor pipeline flowing from Waqf Platform volunteer matching into
   this repository
 
@@ -162,7 +173,7 @@ Without analytics, success looks like this:
 - **Ecosystem proof**: Waqf Platform card live, second project adopting
   `waqf.json`
 - **Trust**: users can trace every claim on the site — every status label,
-  privacy note, and license matches reality
+  processing note, and license matches reality
 
 If those move, the product works — even though we will never be able to put a
 number on daily visitors, by design.

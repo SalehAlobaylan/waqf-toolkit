@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "A collection of free, open-source digital tools for the Muslim community. Local-first, privacy-respecting, honestly labelled.",
+  "description": "A collection of free, open-source web tools for the Muslim community. Nothing to install — instant in the browser, transparent about your data, honestly labelled.",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",

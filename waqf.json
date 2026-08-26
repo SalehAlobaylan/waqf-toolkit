@@ -4,7 +4,7 @@
     "name": "Waqf Toolkit",
     "slug": "waqf-toolkit",
     "type": "open-source",
-    "description": "A collection of free, open-source digital tools for the Muslim community. Local-first, privacy-respecting, honestly labelled.",
+    "description": "A collection of free, open-source web tools for the Muslim community. Nothing to install — instant in the browser, transparent about your data, honestly labelled.",
     "website": "https://waqf-toolkit.vercel.app",
     "repository": "https://github.com/SalehAlobaylan/waqf-toolkit",
     "categories": ["Islamic Tools", "Open Source", "Privacy"],

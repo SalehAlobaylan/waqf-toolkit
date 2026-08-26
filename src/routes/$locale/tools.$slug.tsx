@@ -53,6 +53,11 @@ function ToolDetailPage() {
   const ToolInterface = TOOL_INTERFACES[slug]
   const related = relatedTools(tool)
   const saved = useSavedTools()
+  const processingTitle = {
+    browser: t.tool.processingBrowser,
+    server: t.tool.processingServer,
+    'cloud-api': t.tool.processingCloudApi,
+  } as const
 
   return (
     <main className="mx-auto max-w-[1060px] px-5 pb-20 pt-10 lg:px-8 lg:pt-14">
@@ -152,8 +157,8 @@ function ToolDetailPage() {
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
               <InfoCard
                 icon={<ShieldCheckIcon className="h-5 w-5" />}
-                title={t.tool.filesStayHere}
-                body={text.privacyNote}
+                title={processingTitle[tool.processing]}
+                body={text.processingNote}
               />
               {tool.supportedFormats.length > 0 && (
                 <InfoCard
@@ -228,8 +233,8 @@ function ToolDetailPage() {
 
           <div className="mt-4 rounded-2xl border border-accent/15 bg-accent-soft/45 p-5 backdrop-blur-md">
             <ShieldCheckIcon className="h-5 w-5 text-accent" />
-            <p className="mt-4 text-sm font-semibold">{t.tool.privacyNote}</p>
-            <p className="mt-2 text-xs leading-5 text-muted">{text.privacyNote}</p>
+            <p className="mt-4 text-sm font-semibold">{t.tool.processingNote}</p>
+            <p className="mt-2 text-xs leading-5 text-muted">{text.processingNote}</p>
           </div>
         </aside>
       </div>

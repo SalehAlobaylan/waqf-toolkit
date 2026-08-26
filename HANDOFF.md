@@ -6,9 +6,11 @@ shipped).
 
 ## What this project is
 
-**Waqf Toolkit** — a collection of free, open-source digital tools for the
-Muslim community. Local-first, privacy-respecting, honestly labelled. The
-website is a bilingual directory plus host for runnable client-side tools.
+**Waqf Toolkit** — a collection of free, open-source web tools for the
+Muslim community. Instant to use in the browser (nothing to install),
+transparent about your data, honestly labelled. The website is a bilingual
+directory plus host for in-browser runnable tools; future cloud-powered
+features run through our own server proxy with keys kept server-side.
 
 Tone rules for all copy: formal but slightly casual. **No Islamic slogans or
 decorative religiosity** — plain, honest language only. Bilingual: every

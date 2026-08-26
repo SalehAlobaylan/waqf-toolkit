@@ -14,7 +14,7 @@ pnpm dev
 ## Ground rules
 
 - **Small scope beats big promises.** A tool should do one job well. If your idea needs three paragraphs to explain, consider splitting it.
-- **Local first.** Processing happens on the user's device. Any network call must be explicit in the UI and documented in the tool's privacy note.
+- **Web-first and instant.** Tools run in the browser from any device — no installs, no accounts. Any network call beyond the user's own browser must be explicit in the UI, documented in the tool's processing note (exactly where data goes), and routed through our own server proxy with keys kept server-side.
 - **Honest status.** Never ship something labelled `Available` that is not usable end-to-end. The catalog rules are in `src/data/tools.ts`.
 - **No secrets in the repo.** No credentials, tokens, private API endpoints, or `.env` files — ever.
 - Keep changes focused. One pull request per feature or fix.
