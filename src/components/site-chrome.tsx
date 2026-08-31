@@ -16,11 +16,12 @@ const MENU_TOOLS = [...TOOLS].sort((a, b) => {
   return rank(a.status) - rank(b.status) || b.updatedAt.localeCompare(a.updatedAt)
 })
 
-export function StatusDot({ status }: { status: 'available' | 'experimental' | 'planned' }) {
+export function StatusDot({ status }: { status: 'available' | 'experimental' | 'planned' | 'archived' }) {
   const dots: Record<string, string> = {
     available: 'bg-accent',
     experimental: 'bg-clay',
     planned: 'bg-muted',
+    archived: 'bg-muted/60',
   }
   return (
     <span

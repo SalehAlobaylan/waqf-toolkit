@@ -13,7 +13,10 @@
   <url><loc>https://waqf-toolkit.vercel.app/en/tools/image-redaction</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/en/tools/link-cleaner</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/en/tools/link-cleaner/try</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/qibla-finder</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/qibla-finder/try</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/en/tools/prayer-times-widget</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/prayer-times-widget/try</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/ar</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/ar/tools</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/ar/contribute</loc></url>
@@ -27,5 +30,8 @@
   <url><loc>https://waqf-toolkit.vercel.app/ar/tools/image-redaction</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/ar/tools/link-cleaner</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/ar/tools/link-cleaner/try</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/qibla-finder</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/qibla-finder/try</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/ar/tools/prayer-times-widget</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/prayer-times-widget/try</loc></url>
 </urlset>

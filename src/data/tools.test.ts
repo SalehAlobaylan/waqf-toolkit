@@ -30,10 +30,13 @@ describe('tool catalog invariants', () => {
     for (const tool of TOOLS) {
       // Inverse check is done against the registry import-free via convention:
       // only link-cleaner currently ships an interface.
+      // Archived tools keep their historical interface but are no longer promoted as usable.
       if (tool.tryRoute) {
-        expect(tool.status === 'available' || tool.status === 'experimental').toBe(
-          true,
-        )
+        expect(
+          tool.status === 'available' ||
+            tool.status === 'experimental' ||
+            tool.status === 'archived',
+        ).toBe(true)
       }
     }
   })

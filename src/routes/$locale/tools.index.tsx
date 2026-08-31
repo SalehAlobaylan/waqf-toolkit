@@ -80,6 +80,7 @@ const STATUS_RANK: Record<ToolStatus, number> = {
   available: 0,
   experimental: 1,
   planned: 2,
+  archived: 3,
 }
 
 function DirectoryView({
@@ -297,7 +298,9 @@ function DirectoryView({
                         ? 'bg-clay'
                         : key === 'planned'
                           ? 'bg-muted'
-                          : 'border border-muted'
+                          : key === 'archived'
+                            ? 'bg-muted/70'
+                            : 'border border-muted'
                   }`}
                 />
                 {key === 'all' ? t.directory.allStatuses : t.status[key]}

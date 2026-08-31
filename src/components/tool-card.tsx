@@ -39,11 +39,13 @@ export function StatusPill({ status }: { status: ToolStatus }) {
     available: 'bg-accent/10 text-accent',
     experimental: 'bg-clay-soft text-[hsl(24_52%_38%)]',
     planned: 'bg-line/60 text-muted',
+    archived: 'bg-line/50 text-muted border border-line/60',
   }
   const dots: Record<ToolStatus, string> = {
     available: 'bg-accent',
     experimental: 'bg-clay',
     planned: 'bg-muted',
+    archived: 'bg-muted/70',
   }
   return (
     <span
@@ -160,7 +162,9 @@ export function ToolCard({
             ? t.tool.openToolShort
             : tool.status === 'experimental'
               ? t.tool.tryExperiment
-              : t.tool.viewPlan}
+              : tool.status === 'archived'
+                ? t.status.archived
+                : t.tool.viewPlan}
           <ArrowRightIcon className="h-3.5 w-3.5" />
         </Link>
       </div>

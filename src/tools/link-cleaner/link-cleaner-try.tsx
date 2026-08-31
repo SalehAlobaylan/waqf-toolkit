@@ -54,7 +54,7 @@ export default function LinkCleanerTry() {
         />
       </label>
 
-      <p className="text-xs text-muted">{t.tryTool.disclaimer}</p>
+      <p className="text-xs text-muted"></p>
 
       {error === 'invalid-url' && (
         <Card className="border-danger/30 bg-clay-soft! p-4 text-sm text-danger">

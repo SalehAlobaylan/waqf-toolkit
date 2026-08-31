@@ -1,6 +1,6 @@
 import type { Locale } from '@/i18n'
 
-export type ToolStatus = 'available' | 'experimental' | 'planned'
+export type ToolStatus = 'available' | 'experimental' | 'planned' | 'archived'
 export type ToolCategory = 'Media' | 'Privacy' | 'Documents' | 'Everyday'
 
 /**
@@ -60,6 +60,7 @@ export const STATUS_ORDER: ToolStatus[] = [
   'available',
   'experimental',
   'planned',
+  'archived',
 ]
 
 /**
@@ -84,7 +85,7 @@ export const TOOLS: Tool[] = [
     description:
       'Separates speech and background music in a video so you can keep the voice track and work with a cleaner source.',
     category: 'Media',
-    status: 'experimental',
+    status: 'archived',
     license: 'AGPL-3.0',
     stack: ['Python', 'FFmpeg', 'Demucs'],
     processing: 'browser',
@@ -112,7 +113,7 @@ export const TOOLS: Tool[] = [
     description:
       'Fix timing gaps, duplicate lines, and formatting noise in subtitle files. Keep the words, lose the clutter.',
     category: 'Media',
-    status: 'experimental',
+    status: 'archived',
     license: 'GPL-3.0',
     stack: ['Rust', 'WebAssembly'],
     processing: 'browser',
@@ -141,7 +142,7 @@ export const TOOLS: Tool[] = [
     description:
       'Inspect and remove EXIF details such as location, device model, and timestamps. A small step worth taking before an image leaves your hands.',
     category: 'Privacy',
-    status: 'planned',
+    status: 'archived',
     license: 'MIT',
     stack: ['TypeScript', 'Web Workers'],
     processing: 'browser',
@@ -169,7 +170,7 @@ export const TOOLS: Tool[] = [
     description:
       'A careful video privacy pass for community footage. Mark areas frame by frame, then export a copy with those regions blurred.',
     category: 'Privacy',
-    status: 'experimental',
+    status: 'archived',
     license: 'MIT',
     stack: ['TypeScript', 'WebCodecs', 'OpenCV'],
     processing: 'browser',
@@ -197,7 +198,7 @@ export const TOOLS: Tool[] = [
     description:
       'Combine scanned pages and separate PDFs into one ordered document, then rearrange pages until it reads correctly.',
     category: 'Documents',
-    status: 'planned',
+    status: 'archived',
     license: 'MIT',
     stack: ['TypeScript', 'PDF.js'],
     processing: 'browser',
@@ -225,7 +226,7 @@ export const TOOLS: Tool[] = [
     description:
       'A focused PDF workbench for splitting pages, extracting text, and preparing documents for a handoff.',
     category: 'Documents',
-    status: 'planned',
+    status: 'archived',
     license: 'MPL-2.0',
     stack: ['TypeScript', 'PDF.js'],
     processing: 'browser',
@@ -253,7 +254,7 @@ export const TOOLS: Tool[] = [
     description:
       'Cut silence, trim clips, and convert between common audio formats. Built for long lecture recordings that other tools struggle with.',
     category: 'Media',
-    status: 'planned',
+    status: 'archived',
     license: 'MIT',
     stack: ['TypeScript', 'Web Audio API'],
     processing: 'browser',
@@ -281,7 +282,7 @@ export const TOOLS: Tool[] = [
     description:
       'Obscure names, messages, and private details in images before sharing them publicly. Quick selection tools with sensible defaults.',
     category: 'Privacy',
-    status: 'planned',
+    status: 'archived',
     license: 'MIT',
     stack: ['TypeScript', 'Canvas API'],
     processing: 'browser',
@@ -307,7 +308,7 @@ export const TOOLS: Tool[] = [
     description:
       'Strip click-tracking and surveillance parameters from URLs before you share them. Paste, clean, copy.',
     category: 'Everyday',
-    status: 'available',
+    status: 'archived',
     license: 'Apache-2.0',
     stack: ['TypeScript'],
     processing: 'browser',
@@ -331,32 +332,62 @@ export const TOOLS: Tool[] = [
     repoUrl: 'https://github.com/SalehAlobaylan/waqf-toolkit',
   },
   {
-    slug: 'prayer-times-widget',
-    trackingIssue: 8,
-    name: 'Prayer Times Widget',
-    shortDescription: 'Prayer times for your location, right on the web.',
+    slug: 'qibla-finder',
+    trackingIssue: 9,
+    name: 'Qibla Finder',
+    shortDescription: 'Find the direction to the Kaaba — true-north bearing, no compass required.',
     description:
-      'A quiet, configurable prayer time page that opens in any browser. Built for glancing, not nudging, with every calculation convention documented.',
+      'Enter any location or use your device, see the initial great-circle bearing to the Kaaba clockwise from true north, and align a static dial with a trusted true-north reference.',
     category: 'Everyday',
-    status: 'planned',
+    status: 'experimental',
     license: 'Apache-2.0',
-    stack: ['TypeScript', 'Web APIs'],
+    stack: ['TypeScript'],
     processing: 'browser',
     processingNote:
-      'Times will be computed in your browser from coordinates you choose or allow. Your location is never stored or sent anywhere.',
+      'Bearing is calculated in your browser — coordinates are not stored or sent anywhere. No map or network request.',
     translations: {
       ar: {
-        name: 'مواقيت الصلاة',
-        shortDescription: 'مواقيت الصلاة لموقعك، مباشرة على الويب.',
+        name: 'اتجاه القبلة',
+        shortDescription: 'اعرف اتجاه الكعبة — زاوية من الشمال الحقيقي، دون الحاجة إلى بوصلة.',
         description:
-          'وديعة هادئة لمواعيد الصلاة تفتح في أي متصفح، قابلة للضبط، صُمّمت للنظرة السريعة لا للإلحاح، وبتفاصيل حسابية موثّقة بالكامل.',
+          'أدخل أي موقع أو استخدم جهازك لمعرفة زاوية الدائرة العظمى إلى الكعبة باتجاه عقارب الساعة من الشمال الحقيقي، وطابق قرصاً ثابتاً مع مرجع موثوق للشمال الحقيقي.',
         processingNote:
-          'ستُحسب المواقيت داخل متصفحك من إحداثيات تختارها أو تسمح بها. لا يُخزَّن موقعك ولا يُرسل إلى أي جهة.',
+          'يُحسب الاتجاه داخل متصفحك — لا تُخزّن الإحداثيات ولا تُرسل إلى أي جهة. لا خريطة ولا طلب شبكة.',
       },
     },
     supportedFormats: [],
-    featured: false,
-    updatedAt: '2026-04-18',
+    featured: true,
+    tryRoute: true,
+    updatedAt: '2026-08-30',
+  },
+  {
+    slug: 'prayer-times-widget',
+    trackingIssue: 10,
+    name: 'Prayer Times Calculator',
+    shortDescription: 'Prayer times for your location, with every method and convention shown.',
+    description:
+      'Calculate Fajr, sunrise, Dhuhr, Asr, Maghrib, and Isha for any date, coordinate, and IANA timezone. Choose a named method or custom angles, juristic, high-latitude rule, and minute adjustments — all documented in the methodology.',
+    category: 'Everyday',
+    status: 'experimental',
+    license: 'Apache-2.0',
+    stack: ['TypeScript'],
+    processing: 'browser',
+    processingNote:
+      'Times are computed in your browser from coordinates, date, and timezone you provide. Nothing is stored or sent anywhere.',
+    translations: {
+      ar: {
+        name: 'حاسبة مواقيت الصلاة',
+        shortDescription: 'مواقيت الصلاة لموقعك، مع عرض كل طريقة واصطلاح.',
+        description:
+          'احسب الفجر والشروق والظهر والعصر والمغرب والعشاء لأي تاريخ وإحداثيات ومنطقة زمنية. اختر طريقة مسمّاة أو زوايا مخصصة، والمذهب في العصر، وقاعدة خطوط العرض العالية، والتعديلات بالدقائق — كلها موثّقة في المنهجية.',
+        processingNote:
+          'تُحسب المواقيت داخل متصفحك من الإحداثيات والتاريخ والمنطقة الزمنية التي تقدّمها. لا يُخزَّن شيء ولا يُرسل إلى أي جهة.',
+      },
+    },
+    supportedFormats: [],
+    featured: true,
+    tryRoute: true,
+    updatedAt: '2026-08-30',
     // Calculation-sensitive projects ship only after domain review (see CONTRIBUTING.md).
   },
 ]

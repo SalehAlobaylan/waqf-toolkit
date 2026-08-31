@@ -2,11 +2,8 @@ import { createFileRoute, notFound, Link } from '@tanstack/react-router'
 import { useI18n, hreflangLinks, type Locale } from '@/i18n'
 import { getTool, localizedTool } from '@/data/tools'
 import { TOOL_INTERFACES } from '@/tools/registry'
-import { Eyebrow } from '@/components/ui'
-import {
-  ArrowLeftIcon,
-  ShieldCheckIcon,
-} from '@/components/icons'
+import { CategoryTile, StatusPill } from '@/components/tool-card'
+import { ArrowLeftIcon, ShieldCheckIcon } from '@/components/icons'
 
 export const Route = createFileRoute('/$locale/tools/$slug_/try')({
   beforeLoad: ({ params }) => {
@@ -43,7 +40,7 @@ function TryToolPage() {
   const text = localizedTool(tool, locale)
 
   return (
-    <main className="mx-auto max-w-3xl px-5 pb-20 pt-10 lg:px-8 lg:pt-14">
+    <main className="mx-auto max-w-[860px] px-5 pb-20 pt-8 lg:px-8 lg:pt-10">
       <Link
         to="/$locale/tools/$slug"
         params={{ locale, slug: tool.slug }}
@@ -53,24 +50,31 @@ function TryToolPage() {
         {text.name}
       </Link>
 
-      <div className="mb-8 mt-8 animate-rise">
-        <Eyebrow>{t.tryTool.title}</Eyebrow>
-        <h1 className="mt-2 font-display text-4xl font-semibold tracking-[-0.05em] rtl:tracking-normal sm:text-5xl">
-          {text.name}
-        </h1>
-        <p className="mt-3 max-w-xl leading-relaxed text-muted">{text.shortDescription}</p>
+      <div className="mt-8 flex flex-wrap items-start gap-4">
+        <CategoryTile category={tool.category} large />
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="eyebrow text-muted">{t.category[tool.category]}</span>
+            <StatusPill status={tool.status} />
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-2.5 py-1 font-mono-ui text-[10px] font-bold uppercase tracking-[0.06em] text-accent">
+              <ShieldCheckIcon className="h-3 w-3" />
+            </span>
+          </div>
+          <h1 className="mt-3 font-display text-[32px] font-semibold leading-none tracking-[-0.04em] rtl:tracking-normal sm:text-5xl">
+            {text.name}
+          </h1>
+          <p className="mt-3 max-w-[60ch] text-sm leading-6 text-muted">{text.shortDescription}</p>
+        </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-accent/25 bg-accent-soft/30">
-        <div className="flex items-center justify-between border-b border-accent/15 px-5 py-4">
-          <span className="flex items-center gap-2 text-sm font-semibold">
-            <ShieldCheckIcon className="h-4 w-4 text-accent" />
-            {text.name}
-          </span>
-          <span className="eyebrow text-accent">{t.tryTool.title}</span>
-        </div>
-        <div className="bg-surface p-5 sm:p-7">
+      <div className="glass-panel mt-8 overflow-hidden rounded-[24px] border border-line/70" data-testid={`panel-try-${tool.slug}`}>
+        <div className="p-6 sm:p-8">
           <ToolInterface />
+        </div>
+        <div className="border-t border-line/50 bg-accent-soft/20 px-6 py-3">
+          <p className="text-xs leading-5 text-muted">
+            <span className="font-semibold text-ink">{t.tool.processingNote}:</span> {text.processingNote}
+          </p>
         </div>
       </div>
     </main>

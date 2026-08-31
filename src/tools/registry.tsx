@@ -1,5 +1,7 @@
 import type { ComponentType } from 'react'
 import LinkCleanerTry from './link-cleaner/link-cleaner-try'
+import QiblaTry from './qibla-finder/qibla-try'
+import PrayerTimesTry from './prayer-times/prayer-times-try'
 
 /**
  * In-app runnable tool interfaces, keyed by catalog slug.
@@ -9,4 +11,6 @@ import LinkCleanerTry from './link-cleaner/link-cleaner-try'
  */
 export const TOOL_INTERFACES: Record<string, ComponentType> = {
   'link-cleaner': LinkCleanerTry,
+  'qibla-finder': QiblaTry,
+  'prayer-times-widget': PrayerTimesTry,
 }

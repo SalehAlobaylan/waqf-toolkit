@@ -17,7 +17,9 @@ import {
 } from '@/components/icons'
 
 /** Most important + most usable tools for the hero card: available first. */
-const USABLE_TOOLS = TOOLS.filter((tool) => tool.status !== 'planned')
+const USABLE_TOOLS = TOOLS.filter(
+  (tool) => tool.status === 'available' || tool.status === 'experimental',
+)
   .sort(
     (a, b) =>
       STATUS_ORDER.indexOf(a.status as ToolStatus) -
