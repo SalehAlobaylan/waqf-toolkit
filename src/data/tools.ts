@@ -102,11 +102,12 @@ export const TOOLS: Tool[] = [
       },
     },
     supportedFormats: ['MP4', 'MOV', 'WebM'],
-    featured: true,
+    featured: false,
     updatedAt: '2026-08-10',
   },
   {
     slug: 'subtitle-cleaner',
+    trackingIssue: 8,
     name: 'Subtitle Cleaner',
     shortDescription:
       'Clean subtitle files without changing their meaning.',
@@ -130,7 +131,7 @@ export const TOOLS: Tool[] = [
       },
     },
     supportedFormats: ['SRT', 'VTT', 'ASS'],
-    featured: true,
+    featured: false,
     updatedAt: '2026-07-28',
   },
   {
@@ -159,7 +160,7 @@ export const TOOLS: Tool[] = [
       },
     },
     supportedFormats: ['JPG', 'PNG', 'HEIC'],
-    featured: true,
+    featured: false,
     updatedAt: '2026-07-15',
   },
   {
@@ -187,7 +188,7 @@ export const TOOLS: Tool[] = [
       },
     },
     supportedFormats: ['MP4', 'MOV'],
-    featured: true,
+    featured: false,
     updatedAt: '2026-07-02',
   },
   {
@@ -308,7 +309,7 @@ export const TOOLS: Tool[] = [
     description:
       'Strip click-tracking and surveillance parameters from URLs before you share them. Paste, clean, copy.',
     category: 'Everyday',
-    status: 'archived',
+    status: 'available',
     license: 'Apache-2.0',
     stack: ['TypeScript'],
     processing: 'browser',
@@ -389,6 +390,62 @@ export const TOOLS: Tool[] = [
     tryRoute: true,
     updatedAt: '2026-08-30',
     // Calculation-sensitive projects ship only after domain review (see CONTRIBUTING.md).
+  },
+  {
+    slug: 'hijri-converter',
+    trackingIssue: 11,
+    name: 'Hijri–Gregorian Converter',
+    shortDescription: 'Convert dates between Gregorian and Hijri — Umm al-Qura (Saudi) or Tabular (Civil), explicitly.',
+    description:
+      'Bidirectional Gregorian ↔ Hijri conversion with explicit variant choice. Umm al-Qura uses the official Saudi table (1356–1500 AH); Civil uses the 30-year tabular cycle. Variant, version, and warning travel with every export.',
+    category: 'Everyday',
+    status: 'experimental',
+    license: 'Apache-2.0',
+    stack: ['TypeScript'],
+    processing: 'browser',
+    processingNote:
+      'Conversion runs in your browser from a bundled table/algorithm — no date is sent anywhere. No network request.',
+    translations: {
+      ar: {
+        name: 'محول التاريخ الهجري',
+        shortDescription: 'حوّل التواريخ بين الميلادي والهجري — أم القرى (السعودي) أو المدني (الجدولي)، بوضوح.',
+        description:
+          'تحويل ثنائي الاتجاه بين الميلادي والهجري مع اختيار نوع صريح. أم القرى يستخدم الجدول الرسمي السعودي (1356–1500هـ)؛ والمدني يستخدم التقويم الجدولي ذا الدورة 30 سنة. النوع والإصدار والتنبيه ترافق كل تصدير.',
+        processingNote: 'التحويل يتم داخل متصفحك من جدول/خوارزمية مضمّنة — لا يُرسل التاريخ إلى أي جهة. لا طلب شبكة.',
+      },
+    },
+    supportedFormats: [],
+    featured: true,
+    tryRoute: true,
+    updatedAt: '2026-09-03',
+  },
+  {
+    slug: 'zakat-calculator',
+    trackingIssue: 12,
+    name: 'Zakat Calculator',
+    shortDescription: 'Organize monetary assets and estimate Zakat — transparent, decimal-precise, scholar-reviewed.',
+    description:
+      'A worksheet for cash, gold, silver, investments, receivables, and short-term liabilities. Choose gold (85g) or silver (595g) nisab, confirm hawl, and get an itemized 2.5% estimate with full trace. Not a fatwa — verify with qualified authority.',
+    category: 'Everyday',
+    status: 'experimental',
+    license: 'Apache-2.0',
+    stack: ['TypeScript', 'decimal.js'],
+    processing: 'browser',
+    processingNote:
+      'Zakat is computed in your browser from numbers you provide — nothing is sent anywhere. Optional local save stays on device.',
+    translations: {
+      ar: {
+        name: 'حاسبة الزكاة',
+        shortDescription: 'نظّم الأصول النقدية وقدّر الزكاة — بشفافية ودقة عشرية ومراجعة علمية.',
+        description:
+          'ورقة عمل للنقد والذهب والفضة والاستثمارات والديون والالتزامات قصيرة الأجل. اختر نصاب الذهب (85غ) أو الفضة (595غ)، وأكد الحول، واحصل على تقدير 2.5% مفصّل مع أثر كامل. ليس فتوى — تأكد مع جهة موثوقة.',
+        processingNote: 'تُحسب الزكاة داخل متصفحك من الأرقام التي تُدخلها — لا يُرسل شيء إلى أي جهة. الحفظ المحلي اختياري ويبقى على الجهاز.',
+      },
+    },
+    supportedFormats: [],
+    featured: true,
+    tryRoute: true,
+    updatedAt: '2026-09-03',
   },
 ]
 

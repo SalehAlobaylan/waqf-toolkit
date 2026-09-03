@@ -17,6 +17,10 @@
   <url><loc>https://waqf-toolkit.vercel.app/en/tools/qibla-finder/try</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/en/tools/prayer-times-widget</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/en/tools/prayer-times-widget/try</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/hijri-converter</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/hijri-converter/try</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/zakat-calculator</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/zakat-calculator/try</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/ar</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/ar/tools</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/ar/contribute</loc></url>
@@ -34,4 +38,8 @@
   <url><loc>https://waqf-toolkit.vercel.app/ar/tools/qibla-finder/try</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/ar/tools/prayer-times-widget</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/ar/tools/prayer-times-widget/try</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/hijri-converter</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/hijri-converter/try</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/zakat-calculator</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/zakat-calculator/try</loc></url>
 </urlset>

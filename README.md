@@ -16,15 +16,18 @@ A collection of free, open-source web tools for the Muslim community. Nothing to
 | Tool | Category | Status | What it does |
 |---|---|---|---|
 | Link Cleaner | Everyday | Available | Clean tracking parameters out of shared links |
-| Video Music Remover | Media | Experimental | Separate voice from background music in video |
-| Subtitle Cleaner | Media | Experimental | Clean subtitle files without changing meaning |
-| Image Metadata Remover | Privacy | Planned | Remove hidden metadata from images |
-| Video Face Blur | Privacy | Experimental | Blur sensitive areas in video |
-| PDF Merger | Documents | Planned | Merge and reorder PDFs |
-| PDF Page & Text Extractor | Documents | Planned | Split pages and extract text from PDFs |
-| Audio Trimmer & Converter | Media | Planned | Trim and convert audio in the browser |
-| Image Redaction | Privacy | Planned | Blur sensitive areas in screenshots |
-| Prayer Times Widget | Everyday | Planned | Prayer times with documented methodology |
+| Qibla Finder | Everyday | Experimental | Find direction to the Kaaba — true-north bearing |
+| Prayer Times Calculator | Everyday | Experimental | Prayer times with documented methodology |
+| Hijri–Gregorian Converter | Everyday | Experimental | Convert Gregorian ↔ Hijri — Umm al-Qura or Civil |
+| Zakat Calculator | Everyday | Experimental | Organize monetary assets and estimate Zakat |
+| Video Music Remover | Media | Archived | Separate voice from background music in video |
+| Subtitle Cleaner | Media | Archived | Clean subtitle files without changing meaning |
+| Image Metadata Remover | Privacy | Archived | Remove hidden metadata from images |
+| Video Face Blur | Privacy | Archived | Blur sensitive areas in video |
+| PDF Merger | Documents | Archived | Merge and reorder PDFs |
+| PDF Page & Text Extractor | Documents | Archived | Split pages and extract text from PDFs |
+| Audio Trimmer & Converter | Media | Archived | Trim and convert audio in the browser |
+| Image Redaction | Privacy | Archived | Blur sensitive areas in screenshots |
 
 The catalog lives in [`src/data/tools.ts`](src/data/tools.ts). Editing rules are documented at the top of that file.
 

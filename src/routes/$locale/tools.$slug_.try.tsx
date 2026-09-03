@@ -8,7 +8,7 @@ import { ArrowLeftIcon, ShieldCheckIcon } from '@/components/icons'
 export const Route = createFileRoute('/$locale/tools/$slug_/try')({
   beforeLoad: ({ params }) => {
     const tool = getTool(params.slug)
-    if (!tool || !TOOL_INTERFACES[params.slug]) {
+    if (!tool || !tool.tryRoute || !TOOL_INTERFACES[params.slug]) {
       throw notFound()
     }
   },
