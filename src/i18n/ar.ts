@@ -384,16 +384,6 @@ export const ar: Dictionary = {
   },
   tryTool: {
     title: 'جرّبها',
-    inputLabel: 'الصق رابطاً',
-    inputPlaceholder: 'https://example.com/article?utm_source=news&id=42',
-    cleanLabel: 'الرابط بعد التنظيف',
-    copy: 'نسخ',
-    copied: 'تم النسخ',
-    copyFailed: 'تعذّر النسخ — انسخ الرابط يدوياً.',
-    removedTitle: 'المعاملات المزالة',
-    noneRemoved: 'لا شيء لإزالته — هذا الرابط نظيف بالفعل.',
-    invalidUrl: 'لا يبدو هذا رابطاً صالحاً.',
-    disclaimer: 'تعمل الأداة داخل متصفحك بالكامل. لا يتم إرسال الرابط إلى أي جهة.',
   },
   status: {
     available: 'متاح',

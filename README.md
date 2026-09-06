@@ -15,7 +15,6 @@ A collection of free, open-source web tools for the Muslim community. Nothing to
 
 | Tool | Category | Status | What it does |
 |---|---|---|---|
-| Link Cleaner | Everyday | Available | Clean tracking parameters out of shared links |
 | Qibla Finder | Everyday | Experimental | Find direction to the Kaaba — true-north bearing |
 | Prayer Times Calculator | Everyday | Experimental | Prayer times with documented methodology |
 | Hijri–Gregorian Converter | Everyday | Experimental | Convert Gregorian ↔ Hijri — Umm al-Qura or Civil |

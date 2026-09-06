@@ -390,16 +390,6 @@ export const en = {
   },
   tryTool: {
     title: 'Try it',
-    inputLabel: 'Paste a link',
-    inputPlaceholder: 'https://example.com/article?utm_source=news&id=42',
-    cleanLabel: 'Cleaned link',
-    copy: 'Copy',
-    copied: 'Copied',
-    copyFailed: 'Could not copy — select the link manually.',
-    removedTitle: 'Removed parameters',
-    noneRemoved: 'Nothing to remove — this link is already clean.',
-    invalidUrl: 'That does not look like a valid link.',
-    disclaimer: 'Runs entirely in your browser. The link is never sent anywhere.',
   },
   status: {
     available: 'Available',

@@ -14,16 +14,16 @@ describe('useSavedTools', () => {
   it('starts empty', () => {
     const { result } = renderHook(() => useSavedTools())
     expect(result.current.savedSlugs).toEqual([])
-    expect(result.current.isSaved('link-cleaner')).toBe(false)
+    expect(result.current.isSaved('qibla-finder')).toBe(false)
   })
 
   it('toggles a tool and persists across hook instances', () => {
     const first = renderHook(() => useSavedTools())
-    act(() => first.result.current.toggle('link-cleaner'))
-    expect(first.result.current.isSaved('link-cleaner')).toBe(true)
+    act(() => first.result.current.toggle('qibla-finder'))
+    expect(first.result.current.isSaved('qibla-finder')).toBe(true)
 
     const second = renderHook(() => useSavedTools())
-    expect(second.result.current.savedSlugs).toEqual(['link-cleaner'])
+    expect(second.result.current.savedSlugs).toEqual(['qibla-finder'])
   })
 
   it('untoggling removes the entry', () => {

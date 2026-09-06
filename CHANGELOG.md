@@ -6,6 +6,11 @@ and the project adheres to [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Removed
+
+- **Link Cleaner** (`/tools/link-cleaner`) — the URL tracking-parameter
+  cleaner has been removed from the catalog, sitemap, and in-app interfaces.
+
 ### Changed
 
 - "Frosted orchard" glass system generalized across the site: soft

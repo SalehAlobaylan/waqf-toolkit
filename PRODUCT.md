@@ -86,7 +86,6 @@ The catalog currently tracks ten utilities:
 
 | Tool | Job | Status |
 |---|---|---|
-| Link Cleaner | Strip tracking parameters from shared links | **Available** (in-app) |
 | Video Music Remover | Separate voice from background music in video | Experimental |
 | Subtitle Cleaner | Clean subtitle files without changing meaning | Experimental |
 | Image Metadata Remover | Remove hidden metadata from images | Planned |
@@ -143,7 +142,7 @@ other's code. Other projects can adopt the same manifest format.
 
 **Near term**
 - Finish and promote the two experimental tools (Video Music Remover, Subtitle Cleaner)
-- Grow in-app runnable tools following the Link Cleaner pattern
+- Grow in-app runnable tools following the established `src/tools/` registry pattern
 - Complete the project card inside Waqf Platform (metadata + Explore /
   Contribute buttons + live good-first-issues feed)
 

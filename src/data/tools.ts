@@ -303,36 +303,6 @@ export const TOOLS: Tool[] = [
     updatedAt: '2026-05-10',
   },
   {
-    slug: 'link-cleaner',
-    name: 'Link Cleaner',
-    shortDescription: 'Clean tracking parameters out of shared links.',
-    description:
-      'Strip click-tracking and surveillance parameters from URLs before you share them. Paste, clean, copy.',
-    category: 'Everyday',
-    status: 'available',
-    license: 'Apache-2.0',
-    stack: ['TypeScript'],
-    processing: 'browser',
-    processingNote:
-      'Links are cleaned entirely in your browser. Nothing is sent anywhere.',
-    translations: {
-      ar: {
-        name: 'تنظيف الروابط من التتبّع',
-        shortDescription: 'تنظيف معاملات التتبّع من الروابط المشتركة.',
-        description:
-          'احذف معاملات تتبّع النقرات والمراقبة من الروابط قبل مشاركتها. الصق، نظّف، انسخ.',
-        processingNote:
-          'تُنظَّف الروابط داخل متصفحك بالكامل. لا يُرسل شيء إلى أي جهة.',
-      },
-    },
-    supportedFormats: [],
-    featured: true,
-    tryRoute: true,
-    updatedAt: '2026-08-01',
-    // First shipped utility lives inside this repository under src/tools/link-cleaner.
-    repoUrl: 'https://github.com/SalehAlobaylan/waqf-toolkit',
-  },
-  {
     slug: 'qibla-finder',
     trackingIssue: 9,
     name: 'Qibla Finder',

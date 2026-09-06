@@ -28,8 +28,8 @@ describe('tool catalog invariants', () => {
 
   it('tools with an in-app interface are marked tryRoute', () => {
     for (const tool of TOOLS) {
-      // Inverse check is done against the registry import-free via convention:
-      // only link-cleaner currently ships an interface.
+    // Inverse check is done against the registry import-free via convention:
+    // tools with tryRoute ship an interface (see src/tools/registry.tsx).
       // Archived tools keep their historical interface but are no longer promoted as usable.
       if (tool.tryRoute) {
         expect(
@@ -77,13 +77,13 @@ describe('tool catalog invariants', () => {
   })
 
   it('localizedTool falls back to English copy', () => {
-    const tool = getTool('link-cleaner')!
+    const tool = getTool('qibla-finder')!
     expect(localizedTool(tool, 'en').name).toBe(tool.name)
     expect(localizedTool(tool, 'ar').name).toBe(tool.translations.ar.name)
   })
 
   it('getTool resolves every slug and nothing else', () => {
-    expect(getTool('link-cleaner')?.name).toBe('Link Cleaner')
+    expect(getTool('qibla-finder')?.name).toBe('Qibla Finder')
     expect(getTool('does-not-exist')).toBeUndefined()
   })
 
