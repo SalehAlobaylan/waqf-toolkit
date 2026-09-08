@@ -19,6 +19,8 @@
   <url><loc>https://waqf-toolkit.vercel.app/en/tools/hijri-converter/try</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/en/tools/zakat-calculator</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/en/tools/zakat-calculator/try</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/adhkar-companion</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/en/tools/adhkar-companion/try</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/ar</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/ar/tools</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/ar/contribute</loc></url>
@@ -38,4 +40,6 @@
   <url><loc>https://waqf-toolkit.vercel.app/ar/tools/hijri-converter/try</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/ar/tools/zakat-calculator</loc></url>
   <url><loc>https://waqf-toolkit.vercel.app/ar/tools/zakat-calculator/try</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/adhkar-companion</loc></url>
+  <url><loc>https://waqf-toolkit.vercel.app/ar/tools/adhkar-companion/try</loc></url>
 </urlset>

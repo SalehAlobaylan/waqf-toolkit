@@ -417,6 +417,35 @@ export const TOOLS: Tool[] = [
     tryRoute: true,
     updatedAt: '2026-09-03',
   },
+  {
+    slug: 'adhkar-companion',
+    trackingIssue: 13,
+    name: 'Adhkar Companion',
+    shortDescription: 'Morning and evening remembrances with a private counter — no account, nothing uploaded.',
+    description:
+      'A curated set of morning and evening adhkar with prescribed counts, a calm focus counter, and optional on-device progress. Copy a card with full source or print a booklet. Not a fatwa — verify wording with a qualified teacher.',
+    category: 'Everyday',
+    status: 'experimental',
+    license: 'Apache-2.0',
+    stack: ['TypeScript'],
+    processing: 'browser',
+    processingNote:
+      'Counts and marks stay in your browser — nothing is sent anywhere. Saving on the device is opt-in and can be cleared anytime.',
+    translations: {
+      ar: {
+        name: 'رفيق الأذكار',
+        shortDescription: 'أذكار الصباح والمساء مع عدّاد خاص — دون حساب ودون رفع أي شيء.',
+        description:
+          'مجموعة مختارة من أذكار الصباح والمساء بأعدادها، مع عدّاد هادئ وتقدّم اختياري على جهازك. انسخ بطاقة بمصدرها الكامل أو اطبع كتيباً. ليس فتوى — تأكد من النصوص مع معلم موثوق.',
+        processingNote:
+          'تبقى العدّات والعلامات داخل متصفحك — لا يُرسل شيء إلى أي جهة. الحفظ على الجهاز اختياري ويمكن مسحه في أي وقت.',
+      },
+    },
+    supportedFormats: ['JSON', 'PDF', 'PNG', 'JPEG', 'WebP'],
+    featured: true,
+    tryRoute: true,
+    updatedAt: '2026-09-08',
+  },
 ]
 
 export function getTool(slug: string): Tool | undefined {
