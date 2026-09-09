@@ -60,7 +60,19 @@ No network fetch. No geolocation. No account.
 - Counts measure taps, not acceptance or presence of heart. The tool says this in plain words.
 - Midnight reset is civil convenience, not a fiqh boundary for morning/evening.
 - No audio, no notifications, no background alarms, no cloud backup. Device loss = progress loss unless the user exported JSON.
-- **Image export** (`card-image.ts` layout + canvas renderer, PNG/JPEG/WebP download) runs fully in the browser with the page's own bundled fonts — no upload, no server. Layout math is unit-tested (`card-image.test.ts`): the Arabic block is never sliced (export is refused rather than cutting a verse), and the image carries the same source/version/warning lines baked into pixels so they survive forwarding. Format falls back to PNG where the browser lacks an encoder. If rendering fails, the tool falls back to Copy card.
+- **Image export** (`card-image.ts` layout + canvas renderer, PNG/JPEG/WebP download) exports one duaa at a time in a single language — set name, title, and Arabic text only. It deliberately carries no source line or warning: provenance travels with Copy card and the JSON export instead. It runs fully in the browser with the page's own bundled fonts — no upload, no server. Layout math is unit-tested (`card-image.test.ts`): the Arabic block is never sliced (export is refused rather than cutting a verse). Format falls back to PNG where the browser lacks an encoder. If rendering fails, the tool falls back to Copy card. Progress summaries are deliberately not images — JSON export and the print booklet cover those.
+
+## 5b. Print booklet
+
+- The booklet prints the *current set* through a pure `printModel()` (unit-tested parity: every visible item, in order, plus cover/layout passthrough). Options: Booklet (spacious cards with hand-tick boxes) vs Checklist (compact two-column), cover Forest band vs Light, meanings/sources toggles (default on), A4 (solid) vs A5 (best-effort — `@page` named-page support varies).
+- The booklet is portalled to `document.body` as `#adhkar-print-portal`. The Print button sets `body.printing-adhkar` (+ `paper-a5`), and a global `@media print` block in `app.css` hides every other top-level sibling with `display: none` — normal document flow, so multi-page sets paginate correctly, with no shell edits required. Classes are removed on `afterprint` plus a timed fallback.
+- Print design uses the theme palette (forest band cover option, forest card borders, olive rules, clay accents) forced with `print-color-adjust: exact`, drawn CSS tick-boxes (identical on every printer), and the same bundled Thmanyah faces with RTL/lang attributes and 2.2 line-height for tashkeel. Cover carries set name, date, count, dataset version; closing line carries methodology version + verify-teacher note.
+
+## 5c. One language at a time
+
+- Every surface renders entirely in the active locale — screen, copy text, JSON export, share image, and print booklet. English mode shows only English (+ the sacred Arabic text); Arabic mode shows only Arabic.
+- Always exempt, in both locales: the sacred Arabic duaa text itself, proper nouns and codes (`Bukhari 6306`, `Hisn ch. 27`, `v1.0.0`, filenames), and numerals (which follow the user's latn/arab digit preference).
+- Never hardcode UI copy in the component: all strings live in `src/i18n/en.ts` + `src/i18n/ar.ts` with key parity enforced by `tsc`. Placeholders match the UI locale (the Arabic-text field shows an Arabic placeholder in ar mode, English in en mode).
 
 ## 6. Review checklist (for reviewers)
 

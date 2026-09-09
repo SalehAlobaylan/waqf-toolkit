@@ -11,9 +11,23 @@ export type AdhkarPrefs = {
   filter: DhikrFilter
   digits: 'latn' | 'arab'
   fontSize: 'md' | 'lg' | 'xl'
+  printLayout: 'booklet' | 'checklist'
+  printCover: 'band' | 'light'
+  printMeanings: boolean
+  printSources: boolean
+  printPaper: 'a4' | 'a5'
 }
 
-const DEFAULT_PREFS: AdhkarPrefs = { filter: 'morning', digits: 'latn', fontSize: 'lg' }
+const DEFAULT_PREFS: AdhkarPrefs = {
+  filter: 'morning',
+  digits: 'latn',
+  fontSize: 'lg',
+  printLayout: 'booklet',
+  printCover: 'band',
+  printMeanings: true,
+  printSources: true,
+  printPaper: 'a4',
+}
 
 type StoredProgress = { day: string; counts: Counts }
 
@@ -110,6 +124,11 @@ export function useAdhkarVault() {
               : 'morning',
           digits: p.digits === 'arab' ? 'arab' : 'latn',
           fontSize: p.fontSize === 'md' || p.fontSize === 'xl' ? p.fontSize : 'lg',
+          printLayout: p.printLayout === 'checklist' ? 'checklist' : 'booklet',
+          printCover: p.printCover === 'light' ? 'light' : 'band',
+          printMeanings: p.printMeanings === false ? false : true,
+          printSources: p.printSources === false ? false : true,
+          printPaper: p.printPaper === 'a5' ? 'a5' : 'a4',
         })
       }
       if (localStorage.getItem(AUTOSAVE_KEY) === '1') {

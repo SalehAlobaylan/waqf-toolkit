@@ -6,10 +6,7 @@ import {
   arabicFont,
   fallbackPalette,
   layoutSingleCard,
-  meaningFont,
-  microFont,
   pickFormat,
-  planSummaryRows,
   singleCardGeometry,
   titleFont,
   type ImageFormat,
@@ -23,36 +20,11 @@ export type RenderSingleOpts = {
   mood: ImageMood
   resolution: ImageResolution
   format: ImageFormat
-  eyebrowAr: string
-  eyebrowEn: string
+  /** Set name in the card's single language. */
+  eyebrow: string
+  eyebrowRtl: boolean
   titleLine: string
   arabic: string
-  countLabel: string
-  meaning: string
-  sourceLine: string
-  wordmark: string
-  warn1: string
-  warn2: string
-}
-
-export type SummaryRow = { title: string; done: boolean }
-
-export type RenderSummaryOpts = {
-  frame: ImageFrame
-  mood: ImageMood
-  resolution: ImageResolution
-  format: ImageFormat
-  eyebrowAr: string
-  eyebrowEn: string
-  titleLine: string
-  dateLine: string
-  ringLabel: string
-  ringSub: string
-  rows: SummaryRow[]
-  moreTemplate: string
-  wordmark: string
-  warn1: string
-  warn2: string
 }
 
 export type RenderedImage = { blob: Blob; actualFormat: ImageFormat }
@@ -104,17 +76,6 @@ function tracked(ctx: CanvasRenderingContext2D, value: string, str: string) {
   } catch {
     // older canvas — plain spacing is fine
   }
-}
-
-function rr(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
-  const rad = Math.min(r, w / 2, h / 2)
-  ctx.beginPath()
-  ctx.moveTo(x + rad, y)
-  ctx.arcTo(x + w, y, x + w, y + h, rad)
-  ctx.arcTo(x + w, y + h, x, y + h, rad)
-  ctx.arcTo(x, y + h, x, y, rad)
-  ctx.arcTo(x, y, x + w, y, rad)
-  ctx.closePath()
 }
 
 function text(
@@ -241,14 +202,16 @@ function drawEyebrow(
   ctx: CanvasRenderingContext2D,
   pal: ReturnType<typeof livePalette>,
   w: number,
-  arY: number,
-  enY: number,
-  ar: string,
-  en: string,
+  y: number,
+  str: string,
+  rtl: boolean,
 ) {
-  text(ctx, ar, w / 2, arY, '700 34px "Thmanyah Sans", serif', pal.eyebrow, { dir: 'rtl' })
-  tracked(ctx, '6px', en)
-  text(ctx, en.toUpperCase(), w / 2, enY, '700 26px "Space Mono", monospace', pal.eyebrow, {
+  if (rtl) {
+    text(ctx, str, w / 2, y, '700 36px "Thmanyah Sans", serif', pal.eyebrow, { dir: 'rtl' })
+    return
+  }
+  tracked(ctx, '6px', str)
+  text(ctx, str.toUpperCase(), w / 2, y, '700 28px "Space Mono", monospace', pal.eyebrow, {
     dir: 'ltr',
   })
   tracked(ctx, '0px', '')
@@ -280,30 +243,6 @@ function drawOrnament(
   ctx.closePath()
   ctx.fill()
   ctx.restore()
-}
-
-function drawFooter(
-  ctx: CanvasRenderingContext2D,
-  pal: ReturnType<typeof livePalette>,
-  w: number,
-  wordmarkY: number,
-  warnY: number,
-  warn2Y: number,
-  wordmark: string,
-  warn1: string,
-  warn2: string,
-) {
-  tracked(ctx, '4px', wordmark)
-  text(ctx, wordmark.toUpperCase(), w / 2, wordmarkY, '800 34px "Bricolage Grotesque", sans-serif', pal.eyebrow, {
-    dir: 'ltr',
-  })
-  tracked(ctx, '0px', '')
-  text(ctx, warn1, w / 2, warnY, '400 27px "DM Sans", "Thmanyah Sans", sans-serif', pal.micro, {
-    dir: 'inherit',
-  })
-  text(ctx, warn2, w / 2, warn2Y, '400 27px "DM Sans", "Thmanyah Sans", sans-serif', pal.micro, {
-    dir: 'inherit',
-  })
 }
 
 function toBlob(canvas: HTMLCanvasElement, format: ImageFormat): Promise<Blob> {
@@ -361,13 +300,12 @@ export async function renderSingleCard(opts: RenderSingleOpts): Promise<Rendered
   const layout = layoutSingleCard(measure, {
     frame: opts.frame,
     arabic: opts.arabic,
-    meaning: opts.meaning,
     titleLine: opts.titleLine,
   })
   // Sacred text is never clipped: refuse rather than export a cut verse.
   if (!layout.fits) throw new Error('layout-overflow')
 
-  drawEyebrow(ctx, pal, w, geo.eyebrowArY, geo.eyebrowEnY, opts.eyebrowAr, opts.eyebrowEn)
+  drawEyebrow(ctx, pal, w, geo.eyebrowY, opts.eyebrow, opts.eyebrowRtl)
   drawOrnament(ctx, pal, w, geo.ornamentY)
   layout.titleLines.forEach((line, i) => {
     text(ctx, line, w / 2, geo.titleY + i * layout.titleSize * 1.5, titleFont(layout.titleSize), pal.title, {
@@ -380,142 +318,6 @@ export async function renderSingleCard(opts: RenderSingleOpts): Promise<Rendered
       dir: 'rtl',
     })
   })
-  const arabicBottom =
-    geo.arabicTop + (layout.arabicLines.length - 1) * layout.arabicSize * geo.arabicLineHeight
-
-  // Count pill
-  const pillFont = microFont(42)
-  const pillW = measure(opts.countLabel, pillFont) + 110
-  const pillY = arabicBottom + geo.pillGap
-  ctx.save()
-  ctx.fillStyle = pal.pillBg
-  ctx.shadowColor = 'rgba(0,0,0,0.25)'
-  ctx.shadowBlur = 18
-  ctx.shadowOffsetY = 6
-  rr(ctx, w / 2 - pillW / 2, pillY, pillW, geo.pillH, geo.pillH / 2)
-  ctx.fill()
-  ctx.restore()
-  text(ctx, opts.countLabel, w / 2, pillY + geo.pillH / 2 + 15, pillFont, pal.pillText, { dir: 'ltr' })
-
-  // Meaning (pre-truncated with ellipsis by layout; empty for bare custom items)
-  if (layout.meaningLines.length > 0) {
-    const top = pillY + geo.pillH + geo.meaningGap
-    layout.meaningLines.forEach((line, i) => {
-      text(ctx, line, w / 2, top + i * layout.meaningSize * 1.6, meaningFont(layout.meaningSize), pal.meaning, {
-        dir: 'inherit',
-      })
-    })
-  }
-
-  text(ctx, opts.sourceLine, w / 2, geo.sourceY, microFont(29), pal.micro, { dir: 'ltr' })
-  drawFooter(ctx, pal, w, geo.footerWordmarkY, geo.footerWarnY, geo.footerWarn2Y, opts.wordmark, opts.warn1, opts.warn2)
-  const actualFormat = pickFormat(opts.format, supportedFormats())
-  return { blob: await toBlob(canvas, actualFormat), actualFormat }
-}
-
-export async function renderSummaryCard(opts: RenderSummaryOpts): Promise<RenderedImage> {
-  await ensureFonts()
-  const { w, h } = IMAGE_FRAMES[opts.frame]
-  const { canvas, ctx, pal } = baseCanvas(opts.frame, opts.mood, opts.resolution)
-
-  drawEyebrow(ctx, pal, w, opts.frame === 'square' ? 112 : 148, opts.frame === 'square' ? 150 : 190, opts.eyebrowAr, opts.eyebrowEn)
-  drawOrnament(ctx, pal, w, opts.frame === 'square' ? 198 : 244)
-  text(ctx, opts.titleLine, w / 2, opts.frame === 'square' ? 248 : 300, '700 48px "Thmanyah Display", serif', pal.title, {
-    dir: 'inherit',
-  })
-  text(ctx, opts.dateLine, w / 2, opts.frame === 'square' ? 288 : 344, '400 30px "Space Mono", monospace', pal.micro, {
-    dir: 'ltr',
-  })
-
-  // Progress ring
-  const ringCY = opts.frame === 'square' ? 408 : 480
-  const ringR = opts.frame === 'square' ? 78 : 88
-  ctx.save()
-  ctx.lineWidth = 20
-  ctx.lineCap = 'round'
-  ctx.strokeStyle = pal.ringTrack
-  ctx.globalAlpha = 0.35
-  ctx.beginPath()
-  ctx.arc(w / 2, ringCY, ringR, 0, Math.PI * 2)
-  ctx.stroke()
-  ctx.restore()
-  const [doneStr, totalStr] = opts.ringLabel.split('/')
-  const done = Number(doneStr ?? '0')
-  const total = Number(totalStr ?? '1')
-  const frac = total > 0 ? Math.min(1, done / total) : 0
-  ctx.save()
-  ctx.lineWidth = 20
-  ctx.lineCap = 'round'
-  ctx.strokeStyle = pal.ringFill
-  ctx.shadowColor = pal.ringFill
-  ctx.shadowBlur = 12
-  ctx.beginPath()
-  ctx.arc(w / 2, ringCY, ringR, -Math.PI / 2, -Math.PI / 2 + frac * Math.PI * 2)
-  ctx.stroke()
-  ctx.restore()
-  text(ctx, opts.ringLabel, w / 2, ringCY + 2, '700 44px "Space Mono", "Thmanyah Sans", monospace', pal.title, {
-    dir: 'ltr',
-  })
-  text(ctx, opts.ringSub, w / 2, ringCY + ringR + 44, '400 30px "DM Sans", "Thmanyah Sans", sans-serif', pal.meaning, {
-    dir: 'inherit',
-  })
-
-  // Checklist rows (marker + title; totals live in the ring + JSON export)
-  const listTop = ringCY + ringR + 88
-  const listBottom = h - 230
-  const plan = planSummaryRows(opts.rows.length, listTop, listBottom)
-  const rowFont = `400 ${plan.fontSize}px "Thmanyah Sans", "DM Sans", sans-serif`
-  const measure = (t: string, f: string) => {
-    ctx.font = f
-    return ctx.measureText(t).width
-  }
-  const shown = opts.rows.slice(0, plan.rowsShown)
-  const perCol = Math.ceil(shown.length / plan.columns)
-  const colGap = 40
-  const colW = plan.columns === 2 ? (w - 232 - colGap) / 2 : w - 232
-  const colX = [116, 116 + colW + colGap]
-  const fitTitle = (title: string) => {
-    const maxTitleW = colW - 70
-    let short = title
-    while (short.length > 4 && measure(short + '…', rowFont) > maxTitleW) {
-      short = short.slice(0, -2)
-    }
-    return short === title ? short : `${short}…`
-  }
-  shown.forEach((row, i) => {
-    const col = Math.floor(i / perCol)
-    const ri = i % perCol
-    const x0 = colX[col]!
-    const y = plan.listTop + ri * plan.rowH + plan.rowH / 2
-    // marker
-    ctx.save()
-    ctx.strokeStyle = pal.check
-    ctx.fillStyle = row.done ? pal.check : 'rgba(0,0,0,0)'
-    ctx.lineWidth = 3
-    const box = 26
-    if (row.done) {
-      ctx.fillRect(x0, y - box / 2, box, box)
-      text(ctx, '✓', x0 + box / 2, y + 9, '700 24px "DM Sans", sans-serif', pal.bg, { dir: 'ltr' })
-    } else {
-      ctx.strokeRect(x0, y - box / 2, box, box)
-    }
-    ctx.restore()
-    text(ctx, fitTitle(row.title), x0 + 44, y + plan.fontSize * 0.35, rowFont, pal.meaning, { align: 'left', dir: 'inherit' })
-  })
-  if (plan.truncated > 0) {
-    const gridH = Math.ceil(plan.rowsShown / plan.columns) * plan.rowH
-    text(ctx, opts.moreTemplate.replace('{n}', String(plan.truncated)), w / 2, plan.listTop + gridH + 30, '400 30px "DM Sans", sans-serif', pal.micro, {
-      dir: 'inherit',
-    })
-  }
-
-  drawFooter(
-    ctx, pal, w,
-    h - (opts.frame === 'square' ? 164 : 196),
-    h - (opts.frame === 'square' ? 118 : 142),
-    h - (opts.frame === 'square' ? 84 : 102),
-    opts.wordmark, opts.warn1, opts.warn2,
-  )
   const actualFormat = pickFormat(opts.format, supportedFormats())
   return { blob: await toBlob(canvas, actualFormat), actualFormat }
 }

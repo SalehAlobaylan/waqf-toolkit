@@ -57,6 +57,8 @@ src/
 
 **Bilingual or it doesn't ship.** Every user-facing string goes in BOTH `src/i18n/en.ts` and `src/i18n/ar.ts`. Arabic copy must read naturally, not machine-translated. The dictionary types enforce key parity — if `tsc` passes, keys match. Never hardcode UI text in components.
 
+**One language at a time.** Each surface renders entirely in the active locale — never mix Arabic and English labels on one screen, export, or print. Exempt in both locales: sacred Arabic text (always present as content), proper nouns and codes (`Bukhari 6306`, `v1.0.0`, filenames), and numerals (which follow the user's digit preference).
+
 **Tone:** formal but slightly casual. No Islamic slogans or decorative religiosity — plain, honest language only.
 
 **Catalog edits (`src/data/tools.ts`):**

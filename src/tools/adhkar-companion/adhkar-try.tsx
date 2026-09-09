@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useI18n } from '@/i18n'
 import { Button } from '@/components/ui'
 import { formatNumber } from '../hijri-converter/format'
@@ -7,8 +8,9 @@ import type { AnyDhikr, DhikrFilter } from './types'
 import { isCustomDhikr } from './types'
 import type { ImageFrame, ImageMood } from './card-image'
 import { FORMAT_EXT, type ImageFormat, type ImageResolution } from './card-image'
-import { downloadBlob, formatBytes, renderSingleCard, renderSummaryCard } from './render-card-image'
-import ImagePreviewDialog, { type PreviewKind } from './image-preview-dialog'
+import { downloadBlob, formatBytes, renderSingleCard } from './render-card-image'
+import { printModel, type PrintLayout } from './print-model'
+import ImagePreviewDialog from './image-preview-dialog'
 import {
   decrement,
   filterDhikr,
@@ -43,7 +45,9 @@ type NavigatorWithWakeLock = Navigator & {
   wakeLock?: { request: (mode: string) => Promise<WakeLockSentinel> }
 }
 
-function fill(template: string, vars: Record<string, string | number>): string {
+function fill(template: string | undefined, vars: Record<string, string | number>): string {
+  // Never white-screen on a missing i18n key: degrade to the raw template.
+  if (typeof template !== 'string') return ''
   let out = template
   for (const [k, v] of Object.entries(vars)) out = out.replace(`{${k}}`, String(v))
   return out
@@ -71,11 +75,12 @@ export default function AdhkarTry() {
   const [mood, setMood] = useState<ImageMood>('forest')
   const [format, setFormat] = useState<ImageFormat>('png')
   const [resolution, setResolution] = useState<ImageResolution>('full')
-  const [rendering, setRendering] = useState<'single' | 'today' | null>(null)
+  const [rendering, setRendering] = useState(false)
   const [imgFailed, setImgFailed] = useState(false)
   const [status, setStatus] = useState<string | null>(null)
+  const [mounted, setMounted] = useState(false)
+  const [exportDuaaId, setExportDuaaId] = useState<string | null>(null)
   const [preview, setPreview] = useState<{
-    kind: PreviewKind
     url: string
     filename: string
     blob: Blob
@@ -87,7 +92,12 @@ export default function AdhkarTry() {
 
   // Timer + sensor cleanup on unmount.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- client gate for the print portal
+    setMounted(true)
+    const afterPrint = () => document.body.classList.remove('printing-adhkar', 'paper-a5')
+    window.addEventListener('afterprint', afterPrint)
     return () => {
+      window.removeEventListener('afterprint', afterPrint)
       if (copyTimerRef.current) window.clearTimeout(copyTimerRef.current)
       if (confirmTimerRef.current) window.clearTimeout(confirmTimerRef.current)
       try {
@@ -139,6 +149,16 @@ export default function AdhkarTry() {
   const progress = useMemo(() => todayProgress(visible, counts), [visible, counts])
   const allDone = visible.length > 0 && progress.done === visible.length
 
+  function printBooklet() {
+    document.body.classList.add('printing-adhkar')
+    if (prefs.printPaper === 'a5') document.body.classList.add('paper-a5')
+    // Let classes apply before the snapshot, then clean up even if afterprint misfires.
+    window.setTimeout(() => {
+      window.print()
+      window.setTimeout(() => document.body.classList.remove('printing-adhkar', 'paper-a5'), 5000)
+    }, 60)
+  }
+
   const featured: AnyDhikr | null = useMemo(() => {
     if (visible.length === 0) return null
     const picked = featuredId ? visible.find((i) => i.id === featuredId) : undefined
@@ -157,6 +177,20 @@ export default function AdhkarTry() {
         : prefs.filter === 'all'
           ? a.setAll
           : a.setCustom
+
+  const booklet = useMemo(
+    () =>
+      printModel(visible, {
+        setName: setLabel,
+        dateISO: new Date().toISOString().slice(0, 10),
+        locale,
+        meanings: prefs.printMeanings,
+        sources: prefs.printSources,
+        cover: prefs.printCover,
+        layout: prefs.printLayout,
+      }),
+    [visible, setLabel, prefs.printMeanings, prefs.printSources, prefs.printCover, prefs.printLayout, locale],
+  )
 
   function buzz() {
     if (!vibration) return
@@ -261,9 +295,8 @@ export default function AdhkarTry() {
         hisnRef: i.hisnRef,
         custom: isCustomDhikr(i),
       })),
-      note: 'Counts measure taps, not acceptance. Arabic is authoritative; meanings are plain-language hints.',
-      disclaimer:
-        'Private checklist — not a fatwa. Verify wording and counts with a qualified teacher.',
+      note: a.exportNote,
+      disclaimer: a.disclaimer,
     }
     void copyText(JSON.stringify(payload, null, 2))
   }
@@ -274,128 +307,119 @@ export default function AdhkarTry() {
     const text = [
       featured.arabic,
       meaning,
-      `— ${featuredCount}/${featured.target} · ${featured.source} · ${featured.hisnRef} · dataset ${DATASET_VERSION}`,
-      'Adhkar Companion — private checklist, not a fatwa. Arabic is authoritative.',
+      `— ${featuredCount}/${featured.target} · ${featured.source} · ${featured.hisnRef} · ${fill(a.datasetVersion, { v: DATASET_VERSION })}`,
+      a.disclaimer,
     ].join('\n')
     void copyText(text)
   }
 
-  /** Renders either card to bytes. Pure w.r.t. state — values passed in so re-renders stay fresh. */
-  async function renderPreviewBlob(
-    kind: PreviewKind,
+  /** Renders the chosen duaa to bytes. Values passed in so re-renders stay fresh. */
+  async function renderExportBlob(
+    duaaId: string,
     frameVal: ImageFrame,
     moodVal: ImageMood,
     formatVal: ImageFormat,
     resVal: ImageResolution,
   ): Promise<{ blob: Blob; filename: string; actualFormat: ImageFormat }> {
+    const item = allItems.find((i) => i.id === duaaId)
+    if (!item) throw new Error('empty')
     const eb = SET_EYEBROW[prefs.filter]
-    const ext = (f: ImageFormat) => FORMAT_EXT[f]
-    if (kind === 'single') {
-      if (!featured) throw new Error('empty')
-      const { blob, actualFormat } = await renderSingleCard({
-        frame: frameVal,
-        mood: moodVal,
-        resolution: resVal,
-        format: formatVal,
-        eyebrowAr: eb.ar,
-        eyebrowEn: eb.en,
-        titleLine: `${featured.titleAr} · ${featured.titleEn}`,
-        arabic: featured.arabic,
-        countLabel: `× ${num(featured.target)}`,
-        meaning: locale === 'ar' ? featured.meaningAr : featured.meaningEn,
-        sourceLine: `${featured.source} · ${featured.hisnRef} · v${DATASET_VERSION}`,
-        wordmark: 'waqf toolkit',
-        warn1: a.imageWarnAr,
-        warn2: a.imageWarnEn,
-      })
-      return { blob, filename: `adhkar-${featured.id}-${frameVal}-${moodVal}.${ext(actualFormat)}`, actualFormat }
-    }
-    if (visible.length === 0) throw new Error('empty')
-    const { blob, actualFormat } = await renderSummaryCard({
+    const isAr = locale === 'ar'
+    const { blob, actualFormat } = await renderSingleCard({
       frame: frameVal,
       mood: moodVal,
       resolution: resVal,
       format: formatVal,
-      eyebrowAr: eb.ar,
-      eyebrowEn: eb.en,
-      titleLine: a.imageTodayTitle,
-      dateLine: new Date().toISOString().slice(0, 10),
-      ringLabel: `${num(progress.done)}/${num(progress.total)}`,
-      ringSub: fill(a.imageRingSub, { counted: num(progress.counted) }),
-      rows: visible.map((i) => {
-        const c = counts[i.id] ?? 0
-        return {
-          title: locale === 'ar' ? i.titleAr : i.titleEn,
-          done: c >= i.target,
-        }
-      }),
-      moreTemplate: a.imageMore,
-      wordmark: 'waqf toolkit',
-      warn1: a.imageWarnAr,
-      warn2: a.imageWarnEn,
+      eyebrow: isAr ? eb.ar : eb.en,
+      eyebrowRtl: isAr,
+      titleLine: isAr ? item.titleAr : item.titleEn,
+      arabic: item.arabic,
     })
-    return { blob, filename: `adhkar-today-${new Date().toISOString().slice(0, 10)}-${frameVal}-${moodVal}.${ext(actualFormat)}`, actualFormat }
+    return { blob, filename: `adhkar-${item.id}-${frameVal}-${moodVal}.${FORMAT_EXT[actualFormat]}`, actualFormat }
   }
 
-  async function openPreview(kind: PreviewKind) {
-    if (rendering) return
-    if (kind === 'single' && !featured) return
-    if (kind === 'today' && visible.length === 0) return
-    setRendering(kind === 'single' ? 'single' : 'today')
+  async function openExport(duaaId: string | null) {
+    const id = duaaId ?? featured?.id ?? visible[0]?.id
+    if (!id || rendering) return
+    setExportDuaaId(id)
+    setRendering(true)
     setImgFailed(false)
     try {
-      const { blob, filename, actualFormat } = await renderPreviewBlob(kind, frame, mood, format, resolution)
+      const { blob, filename, actualFormat } = await renderExportBlob(id, frame, mood, format, resolution)
       if (preview) URL.revokeObjectURL(preview.url)
-      setPreview({ kind, url: URL.createObjectURL(blob), filename, blob, actualFormat })
+      setPreview({ url: URL.createObjectURL(blob), filename, blob, actualFormat })
     } catch {
       setImgFailed(true)
+      setExportDuaaId(null)
     } finally {
-      setRendering(null)
+      setRendering(false)
     }
   }
 
-  async function refreshPreview(kind: PreviewKind, frameVal: ImageFrame, moodVal: ImageMood, formatVal: ImageFormat, resVal: ImageResolution) {
+  async function refreshExport(
+    duaaId: string,
+    frameVal: ImageFrame,
+    moodVal: ImageMood,
+    formatVal: ImageFormat,
+    resVal: ImageResolution,
+  ) {
     if (rendering) return
-    setRendering(kind === 'single' ? 'single' : 'today')
+    setRendering(true)
     try {
-      const { blob, filename, actualFormat } = await renderPreviewBlob(kind, frameVal, moodVal, formatVal, resVal)
+      const { blob, filename, actualFormat } = await renderExportBlob(duaaId, frameVal, moodVal, formatVal, resVal)
       setPreview((prev) => {
         if (prev) URL.revokeObjectURL(prev.url)
-        return { kind, url: URL.createObjectURL(blob), filename, blob, actualFormat }
+        return { url: URL.createObjectURL(blob), filename, blob, actualFormat }
       })
     } catch {
       setImgFailed(true)
-      closePreview()
+      closeExport()
     } finally {
-      setRendering(null)
+      setRendering(false)
     }
   }
 
-  function closePreview() {
+  function closeExport() {
     setPreview((prev) => {
       if (prev) URL.revokeObjectURL(prev.url)
       return null
     })
+    setExportDuaaId(null)
+  }
+
+  function refreshOpenExport(
+    duaaId: string,
+    frameVal: ImageFrame,
+    moodVal: ImageMood,
+    formatVal: ImageFormat,
+    resVal: ImageResolution,
+  ) {
+    void refreshExport(duaaId, frameVal, moodVal, formatVal, resVal)
   }
 
   function handleFrame(f: ImageFrame) {
     setFrame(f)
-    if (preview) void refreshPreview(preview.kind, f, mood, format, resolution)
+    if (exportDuaaId) refreshOpenExport(exportDuaaId, f, mood, format, resolution)
   }
 
   function handleMood(m: ImageMood) {
     setMood(m)
-    if (preview) void refreshPreview(preview.kind, frame, m, format, resolution)
+    if (exportDuaaId) refreshOpenExport(exportDuaaId, frame, m, format, resolution)
   }
 
   function handleFormat(f: ImageFormat) {
     setFormat(f)
-    if (preview) void refreshPreview(preview.kind, frame, mood, f, resolution)
+    if (exportDuaaId) refreshOpenExport(exportDuaaId, frame, mood, f, resolution)
   }
 
   function handleResolution(r: ImageResolution) {
     setResolution(r)
-    if (preview) void refreshPreview(preview.kind, frame, mood, format, r)
+    if (exportDuaaId) refreshOpenExport(exportDuaaId, frame, mood, format, r)
+  }
+
+  function handleSelectDuaa(id: string) {
+    setExportDuaaId(id)
+    refreshOpenExport(id, frame, mood, format, resolution)
   }
 
   function submitCustom() {
@@ -424,42 +448,6 @@ export default function AdhkarTry() {
 
   return (
     <div className="flex flex-col gap-5">
-      {/* Image export controls */}
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 print:hidden" role="group" aria-label={`${a.imageFrame}, ${a.imageMood}`}>
-        <span className="text-[11px] font-semibold text-muted">{a.imageFrame}</span>
-        <div className="flex items-center gap-1 rounded-full border border-line/80 p-1" role="group" aria-label={a.imageFrame}>
-          {(['portrait', 'square'] as const).map((f) => (
-            <button
-              key={f}
-              type="button"
-              aria-pressed={frame === f}
-              onClick={() => handleFrame(f)}
-              className={`rounded-full px-3 py-1 text-xs font-bold ${FOCUS_RING} ${
-                frame === f ? 'bg-accent text-paper' : 'text-muted hover:text-accent'
-              }`}
-            >
-              {f === 'portrait' ? a.framePortrait : a.frameSquare}
-            </button>
-          ))}
-        </div>
-        <span className="text-[11px] font-semibold text-muted">{a.imageMood}</span>
-        <div className="flex items-center gap-1 rounded-full border border-line/80 p-1" role="group" aria-label={a.imageMood}>
-          {(['forest', 'parchment'] as const).map((m) => (
-            <button
-              key={m}
-              type="button"
-              aria-pressed={mood === m}
-              onClick={() => handleMood(m)}
-              className={`rounded-full px-3 py-1 text-xs font-bold ${FOCUS_RING} ${
-                mood === m ? 'bg-accent text-paper' : 'text-muted hover:text-accent'
-              }`}
-            >
-              {m === 'forest' ? a.moodForest : a.moodParchment}
-            </button>
-          ))}
-        </div>
-      </div>
-
       {/* Set picker */}
       <div className="flex flex-wrap items-center gap-2 print:hidden" role="group" aria-label={a.title}>
         {(['morning', 'evening', 'all', 'custom'] as const).map((s) => (
@@ -601,12 +589,12 @@ export default function AdhkarTry() {
           <div className="mt-5 flex flex-wrap justify-center gap-2">
             <Button
               variant="primary"
-            onClick={() => void openPreview('today')}
-            disabled={rendering !== null || visible.length === 0}
+            onClick={() => void openExport(null)}
+            disabled={rendering || visible.length === 0}
             className="px-4 py-2 text-xs"
-            data-testid="button-adhkar-save-today-image"
+            data-testid="button-adhkar-export-image"
           >
-            {rendering === 'today' ? a.imageRendering : a.previewOpen}
+            {rendering ? a.imageRendering : a.exportImage}
             </Button>
             <Button variant="outline" onClick={copyTodayJson} className="px-5 py-2.5 text-xs" data-testid="button-adhkar-copy-json">
               {a.copyJson}
@@ -720,12 +708,12 @@ export default function AdhkarTry() {
               </Button>
               <Button
                 variant="outline"
-                onClick={() => void openPreview('single')}
-                disabled={rendering !== null}
+                onClick={() => featured && void openExport(featured.id)}
+                disabled={rendering || !featured}
                 className="px-4 py-2 text-xs"
-                data-testid="button-adhkar-save-image"
+                data-testid="button-adhkar-export-image"
               >
-                {rendering === 'single' ? a.imageRendering : a.previewOpen}
+                {rendering ? a.imageRendering : a.exportImage}
               </Button>
             </div>
           </div>
@@ -833,21 +821,95 @@ export default function AdhkarTry() {
           </span>
         </label>
         <p className="mt-2 text-xs leading-5 text-muted">{a.dayResetNote}</p>
+        <div className="mt-3 border-t border-line/60 pt-3">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <span className="text-[11px] font-semibold text-muted">{a.printLayout}</span>
+            <div className="flex items-center gap-1 rounded-full border border-line/80 p-1" role="group" aria-label={a.printLayout}>
+              {(['booklet', 'checklist'] as const satisfies PrintLayout[]).map((l) => (
+                <button
+                  key={l}
+                  type="button"
+                  aria-pressed={prefs.printLayout === l}
+                  onClick={() => setPrefs({ ...prefs, printLayout: l })}
+                  className={`rounded-full px-3 py-1 text-xs font-bold ${FOCUS_RING} ${
+                    prefs.printLayout === l ? 'bg-accent text-paper' : 'text-muted hover:text-accent'
+                  }`}
+                >
+                  {l === 'booklet' ? a.layoutBooklet : a.layoutChecklist}
+                </button>
+              ))}
+            </div>
+            <span className="text-[11px] font-semibold text-muted">{a.printPaper}</span>
+            <div className="flex items-center gap-1 rounded-full border border-line/80 p-1" role="group" aria-label={a.printPaper}>
+              {(['a4', 'a5'] as const).map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  aria-pressed={prefs.printPaper === p}
+                  onClick={() => setPrefs({ ...prefs, printPaper: p })}
+                  dir="ltr"
+                  className={`rounded-full px-3 py-1 font-mono-ui text-xs font-bold ${FOCUS_RING} ${
+                    prefs.printPaper === p ? 'bg-accent text-paper' : 'text-muted hover:text-accent'
+                  }`}
+                >
+                  {p.toUpperCase()}
+                </button>
+              ))}
+            </div>
+            <span className="text-[11px] font-semibold text-muted">{a.printCover}</span>
+            <div className="flex items-center gap-1 rounded-full border border-line/80 p-1" role="group" aria-label={a.printCover}>
+              {(['band', 'light'] as const).map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  aria-pressed={prefs.printCover === c}
+                  onClick={() => setPrefs({ ...prefs, printCover: c })}
+                  className={`rounded-full px-3 py-1 text-xs font-bold ${FOCUS_RING} ${
+                    prefs.printCover === c ? 'bg-accent text-paper' : 'text-muted hover:text-accent'
+                  }`}
+                >
+                  {c === 'band' ? a.coverBand : a.coverLight}
+                </button>
+              ))}
+            </div>
+          </div>
+          <p className="mt-1 text-[11px] text-muted">{a.paperA5Hint}</p>
+          <div className="mt-2 flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted">
+            <label className="inline-flex cursor-pointer items-center gap-2">
+              <input
+                type="checkbox"
+                checked={prefs.printMeanings}
+                onChange={(e) => setPrefs({ ...prefs, printMeanings: e.target.checked })}
+                className="h-4 w-4 accent-[var(--color-accent)]"
+              />
+              {a.printMeanings}
+            </label>
+            <label className="inline-flex cursor-pointer items-center gap-2">
+              <input
+                type="checkbox"
+                checked={prefs.printSources}
+                onChange={(e) => setPrefs({ ...prefs, printSources: e.target.checked })}
+                className="h-4 w-4 accent-[var(--color-accent)]"
+              />
+              {a.printSources}
+            </label>
+          </div>
+        </div>
         <div className="mt-3 flex flex-wrap gap-2">
           <Button variant="outline" onClick={copyTodayJson} className="px-4 py-2 text-xs" data-testid="button-adhkar-copy-json">
             {a.copyJson}
           </Button>
-          <Button variant="outline" onClick={() => window.print()} className="px-4 py-2 text-xs" data-testid="button-adhkar-print">
+          <Button variant="outline" onClick={printBooklet} className="px-4 py-2 text-xs" data-testid="button-adhkar-print">
             {a.print}
           </Button>
           <Button
             variant="outline"
-              onClick={() => void openPreview('today')}
-              disabled={rendering !== null || visible.length === 0}
+              onClick={() => void openExport(null)}
+              disabled={rendering || visible.length === 0}
               className="px-5 py-2.5 text-xs"
-              data-testid="button-adhkar-save-today-image"
+              data-testid="button-adhkar-export-image"
             >
-              {rendering === 'today' ? a.imageRendering : a.previewOpen}
+              {rendering ? a.imageRendering : a.exportImage}
           </Button>
         </div>
         {(copied || copyFailed) && (
@@ -1020,10 +1082,16 @@ export default function AdhkarTry() {
       <p className="text-xs leading-5 text-muted print:hidden">{a.disclaimer}</p>
 
       <ImagePreviewDialog
-        open={preview !== null}
-        title={preview?.kind === 'today' ? a.imageTodayTitle : a.previewTitle}
+        open={exportDuaaId !== null}
+        items={allItems.map((i) => ({
+          id: i.id,
+          title: locale === 'ar' ? i.titleAr : i.titleEn,
+          countLabel: `×${num(i.target)}`,
+        }))}
+        selectedId={exportDuaaId}
+        onSelect={handleSelectDuaa}
         imageUrl={preview?.url ?? null}
-        busy={rendering !== null}
+        busy={rendering}
         frame={frame}
         mood={mood}
         format={format}
@@ -1037,25 +1105,79 @@ export default function AdhkarTry() {
         onDownload={() => {
           if (preview) downloadBlob(preview.blob, preview.filename)
         }}
-        onClose={closePreview}
+        onClose={closeExport}
       />
 
-      {/* Print booklet — print only */}
-      <div className="hidden print:block" aria-hidden="true">
-        <h1 className="print:text-[18pt]">Adhkar — أذكار الصباح والمساء</h1>
-        {visible.map((item) => (
-          <div key={item.id} style={{ breakInside: 'avoid', marginBottom: '12px' }}>
-            <p className="print:text-[12pt]">
-              ☐ {locale === 'ar' ? item.titleAr : item.titleEn} — {item.target}×
-            </p>
-            <p className="print:text-[13pt] print:leading-9">{item.arabic}</p>
-            <p className="print:text-[9pt]">
-              {item.source} · {item.hisnRef} · dataset {DATASET_VERSION}
-            </p>
+      {/* Print booklet — portalled to <body> so only it reaches paper */}
+      {mounted &&
+        createPortal(
+          <div id="adhkar-print-portal" aria-hidden="true">
+            <div className="hidden print:block">
+              <div
+                className={booklet.cover === 'band' ? 'pb-cover-band' : 'pb-cover-light'}
+                style={{ padding: '12mm 10mm', marginBottom: '8mm' }}
+              >
+                <p className="pb-micro" dir="ltr" style={{ fontSize: '9pt', margin: 0, opacity: 0.85 }}>
+                  {booklet.dateISO} · {fill(a.datasetVersion, { v: booklet.datasetVersion })}
+                </p>
+                <h1 className="pb-title" style={{ fontSize: '26pt', lineHeight: 1.4, margin: '3mm 0 0' }}>
+                  {booklet.setName}
+                </h1>
+                <p style={{ fontSize: '11pt', margin: '3mm 0 0' }}>
+                  {fill(a.printCount, { count: num(booklet.count) })} · {a.printCoverPrivate}
+                </p>
+              </div>
+              {booklet.layout === 'checklist' ? (
+          <div className="pb-checklist">
+            {booklet.rows.map((row) => (
+              <p key={row.id} style={{ fontSize: '11pt', margin: '0 0 3mm', display: 'flex', alignItems: 'center', gap: '3mm' }}>
+                <span className="pb-box" />
+                <span>{row.title} — <span dir="ltr">{num(row.target)}×</span></span>
+              </p>
+            ))}
           </div>
-        ))}
-        <p className="print:text-[9pt]">Generated {new Date().toISOString()} — private checklist, not a fatwa. Arabic is authoritative.</p>
-      </div>
+        ) : (
+          <div>
+            {booklet.rows.map((row, i) => (
+              <div key={row.id}>
+                <div className="pb-avoid pb-card" style={{ marginBottom: '6mm', paddingInlineStart: '4mm', paddingTop: '1mm' }}>
+                  <p style={{ fontSize: '12pt', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '3mm' }}>
+                    <span className="pb-box" />
+                    <span>{row.title} — <span dir="ltr">{num(row.target)}×</span></span>
+                  </p>
+                  <p className="pb-arabic" lang="ar" style={{ fontSize: '15pt', margin: '3mm 0 0' }}>
+                    {row.arabic}
+                  </p>
+                  {row.meaning !== '' && (
+                    <p style={{ fontSize: '10pt', margin: '2mm 0 0' }}>{row.meaning}</p>
+                  )}
+                        {row.source !== '' && (
+                          <p className="pb-micro" dir="ltr" style={{ fontSize: '8pt', marginTop: '2mm', opacity: 0.75 }}>
+                            {row.source} · {fill(a.datasetVersion, { v: booklet.datasetVersion })}
+                          </p>
+                        )}
+                </div>
+                {i < booklet.rows.length - 1 && (
+                  <div className="pb-rule" aria-hidden="true" style={{ margin: '0 0 6mm' }}>
+                    <span className="pb-diamond" />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+        <div style={{ marginTop: '10mm', textAlign: 'center' }}>
+          <div className="pb-rule" aria-hidden="true">
+            <span className="pb-diamond" />
+          </div>
+          <p className="pb-micro" dir="ltr" style={{ fontSize: '8pt', marginTop: '4mm' }}>
+            {booklet.dateISO} · adhkar-companion v{booklet.datasetVersion} · {a.printVerify}
+          </p>
+        </div>
+            </div>
+          </div>,
+          document.body,
+        )}
     </div>
   )
 }

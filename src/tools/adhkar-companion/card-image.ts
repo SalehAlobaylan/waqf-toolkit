@@ -47,8 +47,6 @@ export function pickFormat(requested: ImageFormat, supported: ImageFormat[]): Im
 /** Shared font stacks so layout measurement and rendering can never disagree. */
 export const arabicFont = (size: number, weight = 500) =>
   `${weight} ${size}px "Thmanyah Display", serif`
-export const meaningFont = (size: number) =>
-  `400 ${size}px "DM Sans", "Thmanyah Sans", sans-serif`
 export const microFont = (size: number) =>
   `700 ${size}px "Space Mono", "Thmanyah Sans", monospace`
 export const titleFont = (size: number) =>
@@ -195,8 +193,7 @@ export type SingleCardGeometry = {
   w: number
   h: number
   contentWidth: number
-  eyebrowArY: number
-  eyebrowEnY: number
+  eyebrowY: number
   ornamentY: number
   titleY: number
   arabicTop: number
@@ -207,9 +204,7 @@ export type SingleCardGeometry = {
   arabicLineHeight: number
   footerTop: number
   sourceY: number
-  footerWordmarkY: number
-  footerWarnY: number
-  footerWarn2Y: number
+  warnY: number
 }
 
 export function singleCardGeometry(frame: ImageFrame): SingleCardGeometry {
@@ -218,41 +213,35 @@ export function singleCardGeometry(frame: ImageFrame): SingleCardGeometry {
     return {
       frame, w, h,
       contentWidth: w - 300,
-      eyebrowArY: 116,
-      eyebrowEnY: 154,
+      eyebrowY: 132,
       ornamentY: 200,
-      titleY: 250,
-      arabicTop: 302,
+      titleY: 252,
+      arabicTop: 328,
       pillGap: 44,
       pillH: 76,
       meaningGap: 48,
       meaningMaxLines: 2,
       arabicLineHeight: 1.8,
-      footerTop: h - 200 - 34,
-      sourceY: h - 200,
-      footerWordmarkY: h - 148,
-      footerWarnY: h - 104,
-      footerWarn2Y: h - 70,
+      footerTop: h - 130,
+      sourceY: h - 196,
+      warnY: h - 148,
     }
   }
   return {
     frame, w, h,
-    contentWidth: w - 300,
-    eyebrowArY: 156,
-    eyebrowEnY: 198,
-    ornamentY: 250,
-    titleY: 308,
-    arabicTop: 368,
+      contentWidth: w - 300,
+      eyebrowY: 172,
+      ornamentY: 250,
+      titleY: 310,
+      arabicTop: 394,
     pillGap: 52,
     pillH: 84,
-    meaningGap: 56,
-    meaningMaxLines: 3,
-    arabicLineHeight: 1.9,
-    footerTop: h - 262 - 34,
-    sourceY: h - 262,
-    footerWordmarkY: h - 196,
-    footerWarnY: h - 142,
-    footerWarn2Y: h - 102,
+      meaningGap: 56,
+      meaningMaxLines: 3,
+      arabicLineHeight: 1.9,
+      footerTop: h - 130,
+    sourceY: h - 258,
+    warnY: h - 208,
   }
 }
 
@@ -262,8 +251,6 @@ export type SingleLayout = {
   arabicLines: string[]
   titleSize: number
   titleLines: string[]
-  meaningSize: number
-  meaningLines: string[]
 }
 
 /** Trim a line to maxWidth with an ellipsis. Width-only — safe for UI hints, never sacred text. */
@@ -292,7 +279,6 @@ export function layoutSingleCard(
   opts: {
     frame: ImageFrame
     arabic: string
-    meaning: string
     titleLine: string
   },
 ): SingleLayout {
@@ -309,36 +295,16 @@ export function layoutSingleCard(
     maxLines: 2,
   })
 
-  const meaningSizes = [38, 36, 34, 32, 30, 28]
   for (let aSize = startArabic; aSize >= minArabic; aSize -= 2) {
     const arabicLines = wrapText(measure, opts.arabic, arabicFont(aSize), geo.contentWidth)
     const arabicBottom = geo.arabicTop + (arabicLines.length - 1) * aSize * geo.arabicLineHeight
-    const meaningTop = arabicBottom + geo.pillGap + geo.pillH + geo.meaningGap
-    for (const mSize of meaningSizes) {
-      const raw = opts.meaning.trim() === '' ? [] : wrapText(measure, opts.meaning, meaningFont(mSize), geo.contentWidth)
-      const truncated = raw.length > geo.meaningMaxLines
-      const kept = raw.slice(0, geo.meaningMaxLines)
-      const meaningLines =
-        truncated && kept.length > 0
-          ? [
-              ...kept.slice(0, -1),
-              ellipsize(measure, kept[kept.length - 1]!, meaningFont(mSize), geo.contentWidth),
-            ]
-          : kept
-      const meaningBottom =
-        meaningLines.length === 0
-          ? meaningTop - geo.meaningGap
-          : meaningTop + (meaningLines.length - 1) * mSize * 1.6
-      if (meaningBottom <= geo.footerTop) {
-        return {
-          fits: true,
-          arabicSize: aSize,
-          arabicLines,
-          titleSize: titleFit.size,
-          titleLines: titleFit.lines,
-          meaningSize: mSize,
-          meaningLines,
-        }
+    if (arabicBottom <= geo.footerTop) {
+      return {
+        fits: true,
+        arabicSize: aSize,
+        arabicLines,
+        titleSize: titleFit.size,
+        titleLines: titleFit.lines,
       }
     }
   }
@@ -348,68 +314,6 @@ export function layoutSingleCard(
     arabicLines: wrapText(measure, opts.arabic, arabicFont(minArabic), geo.contentWidth),
     titleSize: titleFit.size,
     titleLines: titleFit.lines,
-    meaningSize: 28,
-    meaningLines: [],
   }
 }
 
-export type SummaryRowPlan = {
-  rowsShown: number
-  truncated: number
-  columns: 1 | 2
-  rowH: number
-  fontSize: number
-  listTop: number
-  listBottom: number
-}
-
-const ROW_STEPS = [
-  { rowH: 62, fontSize: 36 },
-  { rowH: 54, fontSize: 33 },
-  { rowH: 46, fontSize: 30 },
-  { rowH: 40, fontSize: 27 },
-  { rowH: 34, fontSize: 24 },
-]
-
-const MORE_RESERVE = 48
-
-/**
- * Checklist rows between `listTop` and `listBottom`. Prefers one column,
- * spills to two, shrinks rows, and only then truncates — truncation is
- * always explicit (`+N more`) with reserved space for that line.
- */
-export function planSummaryRows(
-  itemCount: number,
-  listTop: number,
-  listBottom: number,
-): SummaryRowPlan {
-  const available = Math.max(0, listBottom - listTop)
-  const base = { listTop, listBottom }
-  if (itemCount === 0) {
-    return { rowsShown: 0, truncated: 0, columns: 1, rowH: 62, fontSize: 36, ...base }
-  }
-  for (let i = 0; i < ROW_STEPS.length; i++) {
-    const c = ROW_STEPS[i]!
-    const per = Math.floor(available / c.rowH)
-    if (per < 4) continue
-    if (itemCount <= per) {
-      return { rowsShown: itemCount, truncated: 0, columns: 1, ...c, ...base }
-    }
-    if (itemCount <= 2 * per) {
-      return { rowsShown: itemCount, truncated: 0, columns: 2, ...c, ...base }
-    }
-    const perT = Math.floor((available - MORE_RESERVE) / c.rowH)
-    if (perT < 4) continue
-    if (itemCount <= 2 * perT) {
-      return { rowsShown: itemCount, truncated: 0, columns: 2, ...c, ...base }
-    }
-    if (i === ROW_STEPS.length - 1) {
-      const shown = 2 * perT
-      return { rowsShown: shown, truncated: itemCount - shown, columns: 2, ...c, ...base }
-    }
-  }
-  // Degenerate space: pack the smallest rows, truncate explicitly.
-  const perT = Math.max(1, Math.floor((available - MORE_RESERVE) / 34))
-  const shown = Math.min(itemCount, 2 * perT)
-  return { rowsShown: shown, truncated: itemCount - shown, columns: 2, rowH: 34, fontSize: 24, ...base }
-}

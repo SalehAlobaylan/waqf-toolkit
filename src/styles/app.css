@@ -483,3 +483,104 @@ select:focus-visible {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Print — Adhkar booklet (and future print surfaces).
+   The tool portals #adhkar-print-portal to <body> and adds
+   `printing-adhkar` before window.print() (dropped on `afterprint`), so ONLY
+   the booklet reaches paper — no shell edits needed. Normal document flow,
+   so multi-page sets paginate correctly.
+--------------------------------------------------------------------------- */
+
+@page {
+  size: A4;
+  margin: 16mm 14mm;
+}
+
+@page a5sheet {
+  size: A5;
+  margin: 13mm 11mm;
+}
+
+body.paper-a5 #adhkar-print-portal {
+  page: a5sheet;
+}
+
+@media print {
+  html {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  body.printing-adhkar > *:not(#adhkar-print-portal) {
+    display: none !important;
+  }
+  #adhkar-print-portal {
+    color: #232d29;
+    background: #fff;
+    font-family: 'DM Sans', 'Thmanyah Sans', ui-sans-serif, system-ui, sans-serif;
+  }
+  #adhkar-print-portal .pb-cover-band {
+    background: #234336;
+    color: #f5f2ea;
+    border-bottom: 3px solid #c5d58b;
+  }
+  #adhkar-print-portal .pb-cover-light {
+    background: #fff;
+    color: #24332e;
+    border-bottom: 3px double #2e5c44;
+  }
+  #adhkar-print-portal .pb-title {
+    font-family: 'Thmanyah Display', 'Thmanyah Sans', serif;
+  }
+  #adhkar-print-portal .pb-arabic {
+    font-family: 'Thmanyah Display', 'Thmanyah Sans', serif;
+    direction: rtl;
+    line-height: 2.2;
+  }
+  #adhkar-print-portal .pb-micro {
+    font-family: 'Space Mono', ui-monospace, monospace;
+  }
+  #adhkar-print-portal .pb-avoid {
+    break-inside: avoid;
+  }
+  #adhkar-print-portal .pb-card {
+    border-inline-start: 3px solid #2e5c44;
+  }
+  #adhkar-print-portal .pb-box {
+    display: inline-block;
+    width: 4mm;
+    height: 4mm;
+    border: 0.7mm solid #2e5c44;
+    border-radius: 1mm;
+    flex-shrink: 0;
+  }
+  #adhkar-print-portal .pb-rule {
+    display: flex;
+    align-items: center;
+    gap: 4mm;
+    color: #b25a24;
+  }
+  #adhkar-print-portal .pb-rule::before,
+  #adhkar-print-portal .pb-rule::after {
+    content: '';
+    height: 1px;
+    flex: 1;
+    background: currentColor;
+    opacity: 0.5;
+  }
+  #adhkar-print-portal .pb-diamond {
+    width: 2.4mm;
+    height: 2.4mm;
+    transform: rotate(45deg);
+    border: 1px solid currentColor;
+    flex-shrink: 0;
+  }
+  #adhkar-print-portal .pb-checklist {
+    column-count: 2;
+    column-gap: 10mm;
+    column-rule: 1px solid #d8d2c2;
+  }
+  #adhkar-print-portal .pb-checklist > * {
+    break-inside: avoid;
+  }
+}

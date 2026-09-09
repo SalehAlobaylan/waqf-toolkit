@@ -7,7 +7,6 @@ import {
   fitText,
   layoutSingleCard,
   pickFormat,
-  planSummaryRows,
   singleCardGeometry,
   wrapText,
   type Measure,
@@ -111,11 +110,11 @@ describe('card-image geometry', () => {
   it('geometry stays inside the frame', () => {
     for (const frame of ['portrait', 'square'] as const) {
       const g = singleCardGeometry(frame)
-      for (const y of [g.eyebrowArY, g.eyebrowEnY, g.ornamentY, g.titleY, g.arabicTop, g.sourceY, g.footerWarn2Y]) {
+      for (const y of [g.eyebrowY, g.ornamentY, g.titleY, g.arabicTop, g.sourceY, g.warnY]) {
         expect(y).toBeGreaterThan(0)
         expect(y).toBeLessThan(g.h)
       }
-      expect(g.footerWarn2Y).toBeGreaterThan(g.sourceY)
+      expect(g.warnY).toBeGreaterThan(g.sourceY)
       expect(g.footerTop).toBeGreaterThan(g.arabicTop)
     }
   })
@@ -136,12 +135,22 @@ describe('card-image single layout', () => {
         const layout = layoutSingleCard(arabicMeasure, {
           frame,
           arabic: item.arabic,
-          meaning: item.meaningEn,
           titleLine: `${item.titleAr} · ${item.titleEn}`,
         })
         expect(layout.fits, `${item.id}/${frame}`).toBe(true)
         expect(layout.titleLines.length, `${item.id}/${frame} title`).toBeLessThanOrEqual(2)
       }
+    }
+  })
+
+  it('every dataset item fits square without extra blocks', () => {
+    for (const item of DHIKR) {
+      const layout = layoutSingleCard(arabicMeasure, {
+        frame: 'square',
+        arabic: item.arabic,
+        titleLine: item.titleAr,
+      })
+      expect(layout.fits, item.id).toBe(true)
     }
   })
 
@@ -152,7 +161,6 @@ describe('card-image single layout', () => {
         const layout = layoutSingleCard(wideMeasure, {
           frame,
           arabic: item.arabic,
-          meaning: item.meaningEn,
           titleLine: `${item.titleAr} · ${item.titleEn}`,
         })
         // Words in = words out, whatever `fits` reports. Callers block on !fits.
@@ -168,7 +176,6 @@ describe('card-image single layout', () => {
     const layout = layoutSingleCard(arabicMeasure, {
       frame: 'portrait',
       arabic: longest.arabic,
-      meaning: longest.meaningEn,
       titleLine: longest.titleAr,
     })
     expect(layout.fits).toBe(true)
@@ -189,34 +196,5 @@ describe('card-image helpers', () => {
     expect(pickFormat('webp', ['png', 'webp'])).toBe('webp')
     expect(pickFormat('webp', ['png', 'jpeg'])).toBe('png')
     expect(pickFormat('jpeg', [])).toBe('png')
-  })
-})
-
-describe('card-image summary rows', () => {
-  it('fits 16 rows in the portrait budget across two columns', () => {
-    const p = planSummaryRows(16, 568, 1120)
-    expect(p.rowsShown).toBe(16)
-    expect(p.truncated).toBe(0)
-    expect(p.columns).toBe(2)
-  })
-
-  it('keeps small sets in one column', () => {
-    const p = planSummaryRows(3, 568, 1120)
-    expect(p.rowsShown).toBe(3)
-    expect(p.truncated).toBe(0)
-    expect(p.columns).toBe(1)
-  })
-
-  it('truncates explicitly when space is tight', () => {
-    const p = planSummaryRows(18, 560, 760)
-    expect(p.rowsShown + p.truncated).toBe(18)
-    expect(p.truncated).toBeGreaterThan(0)
-    expect(p.rowsShown).toBeGreaterThan(0)
-  })
-
-  it('handles empty lists', () => {
-    const p = planSummaryRows(0, 100, 500)
-    expect(p.rowsShown).toBe(0)
-    expect(p.truncated).toBe(0)
   })
 })
