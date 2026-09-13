@@ -2,6 +2,8 @@
 
 A collection of free, open-source web tools for the Muslim community. Nothing to install — every tool opens right in your browser, states exactly where your data goes, and is labelled honestly about what works today.
 
+[![Waqf Toolkit on StartupScores](https://startupscores.com/badge/waqf-toolkit.svg?style=shield&v=combo&theme=dark)](https://startupscores.com/open-source/waqf-toolkit)
+
 **Status:** early development. The site is live; most tools are in the design or experimental phase. See the [tool directory](https://github.com/SalehAlobaylan/waqf-toolkit#readme) for per-project status.
 
 ## Principles
