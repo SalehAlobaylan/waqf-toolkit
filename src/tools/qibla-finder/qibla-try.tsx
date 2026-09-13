@@ -1,6 +1,14 @@
 import { useEffect, useId, useMemo, useState, useRef } from 'react'
 import { useI18n } from '@/i18n'
 import { Card, Button } from '@/components/ui'
+import {
+  ToolHero,
+  ToolHeroActions,
+  ToolHeroBody,
+  ToolHeroHeader,
+  ToolHeroMeta,
+  ToolHeroVisual,
+} from '@/components/tool-hero'
 import { qiblaBearing } from './bearing'
 import { KAABA } from './constants'
 import { CITIES, getCity } from '@/lib/cities'
@@ -258,144 +266,160 @@ export default function QiblaTry() {
 
   return (
     <div className="space-y-4">
-      {/* Laptop vs phone explanation — clear warning */}
-      {!hasCompass && result.status === 'ok' && (
-        <div className="flex gap-3 rounded-2xl border border-amber-300 bg-amber-50/80 p-4 backdrop-blur-xl" data-testid="banner-no-compass" role="alert">
-          <AlertTriangleIcon className="h-5 w-5 shrink-0 text-amber-600" />
-          <div>
-            <p className="text-xs font-bold text-amber-900">{t.qibla.laptopTitle}</p>
-            <p className="mt-1 text-xs leading-5 font-medium text-amber-800">{t.qibla.laptopBody}</p>
-          </div>
-        </div>
-      )}
+      {/* HERO — always at top, conclusion first */}
+      {result.status === 'ok' ? (
+        <ToolHero testId="result-qibla" live>
+          <ToolHeroHeader
+            eyebrow={t.qibla.bearingLabel}
+            meta={bearingText ? `${bearingText} • ${cardinal}` : undefined}
+          />
+          <ToolHeroBody layout="split">
+            <ToolHeroVisual>
+              <div className="relative h-52 w-52 select-none sm:h-56 sm:w-56" dir="ltr">
+                <svg viewBox="0 0 200 200" className="h-full w-full" aria-hidden="true" role="img">
+                  <title>Qibla dial — N at top, arrow to Kaaba</title>
+                  <circle cx="100" cy="100" r="92" fill="none" stroke="currentColor" className="text-line" strokeWidth="1.5" />
+                  <circle cx="100" cy="100" r="3" fill="currentColor" className="text-accent" />
+                  <g className="text-muted" stroke="currentColor" strokeWidth="1.2">
+                    <line x1="100" y1="8" x2="100" y2="18" />
+                    <line x1="100" y1="182" x2="100" y2="192" />
+                    <line x1="8" y1="100" x2="18" y2="100" />
+                    <line x1="182" y1="100" x2="192" y2="100" />
+                  </g>
+                  <text x="100" y="14" textAnchor="middle" fontSize="10" fontWeight="700" className="fill-accent font-mono-ui">
+                    N
+                  </text>
+                  <text x="100" y="191" textAnchor="middle" fontSize="9" fontWeight="700" className="fill-muted font-mono-ui">
+                    S
+                  </text>
+                  <text x="188" y="103" textAnchor="middle" fontSize="9" fontWeight="700" className="fill-muted font-mono-ui">
+                    E
+                  </text>
+                  <text x="12" y="103" textAnchor="middle" fontSize="9" fontWeight="700" className="fill-muted font-mono-ui">
+                    W
+                  </text>
+                  <g transform={`rotate(${dialRotation} 100 100)`}>
+                    <line x1="100" y1="100" x2="100" y2="28" stroke="currentColor" className="text-accent" strokeWidth="3" strokeLinecap="round" />
+                    <g transform="translate(100 14)">
+                      <circle r="10" fill="currentColor" className="text-accent" />
+                      <text textAnchor="middle" dy="3.5" fontSize="8" fontWeight="700" className="fill-paper">
+                        🕋
+                      </text>
+                    </g>
+                  </g>
+                  {isLiveActive && (
+                    <g transform={`rotate(${-heading! % 360} 100 100)`} opacity="0.5">
+                      <line x1="100" y1="100" x2="100" y2="18" stroke="currentColor" className="text-muted" strokeWidth="1.5" strokeDasharray="3 3" />
+                    </g>
+                  )}
+                </svg>
+                <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                  <span className="rounded-full bg-surface px-2.5 py-1 text-xs font-semibold shadow-card" dir="ltr">
+                    {bearingText} • {cardinal}
+                    {isLiveActive ? ` • live ${dialRotation.toFixed(1)}°` : ''}
+                  </span>
+                </div>
+              </div>
+              <div className="text-center">
+                <p className="font-display text-4xl font-semibold tracking-tight" dir="ltr" data-testid="value-bearing">
+                  {bearingText} <span className="text-xl font-medium text-muted">{cardinal}</span>
+                </p>
+                <p className="mt-2 max-w-sm text-xs leading-5 text-muted">{t.qibla.trueNorthNote}</p>
+                <p className="mt-2 max-w-sm text-[11px] leading-4 text-muted">{isLiveActive ? t.qibla.alignLive : t.qibla.alignStatic}</p>
+              </div>
+            </ToolHeroVisual>
 
-      {/* Result on top — liquid glass hero */}
-      {result.status === 'ok' && (
-        <div className="space-y-4" data-testid="result-qibla">
-          <div className="glass-panel overflow-hidden rounded-[20px] border border-line/70">
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line/60 bg-accent-soft/40 px-4 py-3">
-              <span className="text-sm font-semibold">{t.qibla.bearingLabel}</span>
-              <span className="font-mono-ui text-xs text-muted" dir="ltr">{bearingText} • {cardinal}</span>
-            </div>
-            <div className="grid gap-4 p-6 lg:grid-cols-[1fr_340px] lg:items-start">
-              <div className="order-2 flex flex-col items-center gap-4 rounded-2xl border border-accent/15 bg-accent-soft/30 p-6 backdrop-blur-xl lg:order-1" dir="ltr">
-                <div className="relative h-52 w-52 select-none sm:h-56 sm:w-56" dir="ltr">
-                  <svg viewBox="0 0 200 200" className="h-full w-full" aria-hidden="true" role="img">
-                    <title>Qibla dial — N at top, arrow to Kaaba</title>
-                    <circle cx="100" cy="100" r="92" fill="none" stroke="currentColor" className="text-line" strokeWidth="1.5" />
-                    <circle cx="100" cy="100" r="3" fill="currentColor" className="text-accent" />
-                    <g className="text-muted" stroke="currentColor" strokeWidth="1.2">
-                      <line x1="100" y1="8" x2="100" y2="18" />
-                      <line x1="100" y1="182" x2="100" y2="192" />
-                      <line x1="8" y1="100" x2="18" y2="100" />
-                      <line x1="182" y1="100" x2="192" y2="100" />
-                    </g>
-                    <text x="100" y="14" textAnchor="middle" fontSize="10" fontWeight="700" className="fill-accent font-mono-ui">N</text>
-                    <text x="100" y="191" textAnchor="middle" fontSize="9" fontWeight="700" className="fill-muted font-mono-ui">S</text>
-                    <text x="188" y="103" textAnchor="middle" fontSize="9" fontWeight="700" className="fill-muted font-mono-ui">E</text>
-                    <text x="12" y="103" textAnchor="middle" fontSize="9" fontWeight="700" className="fill-muted font-mono-ui">W</text>
-                    <g transform={`rotate(${dialRotation} 100 100)`}>
-                      <line x1="100" y1="100" x2="100" y2="28" stroke="currentColor" className="text-accent" strokeWidth="3" strokeLinecap="round" />
-                      <g transform="translate(100 14)">
-                        <circle r="10" fill="currentColor" className="text-accent" />
-                        <text textAnchor="middle" dy="3.5" fontSize="8" fontWeight="700" className="fill-paper">🕋</text>
-                      </g>
-                    </g>
-                    {isLiveActive && (
-                      <g transform={`rotate(${-heading! % 360} 100 100)`} opacity="0.5">
-                        <line x1="100" y1="100" x2="100" y2="18" stroke="currentColor" className="text-muted" strokeWidth="1.5" strokeDasharray="3 3" />
-                      </g>
-                    )}
-                  </svg>
-                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                    <span className="rounded-full bg-surface px-2.5 py-1 text-xs font-semibold shadow-card" dir="ltr">
-                      {bearingText} • {cardinal}
-                      {isLiveActive ? ` • live ${dialRotation.toFixed(1)}°` : ''}
-                    </span>
+            <div className="space-y-3">
+              {!hasCompass && (
+                <div className="flex gap-3 rounded-2xl border border-amber-300 bg-amber-50/80 p-3 backdrop-blur-xl" data-testid="banner-no-compass" role="alert">
+                  <AlertTriangleIcon className="h-4 w-4 shrink-0 text-amber-600 mt-0.5" />
+                  <div>
+                    <p className="text-xs font-bold text-amber-900">{t.qibla.laptopTitle}</p>
+                    <p className="mt-1 text-xs leading-4 text-amber-800">{t.qibla.laptopBody}</p>
                   </div>
                 </div>
-                <div className="text-center">
-                  <p className="mt-1 font-display text-4xl font-semibold tracking-tight" dir="ltr" data-testid="value-bearing">
-                    {bearingText} <span className="text-xl font-medium text-muted">{cardinal}</span>
-                  </p>
-                  <p className="mt-2 max-w-sm text-xs leading-5 text-muted">{t.qibla.trueNorthNote}</p>
-                  <p className="mt-2 max-w-sm text-[11px] leading-4 text-muted">{isLiveActive ? t.qibla.alignLive : t.qibla.alignStatic}</p>
-                </div>
+              )}
+              <Card className="p-4">
+                <p className="eyebrow text-muted">{t.qibla.distanceLabel}</p>
+                <p className="mt-1 text-sm font-semibold" dir="ltr">
+                  {result.distanceKm.toFixed(1)} {t.qibla.distanceUnit}
+                </p>
+                <p className="mt-2 text-xs leading-5 text-muted" dir="ltr">
+                  {t.qibla.kaabaLabel}: {KAABA.latitude}, {KAABA.longitude} ({KAABA.datum} v{KAABA.version})
+                </p>
+                <a
+                  href={`https://www.openstreetmap.org/directions?from=${result.lat},${result.lon}&to=${KAABA.latitude},${KAABA.longitude}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-3 inline-flex rounded-full bg-accent px-4 py-2 text-xs font-semibold text-paper hover:bg-accent-strong"
+                >
+                  {t.qibla.viewOnMap}
+                </a>
+                <p className="mt-2 text-[11px] leading-4 text-muted">{t.qibla.bestForLaptops}</p>
+              </Card>
+              <Card className="p-4">
+                <p className="eyebrow text-muted">{t.qibla.methodLabel}</p>
+                <p className="mt-1 font-mono-ui text-xs leading-5 break-all">{result.method}</p>
+                <p className="mt-2 text-[11px] leading-4 text-muted">{t.qibla.checkedNote}</p>
+              </Card>
+            </div>
+          </ToolHeroBody>
+          <ToolHeroMeta>
+            <span dir="ltr">
+              {result.lat.toFixed(4)}, {result.lon.toFixed(4)} • {result.method}
+            </span>
+          </ToolHeroMeta>
+          <ToolHeroActions>
+            <Button variant="outline" onClick={copy} className="px-4! py-2! text-xs" data-testid="button-copy-qibla">
+              {copied ? `✓ ${t.qibla.copied}` : t.qibla.copy}
+            </Button>
+            <Button variant="outline" onClick={handleCopyLink} className="px-4! py-2! text-xs" data-testid="button-copy-qibla-link">
+              {copiedLink ? `✓ ${t.qibla.copiedLink}` : t.qibla.copyLink}
+            </Button>
+            {copyFailed ? <span className="self-center text-xs font-medium text-danger">{t.qibla.copyFailed}</span> : null}
+            {copied ? <span className="self-center text-xs font-medium text-accent">{t.qibla.bearingCopied}</span> : null}
+          </ToolHeroActions>
+        </ToolHero>
+      ) : (
+        <ToolHero testId="result-qibla">
+          <ToolHeroHeader
+            eyebrow={t.qibla.bearingLabel}
+            meta={isInvalid ? t.qibla.invalidCoords : geoError ? geoError : t.qibla.coordsLabel}
+          />
+          <ToolHeroBody>
+            {result.status === 'empty' && (
+              <div className="flex gap-3" role="status">
+                <InfoIcon className="h-5 w-5 shrink-0 text-muted" />
+                <p className="text-xs leading-5 text-muted">{t.qibla.customCoords} — {t.qibla.citySearchPlaceholder}</p>
               </div>
-
-              <div className="order-1 space-y-3 lg:order-2">
-                <Card className="p-4">
-                  <p className="eyebrow text-muted">{t.qibla.distanceLabel}</p>
-                  <p className="mt-1 text-sm font-semibold" dir="ltr">{result.distanceKm.toFixed(1)} {t.qibla.distanceUnit}</p>
-                  <p className="mt-2 text-xs leading-5 text-muted" dir="ltr">{t.qibla.kaabaLabel}: {KAABA.latitude}, {KAABA.longitude} ({KAABA.datum} v{KAABA.version})</p>
-                  <a
-                    href={`https://www.openstreetmap.org/directions?from=${result.lat},${result.lon}&to=${KAABA.latitude},${KAABA.longitude}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-3 inline-flex rounded-full bg-accent px-4 py-2 text-xs font-semibold text-paper hover:bg-accent-strong"
-                  >
-                    {t.qibla.viewOnMap}
-                  </a>
-                  <p className="mt-2 text-[11px] leading-4 text-muted">{t.qibla.bestForLaptops}</p>
-                </Card>
-                <Card className="p-4">
-                  <p className="eyebrow text-muted">{t.qibla.methodLabel}</p>
-                  <p className="mt-1 font-mono-ui text-xs leading-5 break-all">{result.method}</p>
-                  <p className="mt-2 text-[11px] leading-4 text-muted">{t.qibla.checkedNote}</p>
-                </Card>
-                <div className="flex flex-wrap items-center gap-2 pt-1">
-                  <Button variant="outline" onClick={copy} className="px-4! py-2! text-xs" data-testid="button-copy-qibla">
-                    {copied ? `✓ ${t.qibla.copied}` : t.qibla.copy}
-                  </Button>
-                  <Button variant="outline" onClick={handleCopyLink} className="px-4! py-2! text-xs" data-testid="button-copy-qibla-link">
-                    {copiedLink ? `✓ ${t.qibla.copiedLink}` : t.qibla.copyLink}
-                  </Button>
-                  {copyFailed && <span className="text-xs font-medium text-danger" role="alert">{t.qibla.copyFailed}</span>}
-                  {copied && <span className="text-xs font-medium text-accent" role="status">{t.qibla.bearingCopied}</span>}
-                </div>
+            )}
+            {isInvalid && (
+              <div className="flex gap-3" role="alert" data-testid="status-invalid">
+                <AlertTriangleIcon className="h-5 w-5 shrink-0 text-danger" />
+                <p className="text-xs font-bold leading-5 text-danger">{t.qibla.invalidCoords}</p>
               </div>
-            </div>
-            <div className="flex gap-3 border-t border-amber-200/60 bg-amber-50/60 px-4 py-3 backdrop-blur-sm">
-              <InfoIcon className="h-4 w-4 shrink-0 text-amber-700" />
-              <p className="text-xs font-medium leading-5 text-amber-900"></p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {result.status !== 'ok' && (
-        <div aria-live="polite" className="space-y-3">
-          {result.status === 'empty' && (
-            <div className="flex gap-3 rounded-2xl border border-line/60 bg-surface/70 p-4 backdrop-blur-md">
-              <InfoIcon className="h-5 w-5 shrink-0 text-muted" />
-              <p className="text-xs leading-5 text-muted"></p>
-            </div>
-          )}
-          {isInvalid && (
-            <div className="flex gap-3 rounded-2xl border border-danger/40 bg-clay-soft/80 p-4 backdrop-blur-xl" role="alert">
-              <AlertTriangleIcon className="h-5 w-5 shrink-0 text-danger" />
-              <p className="text-xs font-bold leading-5 text-danger">{t.qibla.invalidCoords}</p>
-            </div>
-          )}
-          {geoError && (
-            <div className="flex gap-3 rounded-2xl border border-danger/40 bg-clay-soft/80 p-4 backdrop-blur-xl" role="alert">
-              <AlertTriangleIcon className="h-5 w-5 shrink-0 text-danger" />
-              <p className="text-xs font-bold leading-5 text-danger">{geoError}</p>
-            </div>
-          )}
-          {result.status === 'at-kaaba' && (
-            <div className="flex gap-3 rounded-2xl border border-accent/30 bg-accent-soft/70 p-4 backdrop-blur-xl" data-testid="status-at-kaaba" role="alert">
-              <InfoIcon className="h-5 w-5 shrink-0 text-accent" />
-              <p className="text-sm font-medium leading-6">{t.qibla.atKaaba}</p>
-            </div>
-          )}
-          {result.status === 'antipodal-ambiguous' && (
-            <div className="flex gap-3 rounded-2xl border border-amber-300 bg-amber-50/80 p-4 backdrop-blur-xl" data-testid="status-antipodal" role="alert">
-              <AlertTriangleIcon className="h-5 w-5 shrink-0 text-amber-600" />
-              <p className="text-sm font-medium leading-6 text-amber-900">{t.qibla.antipodal}</p>
-            </div>
-          )}
-        </div>
+            )}
+            {geoError && (
+              <div className="flex gap-3" role="alert">
+                <AlertTriangleIcon className="h-5 w-5 shrink-0 text-danger" />
+                <p className="text-xs font-bold leading-5 text-danger">{geoError}</p>
+              </div>
+            )}
+            {result.status === 'at-kaaba' && (
+              <div className="flex gap-3" role="alert" data-testid="status-at-kaaba">
+                <InfoIcon className="h-5 w-5 shrink-0 text-accent" />
+                <p className="text-sm font-medium leading-6">{t.qibla.atKaaba}</p>
+              </div>
+            )}
+            {result.status === 'antipodal-ambiguous' && (
+              <div className="flex gap-3" role="alert" data-testid="status-antipodal">
+                <AlertTriangleIcon className="h-5 w-5 shrink-0 text-amber-600" />
+                <p className="text-sm font-medium leading-6 text-amber-900">{t.qibla.antipodal}</p>
+              </div>
+            )}
+          </ToolHeroBody>
+          <ToolHeroMeta>{t.qibla.disclaimer}</ToolHeroMeta>
+        </ToolHero>
       )}
 
       {/* City presets — same 1-tap as Prayer */}

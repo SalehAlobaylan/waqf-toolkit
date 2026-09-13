@@ -2,6 +2,7 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { useI18n } from '@/i18n'
 import { Button } from '@/components/ui'
 import { AlertTriangleIcon, InfoIcon } from '@/components/icons'
+/* eslint-disable jsx-a11y/label-has-associated-control -- labels use htmlFor + nested control for styling */
 import { convertGregorianToHijri, convertHijriToGregorian } from './engine'
 import { HIJRI_MONTH_NAMES_AR, HIJRI_MONTH_NAMES_EN } from './constants'
 import { formatHijriDate, formatNumber } from './format'
@@ -227,7 +228,6 @@ export default function HijriConverterTry() {
   }
 
   function handleSwap() {
-    // Swap Gregorian and Hijri values if both valid
     if (gregToHijri?.ok && hijriToGreg?.ok) {
       const g = hijriToGreg.gregorian
       setGregStr(`${g.year}-${String(g.month).padStart(2, '0')}-${String(g.day).padStart(2, '0')}`)
@@ -258,321 +258,322 @@ export default function HijriConverterTry() {
   const weekdaysAr = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت']
 
   return (
-    <div className="space-y-4">
-      {/* Compact header — variant + numbering */}
-      <div className="flex flex-wrap items-center gap-2">
-        <div className="flex rounded-full border border-line bg-surface p-1" role="group" aria-label="Variant">
-          <button
-            type="button"
-            onClick={() => setVariant('islamic-umalqura')}
-            aria-pressed={variant === 'islamic-umalqura'}
-            aria-label={t.hijri.umalqura}
-            data-testid="button-variant-umalqura"
-            className={`min-h-10 rounded-full px-5 py-2.5 text-sm font-semibold transition-colors ${variant === 'islamic-umalqura' ? 'bg-accent text-paper shadow-sm' : 'text-muted hover:text-ink'}`}
-          >
-            {t.hijri.umalqura}
-          </button>
-          <button
-            type="button"
-            onClick={() => setVariant('islamic-civil')}
-            aria-pressed={variant === 'islamic-civil'}
-            aria-label={t.hijri.civil}
-            data-testid="button-variant-civil"
-            className={`min-h-10 rounded-full px-5 py-2.5 text-sm font-semibold transition-colors ${variant === 'islamic-civil' ? 'bg-accent text-paper shadow-sm' : 'text-muted hover:text-ink'}`}
-          >
-            {t.hijri.civil}
-          </button>
-        </div>
-        <span className="rounded-full bg-accent-soft px-3 py-1 text-[11px] font-semibold text-accent" data-testid="badge-variant">
-          {variant === 'islamic-umalqura' ? `${t.hijri.umalqura} v1` : `${t.hijri.civil} v1`}
-        </span>
-        <div className="ms-auto flex rounded-full border border-line bg-surface p-1" role="group" aria-label="Numbering">
-          <button
-            type="button"
-            onClick={() => setNumbering('latn')}
-            aria-pressed={numbering === 'latn'}
-            data-testid="button-num-latn"
-            className={`min-h-9 rounded-full px-3.5 py-1.5 text-sm font-semibold ${numbering === 'latn' ? 'bg-accent text-paper' : 'text-muted'}`}
-          >
-            123
-          </button>
-          <button
-            type="button"
-            onClick={() => setNumbering('arab')}
-            aria-pressed={numbering === 'arab'}
-            data-testid="button-num-arab"
-            className={`min-h-9 rounded-full px-3.5 py-1.5 text-sm font-semibold ${numbering === 'arab' ? 'bg-accent text-paper' : 'text-muted'}`}
-          >
-            ١٢٣
-          </button>
-        </div>
-      </div>
-
-      {/* Compact warning */}
-      <div className="flex gap-2.5 rounded-2xl border border-amber-300 bg-amber-50/80 px-3 py-2.5 backdrop-blur-xl" role="note" data-testid="banner-hijri-warning">
-        <AlertTriangleIcon className="h-4 w-4 shrink-0 text-amber-600 mt-0.5" />
-        <p className="text-xs font-medium leading-4 text-amber-900">
-          {t.hijri.calculatedNote}
-          <span className="font-normal text-amber-800"> {t.hijri.variantAuthoritative}</span>
-        </p>
-      </div>
-
-      {/* PRIMARY INPUTS HERO — most reachable */}
-      <div className="rounded-[20px] border border-line bg-surface p-4 shadow-card sm:p-5">
-        <div className="grid gap-4">
-          {/* Gregorian */}
-          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control -- label htmlFor matches input id */}
-          <label htmlFor={gregDateId} className="block">
-            <span className="mb-1.5 flex items-center justify-between text-sm font-semibold">
-              <span>{t.hijri.gregorianLabel}</span>
-              <span className="text-xs font-normal text-muted">{t.hijri.gregorianToHijriTitle}</span>
-            </span>
-            <input
-              id={gregDateId}
-              type="date"
-              value={gregStr}
-              onChange={(e) => setGregStr(e.target.value)}
-              className={inputClasses}
-              dir="ltr"
-              aria-invalid={!gregParsed}
-              data-testid="input-greg-date"
-            />
-            <div className="mt-2 flex gap-2">
-              <button
-                type="button"
-                onClick={() => setGregStr(todayISO())}
-                className="min-h-9 cursor-pointer rounded-full border border-line bg-surface px-4 py-2 text-sm font-semibold hover:border-accent/30"
-                data-testid="button-greg-today"
-              >
-                {t.prayerTimes.today}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  const d = new Date()
-                  d.setDate(d.getDate() + 1)
-                  setGregStr(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`)
-                }}
-                className="min-h-9 cursor-pointer rounded-full border border-line bg-surface px-4 py-2 text-sm font-semibold hover:border-accent/30"
-                data-testid="button-greg-tomorrow"
-              >
-                {t.prayerTimes.tomorrow}
-              </button>
-            </div>
-          </label>
-
-          {/* Swap divider */}
-          <div className="relative flex items-center justify-center py-1">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-line/60"></div>
-            </div>
-            <button
-              type="button"
-              onClick={handleSwap}
-              aria-label={t.hijri.swapLabel}
-              data-testid="button-hijri-swap"
-              className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-line bg-surface text-accent shadow-sm transition-colors hover:border-accent/40 hover:bg-accent-soft"
-            >
-              <span aria-hidden="true" className="text-lg leading-none">⇅</span>
-            </button>
-          </div>
-
-          {/* Hijri */}
-          <div className="rounded-2xl border border-line/60 bg-paper/60 p-4">
-            <h3 className="flex items-center justify-between text-sm font-semibold">
-              <span>{t.hijri.hijriLabel}</span>
-              <span className="text-xs font-normal text-muted">
-                {t.hijri.monthLength}: {formatNumber(currentMonthLength, numbering, locale)}
-              </span>
-            </h3>
-            <div className="mt-3 grid gap-3 sm:grid-cols-3">
-              <label htmlFor={hijriYearId} className="block">
-                <span className="mb-1.5 block text-xs font-medium text-muted">{t.hijri.hijriYearLabel}</span>
-                <input
-                  id={hijriYearId}
-                  type="text"
-                  inputMode="numeric"
-                  value={hijriYear}
-                  onChange={(e) => setHijriYear(e.target.value.replace(/[^0-9]/g, '').slice(0, 4))}
-                  className={inputClasses}
-                  dir="ltr"
-                  placeholder="1447"
-                  data-testid="input-hijri-year"
-                />
-              </label>
-              <label htmlFor={hijriMonthId} className="block">
-                <span className="mb-1.5 block text-xs font-medium text-muted">{t.hijri.monthLabel}</span>
-                <select
-                  id={hijriMonthId}
-                  value={hijriMonth}
-                  onChange={(e) => setHijriMonth(e.target.value)}
-                  className={selectClasses}
-                  dir={locale === 'ar' ? 'rtl' : 'ltr'}
-                  data-testid="select-hijri-month"
-                >
-                  {monthNames.map((name, idx) => (
-                    <option key={idx} value={String(idx + 1)}>
-                      {formatNumber(idx + 1, numbering, locale)} — {name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label htmlFor={hijriDayId} className="block">
-                <span className="mb-1.5 block text-xs font-medium text-muted">{t.hijri.dayLabel}</span>
-                <input
-                  id={hijriDayId}
-                  type="text"
-                  inputMode="numeric"
-                  value={hijriDay}
-                  onChange={(e) => setHijriDay(e.target.value.replace(/[^0-9]/g, '').slice(0, 2))}
-                  className={inputClasses}
-                  dir="ltr"
-                  placeholder="1"
-                  aria-invalid={hijriDayError}
-                  data-testid="input-hijri-day"
-                />
-              </label>
-            </div>
-            {hijriDayError && (
-              <p className="mt-2 text-xs font-medium text-danger" role="alert" data-testid="error-hijri-day">
-                {t.hijri.dayExceeds.replace('{length}', formatNumber(currentMonthLength, numbering, locale))}
-              </p>
-            )}
-            {/* Inline reverse preview */}
-            <div className="mt-3">
-              {hijriToGreg && hijriToGreg.ok ? (
-                <div className="rounded-xl border border-accent/20 bg-accent-soft/40 px-4 py-3" data-testid="result-hijri-reverse">
-                  <p className="eyebrow text-accent">{t.hijri.gregorianEquivalent}</p>
-                  <p className="mt-1 font-mono-ui text-lg font-semibold" dir="ltr" data-testid="value-greg-output">
-                    {hijriGregFormatted} • {variant === 'islamic-umalqura' ? t.hijri.umalqura : t.hijri.civil}
+    <div className="space-y-6" data-testid="panel-hijri-merged">
+      {/* Merged unified panel — result at top for instant access */}
+      <div className="glass-panel overflow-hidden rounded-[28px] border border-line/70">
+        {/* Result at top — merged, spacious, first thing user sees */}
+        <div className="px-6 py-8 sm:px-8 sm:py-10" data-testid="result-hijri">
+          {gregToHijri && gregToHijri.ok ? (
+            <div className="space-y-5">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="eyebrow text-accent">{t.hijri.resultTitle}</span>
+                <span className="font-mono-ui text-xs text-muted" dir="ltr">
+                  {gregStr} → {gregToHijri.hijri.year}-{String(gregToHijri.hijri.month).padStart(2, '0')}-{String(gregToHijri.hijri.day).padStart(2, '0')} • {gregToHijri.variant}
+                </span>
+              </div>
+              <div className="grid gap-6 lg:grid-cols-[1.45fr_0.85fr] lg:items-start">
+                <div>
+                  <p className="eyebrow text-muted">{t.hijri.hijriLabel}</p>
+                  <p
+                    className="mt-3 font-display text-[36px] font-semibold leading-none tracking-tight sm:text-[42px]"
+                    data-testid="value-hijri-output"
+                    dir={locale === 'ar' ? 'rtl' : 'ltr'}
+                  >
+                    {gregHijriFormatted}
                   </p>
+                  <p className="mt-4 text-xs leading-5 text-muted" dir="ltr">
+                    {variant === 'islamic-umalqura' ? t.hijri.umalqura : t.hijri.civil} • {gregToHijri.variantVersion} • JDN {formatNumber(gregToHijri.jdn, numbering, locale)} •{' '}
+                    {locale === 'ar' ? weekdaysAr[gregToHijri.hijri.weekday] : weekdaysEn[gregToHijri.hijri.weekday]} • {t.hijri.monthLength}: {formatNumber(gregToHijri.hijri.monthLength, numbering, locale)}
+                  </p>
+                  <p className="mt-2 text-[11px] leading-4 text-muted">{t.hijri.variantNote}</p>
                 </div>
-              ) : hijriToGreg && !hijriToGreg.ok ? (
-                <div
-                  className="flex gap-2 rounded-xl border border-danger/40 bg-clay-soft/60 p-3"
-                  role="alert"
-                  data-testid={`status-hijri-reverse-${hijriToGreg.reason}`}
-                >
-                  <AlertTriangleIcon className="h-4 w-4 shrink-0 text-danger" />
-                  <p className="text-xs font-bold leading-5 text-danger">{hijriToGreg.details ?? hijriToGreg.reason}</p>
+                <div className="rounded-2xl border border-line/60 bg-surface p-5">
+                  <p className="eyebrow text-muted">{t.hijri.detailsTitle}</p>
+                  <p className="mt-3 font-mono-ui text-xs leading-5 break-all" dir="ltr">
+                    {gregToHijri.variant} / {gregToHijri.variantVersion}
+                    <br />
+                    JDN {gregToHijri.jdn} • {gregToHijri.timeZone}
+                  </p>
+                  <p className="mt-3 text-[11px] leading-4 text-muted">{t.hijri.dayStartNote}</p>
                 </div>
-              ) : null}
+              </div>
+              <div className="flex flex-wrap gap-2 pt-1">
+                <Button variant="outline" onClick={handleCopyJson} className="px-5! py-2.5! text-xs" data-testid="button-hijri-copy-json">
+                  {copied === 'json' ? `✓ ${t.hijri.copied}` : t.hijri.copyJson}
+                </Button>
+                <Button variant="outline" onClick={handleCopyCsv} className="px-5! py-2.5! text-xs" data-testid="button-hijri-copy-csv">
+                  {copied === 'csv' ? `✓ ${t.hijri.copied}` : t.hijri.copyCsv}
+                </Button>
+                {copyFailed ? <span className="self-center text-xs font-medium text-danger">{t.hijri.copyFailed}</span> : null}
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* UNIFIED RESULT — immediately below inputs */}
-      {gregToHijri && gregToHijri.ok ? (
-        <div className="glass-panel overflow-hidden rounded-[20px] border border-line/70 p-0" data-testid="result-hijri">
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line/60 bg-accent-soft/40 px-4 py-3">
-            <span className="text-sm font-semibold">{t.hijri.resultTitle}</span>
-            <span className="font-mono-ui text-xs text-muted" dir="ltr">
-              {gregStr} → {gregToHijri.hijri.year}-{String(gregToHijri.hijri.month).padStart(2, '0')}-{String(gregToHijri.hijri.day).padStart(2, '0')} • {gregToHijri.variant}
-            </span>
-          </div>
-          <div className="grid gap-4 p-6 sm:grid-cols-2">
-            <div>
-              <p className="eyebrow text-muted">{t.hijri.hijriLabel}</p>
-              <p className="mt-1 font-display text-3xl font-semibold tracking-tight" data-testid="value-hijri-output" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
-                {gregHijriFormatted}
-              </p>
-              <p className="mt-2 text-xs leading-5 text-muted" dir="ltr">
-                {variant === 'islamic-umalqura' ? t.hijri.umalqura : t.hijri.civil} • {gregToHijri.variantVersion} • JDN {formatNumber(gregToHijri.jdn, numbering, locale)} •{' '}
-                {locale === 'ar' ? weekdaysAr[gregToHijri.hijri.weekday] : weekdaysEn[gregToHijri.hijri.weekday]} • {t.hijri.monthLength}: {formatNumber(gregToHijri.hijri.monthLength, numbering, locale)}
-              </p>
+          ) : gregToHijri && !gregToHijri.ok ? (
+            <div className="space-y-4" data-testid={`status-hijri-${gregToHijri.reason}`}>
+              <div className="flex items-center justify-between gap-2">
+                <span className="eyebrow text-accent">{t.hijri.resultTitle}</span>
+                <span className="font-mono-ui text-xs text-muted">{variant}</span>
+              </div>
+              <div className="flex gap-3 rounded-xl border border-danger/30 bg-clay-soft/60 p-4" role="alert">
+                <AlertTriangleIcon className="h-5 w-5 shrink-0 text-danger" />
+                <div>
+                  <p className="text-sm font-bold leading-5 text-danger">
+                    {gregToHijri.reason === 'out-of-range'
+                      ? t.hijri.outOfRange
+                      : gregToHijri.reason === 'invalid-timezone'
+                        ? t.prayerTimes.invalidTimezone
+                        : gregToHijri.details ?? gregToHijri.reason}
+                  </p>
+                  {gregToHijri.reason === 'out-of-range' && variant === 'islamic-umalqura' && (
+                    <p className="mt-1 text-xs leading-4 text-danger/80">{t.hijri.tryCivilHint}</p>
+                  )}
+                </div>
+              </div>
             </div>
-            <div className="rounded-2xl border border-line/60 bg-surface/60 p-4">
-              <p className="eyebrow text-muted">{t.hijri.detailsTitle}</p>
-              <p className="mt-2 font-mono-ui text-xs leading-5 break-all" dir="ltr">
-                {gregToHijri.variant} / {gregToHijri.variantVersion}
-                <br />
-                JDN {gregToHijri.jdn} • {gregToHijri.timeZone}
-              </p>
-              <p className="mt-2 text-[11px] leading-4 text-muted">{t.hijri.variantNote}</p>
+          ) : (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between gap-2">
+                <span className="eyebrow text-accent">{t.hijri.resultTitle}</span>
+                <span className="font-mono-ui text-xs text-muted">{timeZone}</span>
+              </div>
+              <div className="flex gap-3 rounded-xl border border-line/60 bg-surface p-4">
+                <InfoIcon className="h-5 w-5 shrink-0 text-muted" />
+                <p className="text-sm leading-5 text-muted">{t.hijri.enterValidGregorian}</p>
+              </div>
             </div>
-          </div>
-          <div className="flex flex-wrap gap-2 border-t border-line/60 bg-surface/40 px-4 py-3">
-            <Button variant="outline" onClick={handleCopyJson} className="px-4! py-2! text-xs" data-testid="button-hijri-copy-json">
-              {copied === 'json' ? `✓ ${t.hijri.copied}` : t.hijri.copyJson}
-            </Button>
-            <Button variant="outline" onClick={handleCopyCsv} className="px-4! py-2! text-xs" data-testid="button-hijri-copy-csv">
-              {copied === 'csv' ? `✓ ${t.hijri.copied}` : t.hijri.copyCsv}
-            </Button>
-          </div>
-          {copyFailed && (
-            <p className="px-4 pb-3 text-xs font-medium text-danger" role="alert">
-              {t.hijri.copyFailed}
-            </p>
           )}
         </div>
-      ) : gregToHijri && !gregToHijri.ok ? (
-        <div
-          className="flex gap-3 rounded-2xl border border-danger/40 bg-clay-soft/80 p-4 backdrop-blur-xl"
-          role="alert"
-          data-testid={`status-hijri-${gregToHijri.reason}`}
-        >
-          <AlertTriangleIcon className="h-5 w-5 shrink-0 text-danger" />
-          <div>
-            <p className="text-xs font-bold leading-5 text-danger">
-              {gregToHijri.reason === 'out-of-range'
-                ? t.hijri.outOfRange
-                : gregToHijri.reason === 'invalid-timezone'
-                  ? t.prayerTimes.invalidTimezone
-                  : gregToHijri.details ?? gregToHijri.reason}
-            </p>
-            {gregToHijri.reason === 'out-of-range' && variant === 'islamic-umalqura' && (
-              <p className="mt-1 text-[11px] leading-4 text-danger/80">{t.hijri.tryCivilHint}</p>
-            )}
+
+        <div className="mx-6 h-px bg-line/40 sm:mx-8" />
+
+        {/* Zone C — Controls (subtle, within same panel, generous padding) */}
+        <div className="bg-surface/30 px-6 py-6 sm:px-8 sm:py-7">
+          <div className="rounded-[20px] border border-line/60 bg-surface p-5 shadow-sm">
+            <div className="grid gap-5">
+              {/* Variant merged into controls — compact, not a separate header */}
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="flex rounded-full border border-line bg-surface p-1" role="group" aria-label="Variant">
+                  <button
+                    type="button"
+                    onClick={() => setVariant('islamic-umalqura')}
+                    aria-pressed={variant === 'islamic-umalqura'}
+                    data-testid="button-variant-umalqura"
+                    className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${variant === 'islamic-umalqura' ? 'bg-accent text-paper' : 'text-muted hover:text-ink'}`}
+                  >
+                    {t.hijri.umalqura}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setVariant('islamic-civil')}
+                    aria-pressed={variant === 'islamic-civil'}
+                    data-testid="button-variant-civil"
+                    className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${variant === 'islamic-civil' ? 'bg-accent text-paper' : 'text-muted hover:text-ink'}`}
+                  >
+                    {t.hijri.civil}
+                  </button>
+                </div>
+                <div className="flex rounded-full border border-line bg-surface p-1">
+                  <button
+                    type="button"
+                    onClick={() => setNumbering('latn')}
+                    aria-pressed={numbering === 'latn'}
+                    data-testid="button-num-latn"
+                    className={`rounded-full px-2.5 py-1 text-xs font-semibold ${numbering === 'latn' ? 'bg-accent text-paper' : 'text-muted'}`}
+                  >
+                    123
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setNumbering('arab')}
+                    aria-pressed={numbering === 'arab'}
+                    data-testid="button-num-arab"
+                    className={`rounded-full px-2.5 py-1 text-xs font-semibold ${numbering === 'arab' ? 'bg-accent text-paper' : 'text-muted'}`}
+                  >
+                    ١٢٣
+                  </button>
+                </div>
+                <span className="ms-auto hidden text-[11px] text-muted sm:inline">{t.hijri.variantAuthoritative}</span>
+              </div>
+              <p className="flex items-center gap-1.5 text-[11px] leading-4 text-amber-800 sm:hidden" role="note">
+                <AlertTriangleIcon className="h-3 w-3 shrink-0 text-amber-600" />
+                {t.hijri.calculatedNote}
+              </p>
+              <label htmlFor={gregDateId} className="block">
+                <span className="mb-2 flex items-center justify-between text-sm font-semibold">
+                  <span>{t.hijri.gregorianLabel}</span>
+                  <span className="text-xs font-normal text-muted">{t.hijri.gregorianToHijriTitle}</span>
+                </span>
+                <input
+                  id={gregDateId}
+                  type="date"
+                  value={gregStr}
+                  onChange={(e) => setGregStr(e.target.value)}
+                  className={inputClasses}
+                  dir="ltr"
+                  aria-invalid={!gregParsed}
+                  data-testid="input-greg-date"
+                />
+                <div className="mt-3 flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setGregStr(todayISO())}
+                    className="min-h-9 cursor-pointer rounded-full border border-line bg-surface px-4 py-2 text-sm font-semibold hover:border-accent/30"
+                    data-testid="button-greg-today"
+                  >
+                    {t.prayerTimes.today}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const d = new Date()
+                      d.setDate(d.getDate() + 1)
+                      setGregStr(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`)
+                    }}
+                    className="min-h-9 cursor-pointer rounded-full border border-line bg-surface px-4 py-2 text-sm font-semibold hover:border-accent/30"
+                    data-testid="button-greg-tomorrow"
+                  >
+                    {t.prayerTimes.tomorrow}
+                  </button>
+                </div>
+              </label>
+
+              <div className="relative flex items-center justify-center py-1">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-line/60" />
+                </div>
+                <button
+                  type="button"
+                  onClick={handleSwap}
+                  aria-label={t.hijri.swapLabel}
+                  data-testid="button-hijri-swap"
+                  className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-line bg-surface text-accent shadow-sm transition-colors hover:border-accent/40 hover:bg-accent-soft"
+                >
+                  <span aria-hidden="true" className="text-lg leading-none">⇅</span>
+                </button>
+              </div>
+
+              <div className="rounded-2xl border border-line/50 bg-paper/70 p-5">
+                <h3 className="flex items-center justify-between text-sm font-semibold">
+                  <span>{t.hijri.hijriLabel}</span>
+                  <span className="text-xs font-normal text-muted">
+                    {t.hijri.monthLength}: {formatNumber(currentMonthLength, numbering, locale)}
+                  </span>
+                </h3>
+                <div className="mt-4 grid gap-4 sm:grid-cols-3">
+                  <label htmlFor={hijriYearId} className="block">
+                    <span className="mb-2 block text-xs font-medium text-muted">{t.hijri.hijriYearLabel}</span>
+                    <input
+                      id={hijriYearId}
+                      type="text"
+                      inputMode="numeric"
+                      value={hijriYear}
+                      onChange={(e) => setHijriYear(e.target.value.replace(/[^0-9]/g, '').slice(0, 4))}
+                      className={inputClasses}
+                      dir="ltr"
+                      placeholder="1447"
+                      data-testid="input-hijri-year"
+                    />
+                  </label>
+                  <label htmlFor={hijriMonthId} className="block">
+                    <span className="mb-2 block text-xs font-medium text-muted">{t.hijri.monthLabel}</span>
+                    <select
+                      id={hijriMonthId}
+                      value={hijriMonth}
+                      onChange={(e) => setHijriMonth(e.target.value)}
+                      className={selectClasses}
+                      dir={locale === 'ar' ? 'rtl' : 'ltr'}
+                      data-testid="select-hijri-month"
+                    >
+                      {monthNames.map((name, idx) => (
+                        <option key={idx} value={String(idx + 1)}>
+                          {formatNumber(idx + 1, numbering, locale)} — {name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label htmlFor={hijriDayId} className="block">
+                    <span className="mb-2 block text-xs font-medium text-muted">{t.hijri.dayLabel}</span>
+                    <input
+                      id={hijriDayId}
+                      type="text"
+                      inputMode="numeric"
+                      value={hijriDay}
+                      onChange={(e) => setHijriDay(e.target.value.replace(/[^0-9]/g, '').slice(0, 2))}
+                      className={inputClasses}
+                      dir="ltr"
+                      placeholder="1"
+                      aria-invalid={hijriDayError}
+                      data-testid="input-hijri-day"
+                    />
+                  </label>
+                </div>
+                {hijriDayError && (
+                  <p className="mt-2 text-xs font-medium text-danger" role="alert" data-testid="error-hijri-day">
+                    {t.hijri.dayExceeds.replace('{length}', formatNumber(currentMonthLength, numbering, locale))}
+                  </p>
+                )}
+                <div className="mt-4">
+                  {hijriToGreg && hijriToGreg.ok ? (
+                    <div className="rounded-xl border border-accent/20 bg-accent-soft/40 px-4 py-3" data-testid="result-hijri-reverse">
+                      <p className="eyebrow text-accent">{t.hijri.gregorianEquivalent}</p>
+                      <p className="mt-1 font-mono-ui text-lg font-semibold" dir="ltr" data-testid="value-greg-output">
+                        {hijriGregFormatted} • {variant === 'islamic-umalqura' ? t.hijri.umalqura : t.hijri.civil}
+                      </p>
+                    </div>
+                  ) : hijriToGreg && !hijriToGreg.ok ? (
+                    <div
+                      className="flex gap-2 rounded-xl border border-danger/40 bg-clay-soft/60 p-3"
+                      role="alert"
+                      data-testid={`status-hijri-reverse-${hijriToGreg.reason}`}
+                    >
+                      <AlertTriangleIcon className="h-4 w-4 shrink-0 text-danger" />
+                      <p className="text-xs font-bold leading-5 text-danger">{hijriToGreg.details ?? hijriToGreg.reason}</p>
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              onClick={() => {
+                if (gregToHijri && gregToHijri.ok) {
+                  setHijriYear(String(gregToHijri.hijri.year))
+                  setHijriMonth(String(gregToHijri.hijri.month))
+                  setHijriDay(String(gregToHijri.hijri.day))
+                }
+              }}
+              className="px-4! py-2! text-xs"
+              data-testid="button-hijri-use-forward"
+            >
+              {t.hijri.useForward}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                if (hijriToGreg && hijriToGreg.ok) {
+                  const g = hijriToGreg.gregorian
+                  setGregStr(`${g.year}-${String(g.month).padStart(2, '0')}-${String(g.day).padStart(2, '0')}`)
+                }
+              }}
+              className="px-4! py-2! text-xs"
+              data-testid="button-hijri-use-reverse"
+            >
+              {t.hijri.applyToGregorian}
+            </Button>
           </div>
         </div>
-      ) : (
-        <div className="flex gap-3 rounded-2xl border border-line/60 bg-surface/70 p-4 backdrop-blur-md" role="status">
-          <InfoIcon className="h-5 w-5 shrink-0 text-muted" />
-          <p className="text-xs leading-5 text-muted">{t.hijri.enterValidGregorian}</p>
-        </div>
-      )}
-
-      {/* Quick actions for Hijri→Gregorian */}
-      <div className="flex flex-wrap gap-2">
-        <Button
-          variant="outline"
-          onClick={() => {
-            if (gregToHijri && gregToHijri.ok) {
-              setHijriYear(String(gregToHijri.hijri.year))
-              setHijriMonth(String(gregToHijri.hijri.month))
-              setHijriDay(String(gregToHijri.hijri.day))
-            }
-          }}
-          className="px-4! py-2! text-xs"
-          data-testid="button-hijri-use-forward"
-        >
-          {t.hijri.useForward}
-        </Button>
-        <Button
-          variant="outline"
-          onClick={() => {
-            if (hijriToGreg && hijriToGreg.ok) {
-              const g = hijriToGreg.gregorian
-              setGregStr(`${g.year}-${String(g.month).padStart(2, '0')}-${String(g.day).padStart(2, '0')}`)
-            }
-          }}
-          className="px-4! py-2! text-xs"
-          data-testid="button-hijri-use-reverse"
-        >
-          {t.hijri.applyToGregorian}
-        </Button>
       </div>
 
-      {/* Advanced — collapsed, not competing for reach */}
-      <details className="group rounded-xl border border-line/60 bg-surface/50" data-testid="details-tz">
-        <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-xs font-semibold">
+      {/* Outside merged panel: advanced + note — subtle, not competing */}
+      <details className="group rounded-2xl border border-line/60 bg-surface/70" data-testid="details-tz">
+        <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-4 text-xs font-semibold">
           {t.hijri.tzDisplayTitle} <span className="font-normal text-muted">— {timeZone}</span>
           <span className="ms-2 text-muted transition-transform group-open:rotate-180">⌄</span>
         </summary>
-        <div className="border-t border-line/60 p-4">
+        <div className="border-t border-line/60 p-5">
           <label htmlFor={variantTzId} className="block text-sm">
-            <span className="mb-1.5 block font-medium">{t.prayerTimes.timezoneLabel}</span>
+            <span className="mb-2 block font-medium">{t.prayerTimes.timezoneLabel}</span>
             <input
               id={variantTzId}
               type="text"
@@ -597,14 +598,14 @@ export default function HijriConverterTry() {
               <option value="Asia/Jakarta" />
               <option value="Asia/Kuala_Lumpur" />
             </datalist>
-            <p className="mt-1 text-[11px] leading-4 text-muted">{t.hijri.dayStartNote}</p>
+            <p className="mt-2 text-[11px] leading-4 text-muted">{t.hijri.dayStartNote}</p>
           </label>
         </div>
       </details>
 
-      <div className="flex gap-3 rounded-2xl border border-amber-200/60 bg-amber-50/60 p-4 backdrop-blur-sm" role="note">
-        <InfoIcon className="h-5 w-5 shrink-0 text-amber-700" />
-        <p className="text-xs font-medium leading-5 text-amber-900">
+      <div className="flex gap-3 rounded-2xl border border-line/60 bg-surface/70 p-4">
+        <InfoIcon className="h-5 w-5 shrink-0 text-muted" />
+        <p className="text-xs font-medium leading-5 text-muted">
           {t.hijri.processingNote} {t.hijri.processingNoteExtended}
         </p>
       </div>

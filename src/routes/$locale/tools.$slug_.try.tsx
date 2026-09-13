@@ -39,6 +39,32 @@ function TryToolPage() {
   const tool = getTool(slug)!
   const text = localizedTool(tool, locale)
 
+  const isHybrid = slug === 'hijri-converter' || slug === 'prayer-times-widget'
+
+  if (isHybrid) {
+    return (
+      <main className="mx-auto max-w-[860px] px-5 pb-20 pt-8 lg:px-8 lg:pt-10">
+        <Link
+          to="/$locale/tools/$slug"
+          params={{ locale, slug: tool.slug }}
+          className="inline-flex items-center gap-2 text-xs font-semibold text-muted transition-colors hover:text-accent"
+        >
+          <ArrowLeftIcon className="h-3.5 w-3.5" />
+          {t.directory.backToDirectory}
+        </Link>
+        {/* Merged tools render their own unified panel; shell provides width only */}
+        <div className="mt-8" data-testid={`panel-try-${tool.slug}`}>
+          <ToolInterface />
+        </div>
+        <div className="mt-6 rounded-2xl border border-line/50 bg-accent-soft/20 px-6 py-3">
+          <p className="text-xs leading-5 text-muted">
+            <span className="font-semibold text-ink">{t.tool.processingNote}:</span> {text.processingNote}
+          </p>
+        </div>
+      </main>
+    )
+  }
+
   return (
     <main className="mx-auto max-w-[860px] px-5 pb-20 pt-8 lg:px-8 lg:pt-10">
       <Link
