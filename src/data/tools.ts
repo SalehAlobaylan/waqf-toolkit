@@ -446,6 +446,37 @@ export const TOOLS: Tool[] = [
     tryRoute: true,
     updatedAt: '2026-09-08',
   },
+  {
+    slug: 'card-studio',
+    trackingIssue: 16,
+    name: 'Card Studio',
+    shortDescription:
+      'Compose a Dua, Ayah, or scholar quote into a designed card — measured typography, source on the image.',
+    description:
+      'Pick Arabic text from a curated Dua starter set, the Quran (Tanzil Uthmani, verbatim), or scholar quotes; combine up to three blocks in one of 20 art-directed templates; and export a PNG/JPG/WebP card, a print sheet, a carousel ZIP, or text/JSON with full provenance. Arabic typography is measured, never clipped, and never auto-corrected. Arabic only — no translation, no uploads.',
+    category: 'Everyday',
+    status: 'experimental',
+    license: 'Apache-2.0',
+    stack: ['TypeScript', 'Canvas API'],
+    processing: 'browser',
+    processingNote:
+      'All texts are bundled and rendered in your browser — nothing is uploaded. A draft stays on your device only if you opt in.',
+    translations: {
+      ar: {
+        name: 'استوديو البطاقات',
+        shortDescription:
+          'اجمع دعاءً أو آية أو اقتباساً من كلام العلماء في بطاقة مصمّمة — تنضبط حروفها ويُطبع مصدرها داخل الصورة.',
+        description:
+          'اختر نصاً عربياً من مجموعة أدعية مختارة، أو من القرآن (مصحف تنزيل بالرسم العثماني، كما هو)، أو من كلام العلماء؛ واجمع حتى ثلاثة نصوص في واحد من عشرين قالباً مصمّماً؛ ثم صدّر بطاقة PNG/JPG/WebP أو ورقة للطباعة أو ملف سلسلة مضغوط أو نصاً/JSON بكامل بيانات المصدر. تنضبط العربية قياساً، ولا تُقتطع ولا تُصحَّح تلقائياً. العربية فقط — بلا ترجمة وبلا رفع.',
+        processingNote:
+          'كل النصوص مضمّنة ويجري عرضها داخل متصفحك — لا يُرفع أي شيء. وتبقى المسودة على جهازك عند اختيار الحفظ فقط.',
+      },
+    },
+    supportedFormats: ['PNG', 'JPEG', 'WebP', 'JSON', 'TXT'],
+    featured: true,
+    tryRoute: true,
+    updatedAt: '2026-09-13',
+  },
 ]
 
 export function getTool(slug: string): Tool | undefined {

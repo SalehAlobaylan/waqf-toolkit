@@ -163,6 +163,30 @@
   src: url('/fonts/thmanyah-display-700.woff2') format('woff2');
 }
 
+/* Amiri — Arabic serif for Card Studio exports (Uthmani-capable).
+   SIL Open Font License 1.1 — see public/fonts/LICENSE-amiri.txt.
+   Loaded by the canvas renderer only; the site UI uses Thmanyah. */
+@font-face {
+  font-family: 'Amiri';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/amiri-arabic-400.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891,
+    U+0898-08E1, U+08E3-08FF, U+200C-200D, U+2010-2011, U+204F, U+2E41,
+    U+FB50-FDFF, U+FE70-FEFF;
+}
+@font-face {
+  font-family: 'Amiri';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/amiri-arabic-700.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891,
+    U+0898-08E1, U+08E3-08FF, U+200C-200D, U+2010-2011, U+204F, U+2E41,
+    U+FB50-FDFF, U+FE70-FEFF;
+}
+
 /* ---------------------------------------------------------------------------
    Theme tokens — warm parchment, deep green, olive highlight, terracotta
    accent (ported from the Islamic Utility Suite concept build).
@@ -506,10 +530,28 @@ body.paper-a5 #adhkar-print-portal {
   page: a5sheet;
 }
 
+/* Print: Card Studio sheet and the Adhkar booklet. Each tool portals its own
+   print root to <body> and adds a `printing-*` class before window.print()
+   (dropped on `afterprint`), so ONLY that surface reaches paper. */
 @media print {
   html {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+  }
+  body.printing-card-studio > *:not(#card-studio-print-portal) {
+    display: none !important;
+  }
+  #card-studio-print-portal {
+    color: #232d29;
+    background: #fff;
+    font-family: 'DM Sans', 'Thmanyah Sans', ui-sans-serif, system-ui, sans-serif;
+  }
+  #card-studio-print-portal .cs-print-image {
+    display: block;
+    margin: 0 auto;
+  }
+  #card-studio-print-portal .cs-print-note {
+    break-inside: avoid;
   }
   body.printing-adhkar > *:not(#adhkar-print-portal) {
     display: none !important;

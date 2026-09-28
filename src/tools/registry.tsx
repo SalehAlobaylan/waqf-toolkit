@@ -4,6 +4,7 @@ import AdhkarTry from './adhkar-companion/adhkar-try'
 import PrayerTimesTry from './prayer-times/prayer-times-try'
 import HijriConverterTry from './hijri-converter/hijri-converter-try'
 import ZakatCalculatorTry from './zakat-calculator/zakat-calculator-try'
+import CardStudioTry from './card-studio/card-studio-try'
 
 /**
  * In-app runnable tool interfaces, keyed by catalog slug.
@@ -17,4 +18,5 @@ export const TOOL_INTERFACES: Record<string, ComponentType> = {
   'prayer-times-widget': PrayerTimesTry,
   'hijri-converter': HijriConverterTry,
   'zakat-calculator': ZakatCalculatorTry,
+  'card-studio': CardStudioTry,
 }
