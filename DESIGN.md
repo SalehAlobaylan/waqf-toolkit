@@ -89,6 +89,100 @@ Use on at most one element per page.
   only on first-level surfaces. If adding a glass surface inside another
   glass surface, use a solid tint instead.
 
+## Tool surfaces (`app` vs `document`)
+
+Every tool page is one of exactly two templates. The catalog says what a tool
+*is*; `src/lib/panes.ts` (`TOOL_LAYOUTS`) says what shape its interface takes.
+
+| | `app` | `document` |
+|---|---|---|
+| Used by | all six runnable tools | informational / archived entries |
+| Width | fluid — the whole viewport, or `--shell-w` | `--measure` prose column |
+| Height | `calc(100dvh - var(--header-h-app))` | auto, window scrolls |
+| Header | contextual, 56px, carries the `h1` | full nav, 72px |
+| Footer | suppressed | rendered |
+| Arrangement | 1 / 2 / 3 panes | one column |
+| Scroll owner | each pane at `lg`+ | the window |
+
+**The app template removes dead zone rather than adding chrome.** There is no
+identity block above the workspace — no icon tile, no large heading, no "open
+the tool" button pointing at the page you are already on, no panel title bar.
+Together those cost ~326px of vertical dead zone before the first line of tool
+UI, plus ~580px of horizontal margin at 1440px.
+
+Rules that keep it honest:
+
+- **Shell owns space, tool owns arrangement.** The shell provides width,
+  height and scroll ownership; a tool decides what its regions are. Before
+  this split the shell owned arrangement implicitly, by refusing the tool any
+  horizontal room.
+- **A tool renders its own `<Workspace>`.** The action bar's handlers (undo,
+  save, open) live inside the tool, so a route-level wrapper cannot host it.
+- **`panes` is both the DOM order and the grid order.** `workspaceGridClasses`
+  derives the template from the array; if the two disagree the wide `stage`
+  track lands on the wrong pane with no error. `data/tools.test.ts` asserts it.
+- **Grid templates are literals in `WORKSPACE_GRID`.** Tailwind extracts class
+  names by scanning source text, so a template literal like
+  `` `lg:grid-cols-[${tracks}]` `` emits no CSS at all.
+- **The artifact pane declares itself with `fill`.** Not implied by the pane
+  id: Card Studio's canvas is a side rail, not the stage, and the picker is the
+  stage. `fill` means "this cell is the artifact — it fits, it does not scroll".
+- **`wide` and `defer` are per-tool facts, not defaults.** Card Studio keeps
+  the slack on the picker and defers the *assembly* rail at `lg`, because a
+  preview you cannot see is worse than frame controls you must scroll to. A
+  new layout must add its `WORKSPACE_GRID` literal or it silently renders one
+  column; `components/ui.test.ts` fails the build when a declared layout has no
+  entry.
+- **Text-first tools put the chooser in the middle.** Card Studio: assembly
+  rail, picker, canvas rail. A 1080×1920 story card is unjudgeable at 440px, so
+  the canvas opens in a native `<dialog>` at full size rather than shrinking
+  the chooser to compensate.
+- **Search must fold the script it searches.** The corpus is vocalised
+  Uthmani Arabic, so an unvocalised query matches nothing unless tashkeel and
+  the alef/ya/ta-marbuta families are folded first — see
+  `card-studio/engine/search.ts`. Sacred text is never modified; folding is
+  only ever used to decide which rows to show.
+- **A long picker is a disclosure, not a section.** Card Studio's 23 template
+  thumbnails are ~1340px tall in a rail — more than a whole viewport — and the
+  dataset list is long and rarely read. Both are `<details>` that start closed,
+  and the template summary names the current selection so closing it never
+  hides which one is applied.
+- **Order a rail by the flow, and keep the space hog last.** Card Studio's
+  panel runs add → chosen blocks → template. The picker is the only way to get
+  content in, so it leads; the block list follows the action that fills it
+  (and `MAX_BLOCKS` is 3, so it is tiny); templates are a refinement you reach
+  for once the words are right. Leading with the smallest section and burying
+  the primary action at the bottom is the ordering bug to avoid.
+- **Inside a pane, respond to the container, not the viewport.** Each pane is
+  a `@container`. A viewport breakpoint cannot tell a 300px rail from a 900px
+  stage, so `sm:grid-cols-3` used to fire on the *viewport* and land three
+  columns in a rail: 90px form fields, 65px template thumbnails. Internal
+  grids use `@lg:` / `@2xl:` / `@3xl:` (512 / 672 / 768px). Thresholds come
+  from the real container widths — rail 264–360px, stage 600–1900px.
+  `src/lib/panes.test.ts` fails the build if a viewport variant creeps back in
+  (and covers `tool-hero`, which also renders inside a pane).
+- **A flexible grid track is `minmax(0, 1fr)`, never `1fr`.** `1fr` is
+  `minmax(auto, 1fr)`: it cannot shrink below its content, so a fixed sibling
+  column pushes the layout out of the pane. Same test guards it.
+- **The inspector waits for `xl`.** At `lg`, two 248px panes already leave the
+  stage barely 500px wide.
+- **Workspace panes are solid, never glass.** `DESIGN.md`'s budget above caps
+  heavy blur at first-level surfaces, and `.glass-panel::before` is
+  `inset: 0` — at viewport size its conic ring becomes a viewport-wide sweep
+  on every repaint. Panes use `--surface-pane` with `--color-line` borders;
+  glass stays on the small floating things.
+- **The workspace is a bounded box, never a locked body.** `height` on the
+  grid, per-pane `overflow-y: auto`, and the page keeps scrolling — the Adhkar
+  booklet and the Card Studio sheet depend on normal document flow to print.
+  `@media print` releases the bounds as a backstop.
+- **Logical properties only inside a workspace.** `grid-cols-*` is physical, so
+  the first pane lands on the right under `dir="rtl"` — the start side, which
+  is correct. Use `ps-`/`pe-`/`ms-`/`me-`/`border-e`/`border-s`; never `left-`
+  or `right-`.
+- **The `processingNote` is never collapsed.** It lives in `StatusStrip`,
+  because AGENTS.md requires every tool page to state where processing
+  happens. The long-form record sits in the `ToolAbout` disclosure below.
+
 ## Tuning knobs
 
 All in `src/styles/app.css` unless noted:

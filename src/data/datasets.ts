@@ -29,8 +29,16 @@ export type DatasetReview = {
 export type DatasetRecord = {
   id: string
   kind: DatasetKind
-  /** Human-readable name shown in the UI. */
+  /**
+   * Human-readable name. English.
+   *
+   * A translation appears in the English UI only: in Arabic the surface shows
+   * Arabic and nothing else (AGENTS.md "one language at a time"), so every
+   * dataset a tool renders in Arabic needs `nameAr`.
+   */
   name: string
+  /** Arabic name. Required for any dataset surfaced in the Arabic UI. */
+  nameAr: string
   /** Publisher / compiler / transcription source. */
   source: string
   sourceUrl?: string

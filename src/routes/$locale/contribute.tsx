@@ -44,7 +44,7 @@ function ContributePage() {
     <main>
       {/* Hero */}
       <section className="shell-grid border-b border-line/70">
-        <div className="mx-auto max-w-[1240px] px-5 pb-16 pt-14 lg:px-8 lg:pb-20 lg:pt-20">
+        <div className="mx-auto max-w-[var(--shell-w)] px-5 pb-16 pt-14 lg:px-8 lg:pb-20 lg:pt-20">
           <Eyebrow>{t.contribute.guideEyebrow}</Eyebrow>
           <div className="mt-5 grid gap-10 lg:grid-cols-[1fr_390px] lg:items-end">
             <h1 className="max-w-3xl animate-rise font-display text-6xl font-semibold leading-[0.9] tracking-[-0.07em] rtl:leading-[1.1] rtl:tracking-normal sm:text-8xl">
@@ -63,7 +63,7 @@ function ContributePage() {
       </section>
 
       {/* Guide + form */}
-      <section className="mx-auto grid max-w-[1240px] gap-14 px-5 py-16 lg:grid-cols-[1fr_420px] lg:px-8 lg:py-20">
+      <section className="mx-auto grid max-w-[var(--shell-w)] gap-14 px-5 py-16 lg:grid-cols-[1fr_420px] lg:px-8 lg:py-20">
         <div>
           <Eyebrow>{t.contribute.fitEyebrow}</Eyebrow>
           <div className="mt-7 divide-y divide-line">
@@ -107,7 +107,7 @@ function GoodFirstIssues() {
   const issues = useGoodFirstIssues()
 
   return (
-    <section className="mx-auto max-w-[1240px] px-5 pb-20 lg:px-8">
+    <section className="mx-auto max-w-[var(--shell-w)] px-5 pb-20 lg:px-8">
       <div className="flex flex-wrap items-end justify-between gap-4 border-t border-line pt-10">
         <div>
           <Eyebrow>{t.contribute.goodFirstIssues}</Eyebrow>

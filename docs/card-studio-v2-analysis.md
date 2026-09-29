@@ -267,7 +267,7 @@ mushaf, minimal editorial, kufi display) with 4 procedural backgrounds each.
 
 If a dataset version no longer matches, the tool says so on open instead of
 silently rendering against newer text. Deep link:
-`/en/tools/card-studio/try?b=ayah:2:255;dua:sayyid-istighfar;tpl=night-mushaf-01&v=2`.
+`/en/tools/card-studio?b=ayah:2:255;dua:sayyid-istighfar;tpl=night-mushaf-01&v=2`.
 QR encodes the same string — a "verify at source" that works offline.
 
 ---

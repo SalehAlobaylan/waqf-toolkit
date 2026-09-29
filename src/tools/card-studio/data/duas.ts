@@ -17,8 +17,11 @@ export type DuaEntry = {
   titleEn: string
   titleAr: string
   arabic: string
+  /** Transliterated citation, e.g. `Bukhari 6306`. Proper nouns: never translated. */
   source: string
+  /** Reference within the source book. Localised, unlike `source`. */
   hisnRef: string
+  hisnRefAr: string
 }
 
 export const DUA_DATASET_VERSION = '1.0.0'
@@ -30,7 +33,8 @@ export const HISN_DUAS: DuaEntry[] = [
     "titleAr": "سيد الاستغفار",
     "arabic": "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ لَكَ بِذَنْبِي فَاغْفِرْ لِي، فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ",
     "source": "Bukhari 6306",
-    "hisnRef": "Hisn ch. 27"
+    "hisnRef": "Hisn ch. 27",
+    "hisnRefAr": "حصن المسلم، الباب 27"
   },
   {
     "id": "subhanallah-wa-bihamdihi",
@@ -38,7 +42,8 @@ export const HISN_DUAS: DuaEntry[] = [
     "titleAr": "سبحان الله وبحمده",
     "arabic": "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
     "source": "Muslim 2692",
-    "hisnRef": "Hisn ch. 27"
+    "hisnRef": "Hisn ch. 27",
+    "hisnRefAr": "حصن المسلم، الباب 27"
   },
   {
     "id": "tahlil-ten",
@@ -46,7 +51,8 @@ export const HISN_DUAS: DuaEntry[] = [
     "titleAr": "التهليل — عشر مرات",
     "arabic": "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
     "source": "Abu Dawud 5077",
-    "hisnRef": "Hisn ch. 27"
+    "hisnRef": "Hisn ch. 27",
+    "hisnRefAr": "حصن المسلم، الباب 27"
   },
   {
     "id": "hasbiyallahu",
@@ -54,7 +60,8 @@ export const HISN_DUAS: DuaEntry[] = [
     "titleAr": "حسبي الله",
     "arabic": "حَسْبِيَ اللَّهُ لَا إِلَهَ إِلَّا هُوَ، عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ",
     "source": "Abu Dawud 5081",
-    "hisnRef": "Hisn ch. 27"
+    "hisnRef": "Hisn ch. 27",
+    "hisnRefAr": "حصن المسلم، الباب 27"
   },
   {
     "id": "bismillahilladhi",
@@ -62,7 +69,8 @@ export const HISN_DUAS: DuaEntry[] = [
     "titleAr": "بسم الله الذي لا يضر",
     "arabic": "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ",
     "source": "Tirmidhi 3388",
-    "hisnRef": "Hisn ch. 27"
+    "hisnRef": "Hisn ch. 27",
+    "hisnRefAr": "حصن المسلم، الباب 27"
   },
   {
     "id": "raditu-billah",
@@ -70,7 +78,8 @@ export const HISN_DUAS: DuaEntry[] = [
     "titleAr": "رضيت بالله ربًا",
     "arabic": "رَضِيتُ بِاللَّهِ رَبًّا، وَبِالْإِسْلَامِ دِينًا، وَبِمُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ نَبِيًّا",
     "source": "Abu Dawud 5072",
-    "hisnRef": "Hisn ch. 27"
+    "hisnRef": "Hisn ch. 27",
+    "hisnRefAr": "حصن المسلم، الباب 27"
   },
   {
     "id": "allahumma-a-inni",
@@ -78,7 +87,8 @@ export const HISN_DUAS: DuaEntry[] = [
     "titleAr": "اللهم أعني",
     "arabic": "اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ",
     "source": "Abu Dawud 1522",
-    "hisnRef": "Hisn ch. 27"
+    "hisnRef": "Hisn ch. 27",
+    "hisnRefAr": "حصن المسلم، الباب 27"
   },
   {
     "id": "asbahna",
@@ -86,7 +96,8 @@ export const HISN_DUAS: DuaEntry[] = [
     "titleAr": "أصبحنا (الصباح)",
     "arabic": "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
     "source": "Abu Dawud 5071",
-    "hisnRef": "Hisn ch. 27"
+    "hisnRef": "Hisn ch. 27",
+    "hisnRefAr": "حصن المسلم، الباب 27"
   },
   {
     "id": "amsayna",
@@ -94,7 +105,8 @@ export const HISN_DUAS: DuaEntry[] = [
     "titleAr": "أمسينا (المساء)",
     "arabic": "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
     "source": "Abu Dawud 5071",
-    "hisnRef": "Hisn ch. 27"
+    "hisnRef": "Hisn ch. 27",
+    "hisnRefAr": "حصن المسلم، الباب 27"
   },
   {
     "id": "subhanallah-33",
@@ -102,7 +114,8 @@ export const HISN_DUAS: DuaEntry[] = [
     "titleAr": "سبحان الله ×33",
     "arabic": "سُبْحَانَ اللَّهِ",
     "source": "Muslim 596",
-    "hisnRef": "Hisn ch. 27"
+    "hisnRef": "Hisn ch. 27",
+    "hisnRefAr": "حصن المسلم، الباب 27"
   },
   {
     "id": "alhamdulillah-33",
@@ -110,7 +123,8 @@ export const HISN_DUAS: DuaEntry[] = [
     "titleAr": "الحمد لله ×33",
     "arabic": "الْحَمْدُ لِلَّهِ",
     "source": "Muslim 596",
-    "hisnRef": "Hisn ch. 27"
+    "hisnRef": "Hisn ch. 27",
+    "hisnRefAr": "حصن المسلم، الباب 27"
   },
   {
     "id": "allahu-akbar-34",
@@ -118,7 +132,8 @@ export const HISN_DUAS: DuaEntry[] = [
     "titleAr": "الله أكبر ×34",
     "arabic": "اللَّهُ أَكْبَرُ",
     "source": "Muslim 596",
-    "hisnRef": "Hisn ch. 27"
+    "hisnRef": "Hisn ch. 27",
+    "hisnRefAr": "حصن المسلم، الباب 27"
   },
   {
     "id": "audhu-kalimatillah",
@@ -126,7 +141,8 @@ export const HISN_DUAS: DuaEntry[] = [
     "titleAr": "أعوذ بكلمات الله",
     "arabic": "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
     "source": "Muslim 2708",
-    "hisnRef": "Hisn ch. 27"
+    "hisnRef": "Hisn ch. 27",
+    "hisnRefAr": "حصن المسلم، الباب 27"
   },
   {
     "id": "allahumma-bika-asbahna",
@@ -134,7 +150,8 @@ export const HISN_DUAS: DuaEntry[] = [
     "titleAr": "اللهم بك أصبحنا",
     "arabic": "اللَّهُمَّ بِكَ أَصْبَحْنَا وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ",
     "source": "Tirmidhi 3391",
-    "hisnRef": "Hisn ch. 27"
+    "hisnRef": "Hisn ch. 27",
+    "hisnRefAr": "حصن المسلم، الباب 27"
   }
 ]
 

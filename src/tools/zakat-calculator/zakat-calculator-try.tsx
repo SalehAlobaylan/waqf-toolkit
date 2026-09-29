@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/set-state-in-effect -- initial load from localStorage is intentional */
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { useI18n } from '@/i18n'
-import { Button } from '@/components/ui'
+import { Button, Workspace } from '@/components/ui'
+import { TOOL_LAYOUTS } from '@/lib/panes'
 import {
   ToolHero,
   ToolHeroAccent,
@@ -10,7 +11,7 @@ import {
   ToolHeroHeader,
   ToolHeroMeta,
 } from '@/components/tool-hero'
-import { AlertTriangleIcon, InfoIcon } from '@/components/icons'
+import { AlertTriangleIcon } from '@/components/icons'
 import { calculateZakat } from './engine'
 import { CURRENCY_DECIMALS, SUPPORTED_CURRENCIES } from './constants'
 
@@ -248,9 +249,12 @@ export default function ZakatCalculatorTry() {
 
   const hasSecondaryValues = silverWeight !== '' || investments !== '' || receivables !== '' || liabilities !== '' || nisabBasis === 'silver' || nisabBasis === 'both'
 
+  const layout = TOOL_LAYOUTS['zakat-calculator']
+
   return (
-    <div className="space-y-4">
-      {/* HERO — final conclusion at top, always visible */}
+    <Workspace layout={layout}>
+      {/* Stage: the amount due and the line-by-line breakdown behind it. */}
+      <Workspace.Pane id="stage" fill className="flex flex-col">
       {result.ok ? (
         <ToolHero testId="result-zakat" live>
           <ToolHeroHeader
@@ -286,7 +290,7 @@ export default function ZakatCalculatorTry() {
               {t.zakat.rateNote} • {t.zakat.baseShort} {formatCurrency(result.zakatableBase, result.meta.currency, locale)}
             </p>
             {result.nisabBasis === 'both' ? (
-              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+              <div className="mt-3 grid gap-2 @lg:grid-cols-2">
                 <div className="rounded-xl border border-line/60 bg-surface/50 p-3">
                   <p className="eyebrow text-muted">{t.zakat.nisabGold}</p>
                   <p className="mt-1 font-mono-ui text-sm font-semibold" data-testid="value-nisab-gold">
@@ -367,11 +371,14 @@ export default function ZakatCalculatorTry() {
           <ToolHeroMeta>{t.zakat.disclaimer}</ToolHeroMeta>
         </ToolHero>
       )}
+      </Workspace.Pane>
 
-      {/* PRIMARY INPUTS — most reachable, no scroll needed */}
-      <div className="rounded-[20px] border border-line bg-surface p-4 shadow-card sm:p-5">
+      {/* Panel: assets, then the advanced disclosure that extends them. */}
+      <Workspace.Pane id="panel" className="space-y-5">
+      {/* Primary inputs — most reachable, no scroll needed */}
+      <section aria-labelledby="zakat-assets">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h3 className="text-sm font-semibold">{t.zakat.primaryAssetsTitle}</h3>
+          <h3 id="zakat-assets" className="text-sm font-semibold">{t.zakat.primaryAssetsTitle}</h3>
           <button
             type="button"
             onClick={clearDraft}
@@ -404,7 +411,7 @@ export default function ZakatCalculatorTry() {
         {/* Gold — prominent */}
         <div className="mt-4 rounded-xl border border-line/60 bg-paper p-4">
           <p className="text-xs font-bold tracking-wide text-ink">{t.zakat.goldHighlight}</p>
-          <div className="mt-3 grid gap-3 sm:grid-cols-3">
+          <div className="mt-3 grid gap-3 @lg:grid-cols-2 @3xl:grid-cols-3">
             <label htmlFor={goldWeightId} className="block">
               <span className="mb-1.5 block text-xs font-medium text-muted">{t.zakat.weightLabel}</span>
               <input
@@ -518,7 +525,7 @@ export default function ZakatCalculatorTry() {
             {advancedOpen ? t.zakat.advancedHide : t.zakat.advancedShow}
           </button>
         </div>
-      </div>
+      </section>
 
 
 
@@ -540,7 +547,7 @@ export default function ZakatCalculatorTry() {
           {/* Silver */}
           <div className="rounded-xl border border-line/60 bg-surface p-4">
             <p className="text-xs font-semibold">{t.zakat.silverOptional}</p>
-            <div className="mt-3 grid gap-3 sm:grid-cols-3">
+            <div className="mt-3 grid gap-3 @lg:grid-cols-2 @3xl:grid-cols-3">
               <label htmlFor={silverWeightId} className="block">
                 <span className="mb-1.5 block text-xs font-medium text-muted">{t.zakat.weightLabel}</span>
                 <input
@@ -581,7 +588,7 @@ export default function ZakatCalculatorTry() {
             </div>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-3 @lg:grid-cols-2">
             <label htmlFor={investmentsId} className="block">
               <span className="mb-1.5 block text-xs font-medium text-muted">{t.zakat.investmentsLabel}</span>
               <input
@@ -627,7 +634,7 @@ export default function ZakatCalculatorTry() {
             />
           </label>
 
-          <div className="grid gap-3 rounded-xl border border-line/40 bg-paper/50 p-3 sm:grid-cols-2">
+          <div className="grid gap-3 rounded-xl border border-line/40 p-3 @lg:grid-cols-2">
             <label htmlFor={currencyId} className="block">
               <span className="mb-1.5 block text-xs font-medium text-muted">{t.zakat.currencyLabel}</span>
               <select
@@ -671,10 +678,7 @@ export default function ZakatCalculatorTry() {
         </div>
       </details>
 
-      <div className="flex gap-3 rounded-2xl border border-line/60 bg-surface/70 p-4 backdrop-blur-sm">
-        <InfoIcon className="h-5 w-5 shrink-0 text-muted" />
-        <p className="text-xs font-medium leading-5 text-muted">{t.zakat.processingNote}</p>
-      </div>
-    </div>
+      </Workspace.Pane>
+    </Workspace>
   )
 }

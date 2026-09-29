@@ -238,7 +238,7 @@ export function shareUrl(locale: Locale, doc: CardDoc): string {
     typeof window === 'undefined'
       ? 'https://waqf-toolkit.vercel.app'
       : window.location.origin
-  return `${base}/${locale}/tools/card-studio/try?b=${encodeURIComponent(encodeDeepLink(doc))}`
+  return `${base}/${locale}/tools/card-studio?b=${encodeURIComponent(encodeDeepLink(doc))}`
 }
 
 /** Payload encoded in the verify QR: the same reference string the deep link uses. */

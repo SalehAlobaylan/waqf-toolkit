@@ -101,7 +101,7 @@ export function ToolHeroBody({
   const layouts: Record<string, string> = {
     single: 'p-6',
     grid: 'p-0',
-    split: 'grid gap-4 p-6 lg:grid-cols-[1fr_340px] lg:items-start',
+    split: 'grid gap-4 p-6 @lg:grid-cols-[minmax(0,1fr)_clamp(180px,32%,320px)] @lg:items-start',
   }
   return <div className={`${layouts[layout]} ${className}`}>{children}</div>
 }
@@ -150,7 +150,8 @@ export function ToolHeroStats({
   }>
   columns?: 3 | 6
 }) {
-  const cols = columns === 3 ? 'grid-cols-3' : 'grid-cols-3 sm:grid-cols-6'
+  // Renders inside a stage pane, so it responds to the pane, not the viewport.
+  const cols = columns === 3 ? 'grid-cols-3' : 'grid-cols-3 @xl:grid-cols-6'
   return (
     <div className={`grid gap-px bg-line/60 ${cols}`}>
       {items.map((item, index) => (

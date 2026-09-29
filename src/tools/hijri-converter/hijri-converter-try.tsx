@@ -1,6 +1,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { useI18n } from '@/i18n'
-import { Button } from '@/components/ui'
+import { Button, Workspace } from '@/components/ui'
+import { TOOL_LAYOUTS } from '@/lib/panes'
 import { AlertTriangleIcon, InfoIcon } from '@/components/icons'
 /* eslint-disable jsx-a11y/label-has-associated-control -- labels use htmlFor + nested control for styling */
 import { convertGregorianToHijri, convertHijriToGregorian } from './engine'
@@ -257,12 +258,14 @@ export default function HijriConverterTry() {
   const weekdaysEn = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
   const weekdaysAr = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت']
 
+  const layout = TOOL_LAYOUTS['hijri-converter']
+
   return (
-    <div className="space-y-6" data-testid="panel-hijri-merged">
+    <Workspace layout={layout} data-testid="panel-hijri-merged">
       {/* Merged unified panel — result at top for instant access */}
-      <div className="glass-panel overflow-hidden rounded-[28px] border border-line/70">
-        {/* Result at top — merged, spacious, first thing user sees */}
-        <div className="px-6 py-8 sm:px-8 sm:py-10" data-testid="result-hijri">
+      {/* Stage: the converted date, both directions of it. */}
+      <Workspace.Pane id="stage" fill className="flex flex-col justify-center">
+        <div data-testid="result-hijri">
           {gregToHijri && gregToHijri.ok ? (
             <div className="space-y-5">
               <div className="flex flex-wrap items-center justify-between gap-2">
@@ -271,7 +274,7 @@ export default function HijriConverterTry() {
                   {gregStr} → {gregToHijri.hijri.year}-{String(gregToHijri.hijri.month).padStart(2, '0')}-{String(gregToHijri.hijri.day).padStart(2, '0')} • {gregToHijri.variant}
                 </span>
               </div>
-              <div className="grid gap-6 lg:grid-cols-[1.45fr_0.85fr] lg:items-start">
+              <div className="grid gap-4 @lg:grid-cols-[minmax(0,1.45fr)_minmax(0,0.85fr)] @lg:items-start">
                 <div>
                   <p className="eyebrow text-muted">{t.hijri.hijriLabel}</p>
                   <p
@@ -342,12 +345,9 @@ export default function HijriConverterTry() {
             </div>
           )}
         </div>
-
-        <div className="mx-6 h-px bg-line/40 sm:mx-8" />
-
-        {/* Zone C — Controls (subtle, within same panel, generous padding) */}
-        <div className="bg-surface/30 px-6 py-6 sm:px-8 sm:py-7">
-          <div className="rounded-[20px] border border-line/60 bg-surface p-5 shadow-sm">
+      </Workspace.Pane>
+      <Workspace.Pane id="panel" className="space-y-5">
+          <div>
             <div className="grid gap-5">
               {/* Variant merged into controls — compact, not a separate header */}
               <div className="flex flex-wrap items-center gap-2">
@@ -391,9 +391,9 @@ export default function HijriConverterTry() {
                     ١٢٣
                   </button>
                 </div>
-                <span className="ms-auto hidden text-[11px] text-muted sm:inline">{t.hijri.variantAuthoritative}</span>
+                <span className="ms-auto hidden text-[11px] text-muted @lg:inline">{t.hijri.variantAuthoritative}</span>
               </div>
-              <p className="flex items-center gap-1.5 text-[11px] leading-4 text-amber-800 sm:hidden" role="note">
+              <p className="flex items-center gap-1.5 text-[11px] leading-4 text-amber-800 @lg:hidden" role="note">
                 <AlertTriangleIcon className="h-3 w-3 shrink-0 text-amber-600" />
                 {t.hijri.calculatedNote}
               </p>
@@ -451,14 +451,14 @@ export default function HijriConverterTry() {
                 </button>
               </div>
 
-              <div className="rounded-2xl border border-line/50 bg-paper/70 p-5">
+              <div className="rounded-2xl border border-line/60 p-4">
                 <h3 className="flex items-center justify-between text-sm font-semibold">
                   <span>{t.hijri.hijriLabel}</span>
                   <span className="text-xs font-normal text-muted">
                     {t.hijri.monthLength}: {formatNumber(currentMonthLength, numbering, locale)}
                   </span>
                 </h3>
-                <div className="mt-4 grid gap-4 sm:grid-cols-3">
+                <div className="mt-4 grid gap-4 @lg:grid-cols-2 @3xl:grid-cols-3">
                   <label htmlFor={hijriYearId} className="block">
                     <span className="mb-2 block text-xs font-medium text-muted">{t.hijri.hijriYearLabel}</span>
                     <input
@@ -562,10 +562,10 @@ export default function HijriConverterTry() {
               {t.hijri.applyToGregorian}
             </Button>
           </div>
-        </div>
-      </div>
+      </Workspace.Pane>
 
       {/* Outside merged panel: advanced + note — subtle, not competing */}
+      <Workspace.Pane id="inspector">
       <details className="group rounded-2xl border border-line/60 bg-surface/70" data-testid="details-tz">
         <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-4 text-xs font-semibold">
           {t.hijri.tzDisplayTitle} <span className="font-normal text-muted">— {timeZone}</span>
@@ -602,13 +602,7 @@ export default function HijriConverterTry() {
           </label>
         </div>
       </details>
-
-      <div className="flex gap-3 rounded-2xl border border-line/60 bg-surface/70 p-4">
-        <InfoIcon className="h-5 w-5 shrink-0 text-muted" />
-        <p className="text-xs font-medium leading-5 text-muted">
-          {t.hijri.processingNote} {t.hijri.processingNoteExtended}
-        </p>
-      </div>
-    </div>
+      </Workspace.Pane>
+    </Workspace>
   )
 }

@@ -177,7 +177,7 @@ function DirectoryView({
   }
 
   return (
-    <main className="mx-auto max-w-[1240px] px-5 pb-20 pt-8 lg:px-8 lg:pt-10">
+    <main className="mx-auto max-w-[var(--shell-w)] px-5 pb-20 pt-8 lg:px-8 lg:pt-10">
       {/* Head */}
       <div className="flex flex-col gap-5 border-b border-line pb-6 lg:flex-row lg:items-end lg:justify-between">
         <div>

@@ -1,7 +1,8 @@
-import { createFileRoute, notFound, Outlet } from '@tanstack/react-router'
+import { createFileRoute, notFound, Outlet, useRouterState } from '@tanstack/react-router'
 import { isLocale, getDictionary, I18nProvider } from '@/i18n'
 import { SiteHeader, SiteFooter } from '@/components/site-chrome'
 import { ButtonLink } from '@/components/ui'
+import { isAppSurface } from '@/lib/surface'
 
 export const Route = createFileRoute('/$locale')({
   beforeLoad: ({ params }) => {
@@ -16,6 +17,11 @@ export const Route = createFileRoute('/$locale')({
 
 function LocaleLayout() {
   const { locale } = Route.useParams()
+  // The app template claims the viewport, so the footer is suppressed there.
+  // The workspace is a bounded box, not a locked body — the page still
+  // scrolls, so the About disclosure and related tools below it stay reachable.
+  const pathname = useRouterState({ select: (s) => s.location.pathname })
+  const app = isAppSurface(pathname)
   return (
     <I18nProvider locale={locale as 'en' | 'ar'}>
       {/* Liquid-glass backdrop stage: ambient washes plus slow-drifting
@@ -30,10 +36,13 @@ function LocaleLayout() {
         <div className="animate-blob absolute bottom-[-14rem] start-1/3 h-[32rem] w-[32rem] rounded-full bg-accent/15 blur-[120px] [animation-delay:-17s]" />
       </div>
       <SiteHeader />
-      <main id="main" className="relative z-10 flex-1">
+      <main
+        id="main"
+        className={`relative z-10 flex-1 ${app ? 'tool-app' : ''}`}
+      >
         <Outlet />
       </main>
-      <SiteFooter />
+      {!app && <SiteFooter />}
     </I18nProvider>
   )
 }

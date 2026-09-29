@@ -40,8 +40,6 @@ export type Tool = {
   translations: { ar: ToolTranslation }
   supportedFormats: string[]
   featured: boolean
-  /** The tool has a runnable in-app interface at /tools/<slug>/try. */
-  tryRoute?: boolean
   /** Roadmap issue tracking this tool's development. */
   trackingIssue?: number
   updatedAt: string
@@ -328,7 +326,6 @@ export const TOOLS: Tool[] = [
     },
     supportedFormats: [],
     featured: true,
-    tryRoute: true,
     updatedAt: '2026-08-30',
   },
   {
@@ -357,7 +354,6 @@ export const TOOLS: Tool[] = [
     },
     supportedFormats: [],
     featured: true,
-    tryRoute: true,
     updatedAt: '2026-08-30',
     // Calculation-sensitive projects ship only after domain review (see CONTRIBUTING.md).
   },
@@ -386,7 +382,6 @@ export const TOOLS: Tool[] = [
     },
     supportedFormats: [],
     featured: true,
-    tryRoute: true,
     updatedAt: '2026-09-03',
   },
   {
@@ -414,7 +409,6 @@ export const TOOLS: Tool[] = [
     },
     supportedFormats: [],
     featured: true,
-    tryRoute: true,
     updatedAt: '2026-09-03',
   },
   {
@@ -443,7 +437,6 @@ export const TOOLS: Tool[] = [
     },
     supportedFormats: ['JSON', 'PDF', 'PNG', 'JPEG', 'WebP'],
     featured: true,
-    tryRoute: true,
     updatedAt: '2026-09-08',
   },
   {
@@ -474,7 +467,6 @@ export const TOOLS: Tool[] = [
     },
     supportedFormats: ['PNG', 'JPEG', 'WebP', 'JSON', 'TXT'],
     featured: true,
-    tryRoute: true,
     updatedAt: '2026-09-13',
   },
 ]

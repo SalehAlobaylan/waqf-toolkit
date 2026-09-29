@@ -22,6 +22,15 @@ describe('dataset registry', () => {
   it('declares full provenance for every dataset', () => {
     for (const dataset of DATASETS) {
       expect(dataset.name.trim(), dataset.id).not.toBe('')
+      // The Arabic surface shows the Arabic name only — a translation appears
+      // in the English UI alone (AGENTS.md "one language at a time"), so a
+      // dataset without `nameAr` would ship a mixed-language provenance list.
+      expect(dataset.nameAr.trim(), `${dataset.id}: nameAr is empty`).not.toBe('')
+      expect(
+        /[\u0600-\u06FF]/.test(dataset.nameAr),
+        `${dataset.id}: nameAr is not Arabic`,
+      ).toBe(true)
+      expect(dataset.nameAr, dataset.id).not.toBe(dataset.name)
       expect(dataset.source.trim(), dataset.id).not.toBe('')
       expect(dataset.version.trim(), dataset.id).not.toBe('')
       expect(dataset.license.trim(), dataset.id).not.toBe('')

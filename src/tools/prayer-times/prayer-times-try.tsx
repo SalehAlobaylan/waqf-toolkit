@@ -1,10 +1,9 @@
 import { useEffect, useId, useMemo, useState } from 'react'
 import { useI18n } from '@/i18n'
-import { Button } from '@/components/ui'
-import { AlertTriangleIcon, ArrowRightIcon, InfoIcon, ShieldCheckIcon } from '@/components/icons'
+import { Button, Workspace } from '@/components/ui'
+import { TOOL_LAYOUTS } from '@/lib/panes'
+import { AlertTriangleIcon, ArrowRightIcon } from '@/components/icons'
 import { ToolHeroStats } from '@/components/tool-hero'
-import { CategoryTile, StatusPill } from '@/components/tool-card'
-import { getTool } from '@/data/tools'
 import { calculatePrayerTimes, type PrayerName } from './engine'
 import { PRAYER_METHODS, DEFAULT_METHOD_ID, DEFAULT_ASR, DEFAULT_HIGH_LAT, getMethod } from './methods'
 import { CITIES, getCity } from './cities'
@@ -530,14 +529,15 @@ export default function PrayerTimesTry() {
 
   const recentVisible = recentCities.map((id) => getCity(id)).filter(Boolean) as typeof CITIES
 
-  const tool = getTool('prayer-times-widget')!
+  const layout = TOOL_LAYOUTS['prayer-times-widget']
 
   return (
-    <div className="space-y-6" data-testid="panel-prayer-merged">
-      {/* Merged unified panel */}
-      <div className="glass-panel overflow-hidden rounded-[28px] border border-line/70">
-        {/* Zone B — Hero result (spacious) */}
-        <div className="px-6 py-8 sm:px-8 sm:py-10" data-testid="result-pt">
+    <Workspace layout={layout} data-testid="panel-prayer-merged">
+      {/* Stage: today's times, the next-prayer countdown, and the errors that
+          replace them. The contextual header already carries identity, so the
+          old in-panel identity block is gone. */}
+      <Workspace.Pane id="stage" fill className="flex flex-col">
+        <div data-testid="result-pt">
           {result && result.ok ? (
             <div className="space-y-5">
               <div className="flex flex-wrap items-center justify-between gap-2">
@@ -710,23 +710,11 @@ export default function PrayerTimesTry() {
           )}
         </div>
 
-        <div className="mx-6 h-px bg-line/40 sm:mx-8" />
+      </Workspace.Pane>
 
-
-        {/* Zone A — Identity (compact, below result) */}
-        <div className="border-y border-line/50 bg-accent-soft/20 px-6 py-5 sm:px-8 sm:py-6">
-          <div className="flex flex-wrap items-center gap-3">
-            <CategoryTile category={tool.category} />
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="eyebrow text-muted">{t.category[tool.category]}</span>
-              <StatusPill status={tool.status} />
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-2.5 py-1 font-mono-ui text-[10px] font-bold uppercase tracking-[0.06em] text-accent">
-                <ShieldCheckIcon className="h-3 w-3" />
-              </span>
-            </div>
-          </div>
-          {/* City presets integrated into identity zone for merging */}
-          <div className="mt-6">
+      {/* Panel: where and when, then how to calculate it. */}
+      <Workspace.Pane id="panel" className="space-y-5">
+        <div>
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold">{t.prayerTimes.cityLabel}</span>
               <span className="text-[11px] text-muted">{t.prayerTimes.hanbaliNote}</span>
@@ -813,13 +801,9 @@ export default function PrayerTimesTry() {
               </button>
             </div>
           </div>
-        </div>
 
-        <div className="mx-6 h-px bg-line/40 sm:mx-8" />
-
-        {/* Zone C — Controls (within same merged panel, subtle) */}
-        <div className="bg-surface/30 px-6 py-6 sm:px-8 sm:py-7">
-          <div className="grid gap-4 sm:grid-cols-2">
+        <div>
+          <div className="grid gap-4 @lg:grid-cols-2">
             <div>
               <label htmlFor={dateId} className="block text-sm">
                 <span className="mb-2 block font-medium">{t.prayerTimes.dateLabel}</span>
@@ -891,7 +875,7 @@ export default function PrayerTimesTry() {
             </label>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 @lg:grid-cols-2 @3xl:grid-cols-3">
             <label className="block text-sm">
               <span className="mb-2 block font-medium">{t.prayerTimes.methodLabel}</span>
               <select
@@ -949,7 +933,7 @@ export default function PrayerTimesTry() {
           </div>
 
           {methodId === 'custom' && (
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4 @lg:grid-cols-2">
               <label className="block text-sm">
                 <span className="mb-2 block font-medium">{t.prayerTimes.customFajrLabel}</span>
                 <input type="number" value={customFajr} onChange={(e) => setCustomFajr(e.target.value)} className={inputClasses} step="0.5" dir="ltr" min="1" max="30" data-testid="input-pt-fajr-angle" />
@@ -973,7 +957,7 @@ export default function PrayerTimesTry() {
               <span className="ml-2 text-muted transition-transform group-open:rotate-180">⌄</span>
             </summary>
             <div className="border-t border-line/50 mt-4 pt-4">
-              <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
+              <div className="grid grid-cols-2 gap-2 @lg:grid-cols-3 @3xl:grid-cols-5">
                 {[
                   { key: 'fajr', val: fajrAdj, set: setFajrAdj, label: t.prayerTimes.fajr },
                   { key: 'dhuhr', val: dhuhrAdj, set: setDhuhrAdj, label: t.prayerTimes.dhuhr },
@@ -997,7 +981,7 @@ export default function PrayerTimesTry() {
               <span className="ml-2 text-muted transition-transform group-open:rotate-180">⌄</span>
             </summary>
             <div className="border-t border-line/50 mt-4 pt-4">
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-4 @lg:grid-cols-2">
                 <label htmlFor={latId} className="block text-sm">
                   <span className="mb-2 block font-medium">{t.prayerTimes.latLabel}</span>
                   <input
@@ -1044,12 +1028,7 @@ export default function PrayerTimesTry() {
             </div>
           </details>
         </div>
-      </div>
-
-      <div className="flex gap-3 rounded-2xl border border-line/60 bg-surface/70 p-4">
-        <InfoIcon className="h-5 w-5 shrink-0 text-muted" />
-        <p className="text-xs font-medium leading-5 text-muted">{t.prayerTimes.disclaimer}</p>
-      </div>
-    </div>
+      </Workspace.Pane>
+    </Workspace>
   )
 }

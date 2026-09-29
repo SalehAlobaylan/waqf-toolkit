@@ -25,7 +25,11 @@ export type ResolveContext = {
   quran: Readonly<Record<number, SurahText>>
 }
 
-function localizeDigits(value: string, digits: Digits): string {
+/**
+ * Render ASCII digits in a citation as Arabic-Indic when the card asks for
+ * them. Exported so the picker labels match the card's own citation.
+ */
+export function localizeDigits(value: string, digits: Digits): string {
   if (digits !== 'arab') return value
   const map = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩']
   return value.replace(/\d/g, (digit) => map[Number(digit)]!)

@@ -191,7 +191,6 @@ Don't allow free overlap of Quran + other text — different sanctity. Instead:
   translations: { ar: { name: 'صانع بطاقات الأدعية والآيات', /* ... */ } },
   supportedFormats: ['PNG', 'JPG', 'TXT'],
   featured: true,
-  tryRoute: true,
   updatedAt: '2026-09-03',
 }
 ```

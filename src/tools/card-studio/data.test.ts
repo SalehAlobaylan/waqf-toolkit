@@ -94,6 +94,20 @@ describe('Dua starter set', () => {
     expect(DUA_DATASET_VERSION).toMatch(/^\d+\.\d+\.\d+$/)
   })
 
+  it('carries an Arabic book reference for every entry', () => {
+    // A translation appears in the English UI only. `source` is exempt because
+    // it is transliterated proper nouns ("Bukhari 6306"), but `hisnRef` is
+    // prose, so the Arabic surface needs its own string or the row would mix
+    // languages. See AGENTS.md "one language at a time".
+    for (const dua of HISN_DUAS) {
+      expect(dua.hisnRefAr.trim(), `${dua.id}: hisnRefAr is empty`).not.toBe('')
+      expect(ARABIC_SCRIPT.test(dua.hisnRefAr), `${dua.id}: hisnRefAr is not Arabic`).toBe(
+        true,
+      )
+      expect(dua.hisnRefAr).not.toBe(dua.hisnRef)
+    }
+  })
+
   it('checksum is pinned (updating Arabic text must update this value)', () => {
     expect(duaChecksum()).toBe('fnv1a-7da9aff7')
   })

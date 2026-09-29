@@ -232,6 +232,26 @@
   --shadow-card: 0 12px 30px hsl(160 25% 20% / 0.06);
   --shadow-float: 0 18px 50px hsl(160 25% 20% / 0.14);
 
+  /* Layout budget — the single source of truth for every page frame.
+     Nothing below may hardcode a header height or a column width; if a
+     surface needs a new width, add a token here rather than a literal. */
+  --header-h: 72px;
+  --header-h-app: 56px;
+  --shell-w: 1240px;
+  /* Prose measure for the document template only (see docs/tool-surface-layout-plan.md). */
+  --measure: 860px;
+  --pane-w: clamp(264px, 22vw, 360px);
+  --pane-inspector-w: clamp(240px, 18vw, 340px);
+  /* Card Studio's canvas rail: a 1080x1920 story card still needs room
+     to be judged, and `fill` + an expand dialog covers the rest. */
+  --pane-preview-w: clamp(300px, 26vw, 440px);
+  --bar-h: 56px;
+  --strip-h: 34px;
+  --app-h: calc(100dvh - var(--header-h-app));
+  --app-h-chrome: calc(100dvh - var(--header-h-app) - var(--bar-h) - var(--strip-h));
+  /* Workspace panes are solid, never glass: see DESIGN.md "Tool surfaces". */
+  --surface-pane: var(--color-surface);
+
   /* Motion */
   --animate-rise: rise 0.55s cubic-bezier(0.2, 0.75, 0.25, 1) both;
   --animate-fade: fade 0.45s ease-out both;
@@ -545,6 +565,18 @@ body.paper-a5 #adhkar-print-portal {
   html {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+  }
+  /* The app template bounds the workspace to the viewport and scrolls each
+     pane internally, which prints as one clipped screen. Release both so
+     "print this page" falls back to normal document flow. The Adhkar
+     booklet and Card Studio sheet are unaffected — they go through their
+     own print portals, not through the workspace. */
+  .tool-app,
+  .tool-workspace,
+  .tool-pane {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
   }
   body.printing-card-studio > *:not(#card-studio-print-portal) {
     display: none !important;

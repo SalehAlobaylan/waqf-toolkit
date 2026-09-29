@@ -1,6 +1,7 @@
 import { useEffect, useId, useMemo, useState, useRef } from 'react'
 import { useI18n } from '@/i18n'
-import { Card, Button } from '@/components/ui'
+import { Card, Button, Workspace } from '@/components/ui'
+import { TOOL_LAYOUTS } from '@/lib/panes'
 import {
   ToolHero,
   ToolHeroActions,
@@ -264,9 +265,12 @@ export default function QiblaTry() {
 
   const recentVisible = recentCities.map((id) => getCity(id)).filter(Boolean) as typeof CITIES
 
+  const layout = TOOL_LAYOUTS['qibla-finder']
+
   return (
-    <div className="space-y-4">
-      {/* HERO — always at top, conclusion first */}
+    <Workspace layout={layout}>
+      {/* Stage: the dial and the bearing it resolves to. Conclusion first. */}
+      <Workspace.Pane id="stage" fill className="flex flex-col">
       {result.status === 'ok' ? (
         <ToolHero testId="result-qibla" live>
           <ToolHeroHeader
@@ -421,7 +425,10 @@ export default function QiblaTry() {
           <ToolHeroMeta>{t.qibla.disclaimer}</ToolHeroMeta>
         </ToolHero>
       )}
+      </Workspace.Pane>
 
+      {/* Panel: where you are. City presets, then the live-compass banner. */}
+      <Workspace.Pane id="panel" className="space-y-5">
       {/* City presets — same 1-tap as Prayer */}
       <div>
         <div className="flex items-center justify-between">
@@ -534,14 +541,17 @@ export default function QiblaTry() {
         </div>
       )}
 
-      {/* Coordinates at bottom */}
+      </Workspace.Pane>
+
+      {/* Inspector: raw coordinate entry, for anywhere without a preset. */}
+      <Workspace.Pane id="inspector">
       <details className="group rounded-xl border border-line/60 bg-surface/50" open={cityId === 'custom'}>
         <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-xs font-semibold">
           {t.qibla.customCoords} <span className="font-normal text-muted">— {lat}, {lon}</span>
           <span className="ml-2 text-muted transition-transform group-open:rotate-180">⌄</span>
         </summary>
         <div className="border-t border-line/60 p-4">
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-3 @lg:grid-cols-2">
             <label htmlFor={latId} className="block text-sm">
               <span className="mb-1.5 block font-medium">{t.qibla.latLabel}</span>
               <input
@@ -587,6 +597,7 @@ export default function QiblaTry() {
           {geoError && <p className="mt-2 text-xs font-medium text-danger" role="alert">{geoError}</p>}
         </div>
       </details>
-    </div>
+      </Workspace.Pane>
+    </Workspace>
   )
 }
