@@ -78,7 +78,7 @@ function HomePage() {
       </svg>
 
       {/* Hero — dawn panel with floating category tiles */}
-      <section className="mx-auto max-w-[1240px] px-3 pt-3 sm:px-5 sm:pt-5 lg:px-8">
+      <section className="mx-auto max-w-[var(--shell-w)] px-3 pt-3 sm:px-5 sm:pt-5 lg:px-8">
         <div className="bg-dawn relative overflow-hidden rounded-[32px] border border-line/70 px-5 pb-14 pt-14 sm:pb-16 sm:pt-16 lg:pt-20">
           <div
             aria-hidden="true"
@@ -202,7 +202,7 @@ function HomePage() {
       </section>
 
       {/* Featured tools */}
-      <section className="mx-auto max-w-[1240px] px-5 py-16 lg:px-8 lg:py-20">
+      <section className="mx-auto max-w-[var(--shell-w)] px-5 py-16 lg:px-8 lg:py-20">
         <SectionIntro
           eyebrow={t.home.featuredEyebrow}
           title={t.home.featuredHeading}
@@ -232,7 +232,7 @@ function HomePage() {
 
       {/* Transparency band */}
       <section className="bg-forest text-paper">
-        <div className="mx-auto grid max-w-[1240px] gap-10 px-5 py-16 lg:grid-cols-[0.8fr_1.2fr] lg:px-8 lg:py-20">
+        <div className="mx-auto grid max-w-[var(--shell-w)] gap-10 px-5 py-16 lg:grid-cols-[0.8fr_1.2fr] lg:px-8 lg:py-20">
           <div>
             <p className="eyebrow text-olive">{t.home.privacyEyebrow}</p>
             <h2 className="mt-4 max-w-[420px] font-display text-4xl font-semibold leading-[0.98] tracking-[-0.055em] rtl:tracking-normal sm:text-5xl">
@@ -263,7 +263,7 @@ function HomePage() {
       </section>
 
       {/* Suggest CTA */}
-      <section className="mx-auto max-w-[1240px] px-5 py-16 lg:px-8 lg:py-20">
+      <section className="mx-auto max-w-[var(--shell-w)] px-5 py-16 lg:px-8 lg:py-20">
         <div className="grid items-center gap-8 rounded-[28px] border border-line/70 bg-accent-soft/40 p-7 backdrop-blur-md sm:p-10 lg:grid-cols-[1fr_auto]">
           <div>
             <Eyebrow>{t.home.ctaEyebrow}</Eyebrow>

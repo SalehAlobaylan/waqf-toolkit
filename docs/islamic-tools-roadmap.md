@@ -9,6 +9,8 @@
 
 #### D1. Quran Card Atelier — مرسم البطاقة القرآنية
 
+> **Merged into Card Studio** (`src/tools/card-studio/`, experimental, issue #16) — the general Dua/Ayah/scholar-quote studio. This entry remains as the historical Quran-only specification.
+
 **Why now / creative twist:** Roadmap's `Quran Citation & Sharing Tool` is exactly right — "select a passage, cite it beautifully without retyping sacred text." Twist: make it an **atelier** — Uthmani text preserved verbatim + translation kept visually separate + one-tap plain/Markdown/image-card export that carries the attribution *inside* the image, so forwarding doesn't strip the source.
 
 **User job:** "Let me pick 2:255, verify it, and copy a clean, accurately cited Arabic + translation card without retyping."

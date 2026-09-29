@@ -2,6 +2,8 @@
 
 > **Status:** analysis only, not an implementation commitment. Adding this tool still requires a catalog entry in `src/data/tools.ts`, English + natural Arabic copy in `src/i18n/{en,ar}.ts`, sitemap entries in both locales, a public roadmap issue, and — where marked — a completed `METHODOLOGY.md` + domain review.
 > Last updated: 2026-09-03
+>
+> **Update (2026-09-13):** implemented as `card-studio` — see `src/tools/card-studio/METHODOLOGY.md` and roadmap issue #16. The §8 questions were resolved as: Dua-first with Quran + scholar-quote capability, combining in v1 (sequential layout variants only), no uploads/DB in v1, scholar quotes as a curated candidate set plus manual entry with mandatory attribution. The follow-on plan is in `docs/card-studio-v2-analysis.md`.
 
 ---
 
@@ -189,7 +191,6 @@ Don't allow free overlap of Quran + other text — different sanctity. Instead:
   translations: { ar: { name: 'صانع بطاقات الأدعية والآيات', /* ... */ } },
   supportedFormats: ['PNG', 'JPG', 'TXT'],
   featured: true,
-  tryRoute: true,
   updatedAt: '2026-09-03',
 }
 ```

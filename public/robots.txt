@@ -2,3 +2,6 @@ User-agent: *
 Allow: /
 
 Sitemap: https://waqf-toolkit.vercel.app/sitemap.xml
+
+# Retired: /tools/<slug>/try now 301s to the tool page itself.
+Disallow: /*/try

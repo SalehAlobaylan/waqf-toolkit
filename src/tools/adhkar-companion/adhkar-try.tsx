@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useI18n } from '@/i18n'
+import { Workspace } from '@/components/ui'
+import { TOOL_LAYOUTS } from '@/lib/panes'
 import { Button } from '@/components/ui'
 import { formatNumber } from '../hijri-converter/format'
 import { DHIKR, DATASET_VERSION } from './adhkar-data'
@@ -446,108 +448,14 @@ export default function AdhkarTry() {
     : 0
   const featuredDone = featured ? isDone(featuredCount, featured.target) : false
 
+  const layout = TOOL_LAYOUTS['adhkar-companion']
+
   return (
-    <div className="flex flex-col gap-5">
-      {/* Set picker */}
-      <div className="flex flex-wrap items-center gap-2 print:hidden" role="group" aria-label={a.title}>
-        {(['morning', 'evening', 'all', 'custom'] as const).map((s) => (
-          <button
-            key={s}
-            type="button"
-            aria-pressed={prefs.filter === s}
-            onClick={() => {
-              setPrefs({ ...prefs, filter: s })
-              setFeaturedId(null)
-            }}
-            className={`rounded-full px-4 py-2 text-xs font-semibold transition-colors ${FOCUS_RING} ${
-              prefs.filter === s
-                ? 'bg-accent text-paper shadow-card'
-                : 'border border-line/80 bg-surface/60 text-muted hover:border-accent/40 hover:text-accent'
-            }`}
-          >
-            {s === 'morning'
-              ? a.setMorning
-              : s === 'evening'
-                ? a.setEvening
-                : s === 'all'
-                  ? a.setAll
-                  : `${a.setCustom}${vault.custom.length > 0 ? ` (${num(vault.custom.length)})` : ''}`}
-          </button>
-        ))}
-      </div>
-
-      {/* Search */}
-      <div className="print:hidden">
-        <label className="sr-only" htmlFor="adhkar-search">
-          {a.searchPlaceholder}
-        </label>
-        <input
-          id="adhkar-search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder={a.searchPlaceholder}
-          dir="auto"
-          className="w-full rounded-xl border border-line/80 bg-surface/70 px-4 py-2.5 text-sm text-ink outline-none transition-colors placeholder:text-muted/60 focus:border-accent focus:ring-4 focus:ring-accent/10"
-        />
-      </div>
-
-      {/* Display options */}
-      <details className="rounded-2xl border border-line/70 px-5 py-3 print:hidden">
-        <summary className={`cursor-pointer text-xs font-semibold text-muted ${FOCUS_RING} rounded`}>
-          {a.displayTitle}
-        </summary>
-        <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-3">
-          <div className="flex items-center gap-1 rounded-full border border-line/80 p-1" role="group" aria-label={a.digitsLabel}>
-            {(['latn', 'arab'] as const).map((d) => (
-              <button
-                key={d}
-                type="button"
-                aria-pressed={prefs.digits === d}
-                onClick={() => setPrefs({ ...prefs, digits: d })}
-                className={`rounded-full px-3 py-1 text-xs font-bold ${FOCUS_RING} ${
-                  prefs.digits === d ? 'bg-accent text-paper' : 'text-muted hover:text-accent'
-                }`}
-              >
-                {d === 'latn' ? a.digitsLatn : a.digitsArab}
-              </button>
-            ))}
-          </div>
-          <div className="flex items-center gap-1 rounded-full border border-line/80 p-1" role="group" aria-label={a.fontLabel}>
-            {(['md', 'lg', 'xl'] as const).map((f) => (
-              <button
-                key={f}
-                type="button"
-                aria-pressed={prefs.fontSize === f}
-                onClick={() => setPrefs({ ...prefs, fontSize: f })}
-                className={`rounded-full px-3 py-1 text-xs font-bold ${FOCUS_RING} ${
-                  prefs.fontSize === f ? 'bg-accent text-paper' : 'text-muted hover:text-accent'
-                }`}
-              >
-                {f === 'md' ? a.fontSmall : f === 'lg' ? a.fontMedium : a.fontLarge}
-              </button>
-            ))}
-          </div>
-          <label className="inline-flex cursor-pointer items-center gap-2 text-xs text-muted">
-            <input
-              type="checkbox"
-              checked={vibration}
-              onChange={(e) => setVibration(e.target.checked)}
-              className="h-4 w-4 accent-[var(--color-accent)]"
-            />
-            {a.vibrationLabel}
-          </label>
-          <label className="inline-flex cursor-pointer items-center gap-2 text-xs text-muted">
-            <input
-              type="checkbox"
-              checked={wakeLock}
-              onChange={(e) => void toggleWakeLock(e.target.checked)}
-              className="h-4 w-4 accent-[var(--color-accent)]"
-            />
-            {a.wakeLockLabel}
-          </label>
-        </div>
-      </details>
-
+    <>
+    <Workspace layout={layout}>
+      {/* Stage: what you are counting right now, and how far through you
+          are. This is the screen the tool exists for, so it leads. */}
+      <Workspace.Pane id="stage" fill className="flex flex-col">
       {/* Progress summary + strip */}
       <div className="print:hidden">
         <p className="mb-2 text-xs text-muted">
@@ -730,10 +638,57 @@ export default function AdhkarTry() {
           )}
         </div>
       )}
+      </Workspace.Pane>
+
+      {/* Panel: which set, and the full list to work through. */}
+      <Workspace.Pane id="panel" className="space-y-5">
+      {/* Set picker */}
+      <div className="flex flex-wrap items-center gap-2 print:hidden" role="group" aria-label={a.title}>
+        {(['morning', 'evening', 'all', 'custom'] as const).map((s) => (
+          <button
+            key={s}
+            type="button"
+            aria-pressed={prefs.filter === s}
+            onClick={() => {
+              setPrefs({ ...prefs, filter: s })
+              setFeaturedId(null)
+            }}
+            className={`rounded-full px-4 py-2 text-xs font-semibold transition-colors ${FOCUS_RING} ${
+              prefs.filter === s
+                ? 'bg-accent text-paper shadow-card'
+                : 'border border-line/80 bg-surface/60 text-muted hover:border-accent/40 hover:text-accent'
+            }`}
+          >
+            {s === 'morning'
+              ? a.setMorning
+              : s === 'evening'
+                ? a.setEvening
+                : s === 'all'
+                  ? a.setAll
+                  : `${a.setCustom}${vault.custom.length > 0 ? ` (${num(vault.custom.length)})` : ''}`}
+          </button>
+        ))}
+      </div>
+
+      {/* Search */}
+      <div className="print:hidden">
+        <label className="sr-only" htmlFor="adhkar-search">
+          {a.searchPlaceholder}
+        </label>
+        <input
+          id="adhkar-search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder={a.searchPlaceholder}
+          dir="auto"
+          className="w-full rounded-xl border border-line/80 bg-surface/70 px-4 py-2.5 text-sm text-ink outline-none transition-colors placeholder:text-muted/60 focus:border-accent focus:ring-4 focus:ring-accent/10"
+        />
+      </div>
+
 
       {/* List: tap selects, + counts */}
       {visible.length > 0 && !allDone && (
-        <ol className="grid grid-cols-1 gap-2 sm:grid-cols-2 print:hidden">
+        <ol className="grid grid-cols-1 gap-2 @2xl:grid-cols-2 print:hidden">
           {visible.map((item) => {
             const c = counts[item.id] ?? 0
             const done = isDone(c, item.target)
@@ -802,7 +757,7 @@ export default function AdhkarTry() {
       )}
 
       {/* Keep & share */}
-      <div className="rounded-2xl border border-line/70 bg-surface/40 px-5 py-4 print:hidden">
+      <section className="border-t border-line/60 pt-5 print:hidden" aria-label={a.keepShareTitle}>
         <label className="flex cursor-pointer items-start gap-3">
           <input
             type="checkbox"
@@ -922,7 +877,7 @@ export default function AdhkarTry() {
             {a.imageFailed}
           </p>
         )}
-      </div>
+      </section>
 
       {/* Reset */}
       <div className="flex flex-wrap gap-2 print:hidden">
@@ -1078,9 +1033,69 @@ export default function AdhkarTry() {
           </ul>
         )}
       </div>
+      </Workspace.Pane>
 
-      <p className="text-xs leading-5 text-muted print:hidden">{a.disclaimer}</p>
+      {/* Inspector: display settings for the card and the export. */}
+      <Workspace.Pane id="inspector">
+      {/* Display options */}
+      <details className="rounded-2xl border border-line/70 px-5 py-3 print:hidden">
+        <summary className={`cursor-pointer text-xs font-semibold text-muted ${FOCUS_RING} rounded`}>
+          {a.displayTitle}
+        </summary>
+        <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-3">
+          <div className="flex items-center gap-1 rounded-full border border-line/80 p-1" role="group" aria-label={a.digitsLabel}>
+            {(['latn', 'arab'] as const).map((d) => (
+              <button
+                key={d}
+                type="button"
+                aria-pressed={prefs.digits === d}
+                onClick={() => setPrefs({ ...prefs, digits: d })}
+                className={`rounded-full px-3 py-1 text-xs font-bold ${FOCUS_RING} ${
+                  prefs.digits === d ? 'bg-accent text-paper' : 'text-muted hover:text-accent'
+                }`}
+              >
+                {d === 'latn' ? a.digitsLatn : a.digitsArab}
+              </button>
+            ))}
+          </div>
+          <div className="flex items-center gap-1 rounded-full border border-line/80 p-1" role="group" aria-label={a.fontLabel}>
+            {(['md', 'lg', 'xl'] as const).map((f) => (
+              <button
+                key={f}
+                type="button"
+                aria-pressed={prefs.fontSize === f}
+                onClick={() => setPrefs({ ...prefs, fontSize: f })}
+                className={`rounded-full px-3 py-1 text-xs font-bold ${FOCUS_RING} ${
+                  prefs.fontSize === f ? 'bg-accent text-paper' : 'text-muted hover:text-accent'
+                }`}
+              >
+                {f === 'md' ? a.fontSmall : f === 'lg' ? a.fontMedium : a.fontLarge}
+              </button>
+            ))}
+          </div>
+          <label className="inline-flex cursor-pointer items-center gap-2 text-xs text-muted">
+            <input
+              type="checkbox"
+              checked={vibration}
+              onChange={(e) => setVibration(e.target.checked)}
+              className="h-4 w-4 accent-[var(--color-accent)]"
+            />
+            {a.vibrationLabel}
+          </label>
+          <label className="inline-flex cursor-pointer items-center gap-2 text-xs text-muted">
+            <input
+              type="checkbox"
+              checked={wakeLock}
+              onChange={(e) => void toggleWakeLock(e.target.checked)}
+              className="h-4 w-4 accent-[var(--color-accent)]"
+            />
+            {a.wakeLockLabel}
+          </label>
+        </div>
+      </details>
 
+      </Workspace.Pane>
+    </Workspace>
       <ImagePreviewDialog
         open={exportDuaaId !== null}
         items={allItems.map((i) => ({
@@ -1178,6 +1193,6 @@ export default function AdhkarTry() {
           </div>,
           document.body,
         )}
-    </div>
+    </>
   )
 }

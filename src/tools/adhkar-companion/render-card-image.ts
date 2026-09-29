@@ -1,6 +1,4 @@
 import {
-  FORMAT_MIME,
-  FORMAT_QUALITY,
   IMAGE_FRAMES,
   IMAGE_SCALES,
   arabicFont,
@@ -14,6 +12,15 @@ import {
   type ImageMood,
   type ImageResolution,
 } from './card-image'
+import {
+  downloadBlob,
+  formatBytes,
+  hasArabic,
+  supportedFormats,
+  toBlob,
+} from '@/lib/image-export'
+
+export { downloadBlob, formatBytes, hasArabic, supportedFormats, toBlob }
 
 export type RenderSingleOpts = {
   frame: ImageFrame
@@ -28,10 +35,6 @@ export type RenderSingleOpts = {
 }
 
 export type RenderedImage = { blob: Blob; actualFormat: ImageFormat }
-
-export function hasArabic(str: string): boolean {
-  return /[؀-ۿ]/.test(str)
-}
 
 function themeColor(varName: string, fallback: string): string {
   try {
@@ -245,50 +248,6 @@ function drawOrnament(
   ctx.restore()
 }
 
-function toBlob(canvas: HTMLCanvasElement, format: ImageFormat): Promise<Blob> {
-  return new Promise((resolve, reject) => {
-    canvas.toBlob(
-      (blob) => {
-        if (blob) resolve(blob)
-        else reject(new Error('render-failed'))
-      },
-      FORMAT_MIME[format],
-      FORMAT_QUALITY[format],
-    )
-  })
-}
-
-/** Runtime encoder support, with result caching. PNG is always available. */
-const supportCache = new Map<ImageFormat, boolean>()
-
-export function supportedFormats(): ImageFormat[] {
-  const out: ImageFormat[] = ['png']
-  if (typeof document === 'undefined') return out
-  for (const f of ['jpeg', 'webp'] as const) {
-    let ok = supportCache.get(f)
-    if (ok === undefined) {
-      try {
-        const c = document.createElement('canvas')
-        c.width = 1
-        c.height = 1
-        ok = c.toDataURL(FORMAT_MIME[f]).startsWith(`data:${FORMAT_MIME[f]}`)
-      } catch {
-        ok = false
-      }
-      supportCache.set(f, ok)
-    }
-    if (ok) out.push(f)
-  }
-  return out
-}
-
-export function formatBytes(bytes: number): string {
-  if (!Number.isFinite(bytes) || bytes < 0) return '—'
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
-}
-
 export async function renderSingleCard(opts: RenderSingleOpts): Promise<RenderedImage> {
   await ensureFonts()
   const geo = singleCardGeometry(opts.frame)
@@ -320,18 +279,4 @@ export async function renderSingleCard(opts: RenderSingleOpts): Promise<Rendered
   })
   const actualFormat = pickFormat(opts.format, supportedFormats())
   return { blob: await toBlob(canvas, actualFormat), actualFormat }
-}
-
-export function downloadBlob(blob: Blob, filename: string) {
-  const url = URL.createObjectURL(blob)
-  try {
-    const a = document.createElement('a')
-    a.href = url
-    a.download = filename
-    document.body.appendChild(a)
-    a.click()
-    a.remove()
-  } finally {
-    window.setTimeout(() => URL.revokeObjectURL(url), 4000)
-  }
 }

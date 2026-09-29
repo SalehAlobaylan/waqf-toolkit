@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { CATEGORIES, STATUS_ORDER, TOOLS, getTool, localizedTool, relatedTools } from './tools'
-import { TOOL_INTERFACES } from '@/tools/registry'
+import { TOOL_COMPONENTS } from '@/tools/registry'
+import { PANE_IDS, TOOL_LAYOUTS } from '@/lib/panes'
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
 const ARABIC_SCRIPT = /[\u0600-\u06FF]/
@@ -26,18 +27,41 @@ describe('tool catalog invariants', () => {
     }
   })
 
-  it('tools with an in-app interface are marked tryRoute', () => {
+  it('a tool is only Available once it ships a runnable surface', () => {
     for (const tool of TOOLS) {
-    // Inverse check is done against the registry import-free via convention:
-    // tools with tryRoute ship an interface (see src/tools/registry.tsx).
-      // Archived tools keep their historical interface but are no longer promoted as usable.
-      if (tool.tryRoute) {
+      if (tool.status === 'available') {
         expect(
-          tool.status === 'available' ||
-            tool.status === 'experimental' ||
-            tool.status === 'archived',
-        ).toBe(true)
+          TOOL_COMPONENTS[tool.slug],
+          `${tool.slug} is marked available but has no runnable interface`,
+        ).toBeDefined()
       }
+    }
+  })
+
+  it('every registered tool maps to a catalog slug and a layout', () => {
+    expect(
+      Object.keys(TOOL_COMPONENTS).sort(),
+      'components and layouts disagree; every component needs a layout entry',
+    ).toEqual(Object.keys(TOOL_LAYOUTS).sort())
+    for (const slug of Object.keys(TOOL_COMPONENTS)) {
+      expect(
+        getTool(slug),
+        `registry lists ${slug} but the catalog does not`,
+      ).toBeDefined()
+      const layout = TOOL_LAYOUTS[slug]
+      expect(layout.panes.length, `${slug} declares no panes`).toBeGreaterThan(0)
+      for (const pane of layout.panes) {
+        expect(PANE_IDS, `${slug} declares unknown pane ${pane}`).toContain(pane)
+      }
+      expect(
+        new Set(layout.panes).size,
+        `${slug} declares a duplicate pane`,
+      ).toBe(layout.panes.length)
+      expect(
+        layout.panes,
+        `${slug} must put the artifact in the stage pane`,
+      ).toContain('stage')
+      expect(layout.dir.trim(), `${slug} has no source directory`).not.toBe('')
     }
   })
 
@@ -97,6 +121,30 @@ describe('tool catalog invariants', () => {
     )
   })
 
+  it('each tool renders its panes in declared order', () => {
+    // The grid tracks are derived from TOOL_LAYOUTS[slug].panes, so a tool
+    // whose JSX renders them in a different order gets the wide `stage` track
+    // on the wrong pane — a silent layout bug with no runtime error.
+    const files: Record<string, string> = {
+      'card-studio': 'src/tools/card-studio/card-studio-try.tsx',
+      'prayer-times-widget': 'src/tools/prayer-times/prayer-times-try.tsx',
+      'qibla-finder': 'src/tools/qibla-finder/qibla-try.tsx',
+      'hijri-converter': 'src/tools/hijri-converter/hijri-converter-try.tsx',
+      'zakat-calculator': 'src/tools/zakat-calculator/zakat-calculator-try.tsx',
+      'adhkar-companion': 'src/tools/adhkar-companion/adhkar-try.tsx',
+    }
+    for (const [slug, file] of Object.entries(files)) {
+      const source = readFileSync(file, 'utf-8')
+      const rendered = [...source.matchAll(/<Workspace\.Pane id="(\w+)"/g)].map(
+        (match) => match[1],
+      )
+      expect(
+        rendered,
+        `${slug} renders ${rendered.join('>')} but declares ${TOOL_LAYOUTS[slug].panes.join('>')}`,
+      ).toEqual([...TOOL_LAYOUTS[slug].panes])
+    }
+  })
+
   it('sitemap covers every tool in every locale', () => {
     const sitemap = readFileSync('public/sitemap.xml', 'utf-8')
     for (const locale of ['en', 'ar']) {
@@ -114,31 +162,8 @@ describe('tool catalog invariants', () => {
     }
   })
 
-  it('sitemap only lists try-pages for tools with a shipped interface', () => {
+  it('the sitemap advertises no retired try-pages', () => {
     const sitemap = readFileSync('public/sitemap.xml', 'utf-8')
-    const trySlugs = [
-      ...sitemap.matchAll(/\/tools\/([a-z0-9-]+)\/try</g),
-    ].map((match) => match[1])
-    for (const slug of trySlugs) {
-      expect(
-        TOOL_INTERFACES[slug],
-        `sitemap advertises /tools/${slug}/try but no interface is registered`,
-      ).toBeDefined()
-    }
-  })
-
-  it('tools marked tryRoute have a sitemap try-page in every locale', () => {
-    const sitemap = readFileSync('public/sitemap.xml', 'utf-8')
-    for (const tool of TOOLS) {
-      if (!tool.tryRoute) continue
-      for (const locale of ['en', 'ar']) {
-        expect(
-          sitemap,
-          `tryRoute tool ${tool.slug} is missing its try-page in the sitemap`,
-        ).toContain(
-          `<loc>https://waqf-toolkit.vercel.app/${locale}/tools/${tool.slug}/try</loc>`,
-        )
-      }
-    }
+    expect(sitemap).not.toContain('/try')
   })
 })

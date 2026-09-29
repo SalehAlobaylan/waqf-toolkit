@@ -1,6 +1,17 @@
-# Waqf Toolkit icon assets
+# Waqf Toolkit icon assets (superseded)
 
-These files are exports of the site favicon in `public/favicon.svg`. The artwork and colors are identical across formats.
+> **These are the pre-rosette icon and are no longer the site's icon.** They are
+> exports of the previous favicon — a rounded tile with a simple eight-point
+> starburst. The current mark is the eight-point rosette described in
+> [`../logos/README.md`](../logos/README.md), and nothing references this
+> folder. Kept only as a record of the previous identity.
+>
+> For current icons, run `pnpm brand`. It writes `public/favicon.svg`,
+> `public/favicon-{16,32}.png`, `public/apple-touch-icon.png`,
+> `public/icon-{192,512}.png` and `public/icon-maskable-{192,512}.png` from the
+> geometry in `src/components/logo.tsx`.
+
+The file list below describes the old set.
 
 | File pattern | Format | Sizes | Background |
 | --- | --- | --- | --- |

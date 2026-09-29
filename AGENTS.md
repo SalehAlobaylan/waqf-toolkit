@@ -57,7 +57,9 @@ src/
 
 **Bilingual or it doesn't ship.** Every user-facing string goes in BOTH `src/i18n/en.ts` and `src/i18n/ar.ts`. Arabic copy must read naturally, not machine-translated. The dictionary types enforce key parity — if `tsc` passes, keys match. Never hardcode UI text in components.
 
-**One language at a time.** Each surface renders entirely in the active locale — never mix Arabic and English labels on one screen, export, or print. Exempt in both locales: sacred Arabic text (always present as content), proper nouns and codes (`Bukhari 6306`, `v1.0.0`, filenames), and numerals (which follow the user's digit preference).
+**One language at a time.** Each surface renders entirely in the active locale — never mix Arabic and English labels on one screen, export, or print. **A translation appears in the English UI only; Arabic shows Arabic and nothing else.** Exempt in both locales: sacred Arabic text (always present as content), proper nouns and codes (`Bukhari 6306`, `Hisn`, `v1.0.0`, `PNG`, filenames), and numerals (which follow the user's digit preference, not the locale).
+
+The consequence is a data requirement, not a rendering one: any prose field a surface shows needs an Arabic sibling, or the Arabic surface leaks English. `DuaEntry` carries `titleAr` / `hisnRefAr`; `DatasetRecord` carries a required `nameAr`; `ReviewState` renders through `cardStudio.review*` labels, never the raw enum. `card-studio/data.test.ts` and `data/datasets.test.ts` fail the build if one is missing. A transliterated citation like `Bukhari 6306` needs no sibling — it is a proper noun. A label like `Hisn ch. 27` does.
 
 **Tone:** formal but slightly casual. No Islamic slogans or decorative religiosity — plain, honest language only.
 
@@ -82,6 +84,23 @@ src/
 - **`useSyncExternalStore` snapshots must be cached** (see `src/lib/saved-tools.ts`) — returning fresh objects each call breaks React 19.
 - Unknown locales (e.g. `/fr`) must return **404**, not 500 — handled by `beforeLoad` in `$locale/route.tsx`; keep it that way.
 - `dir="rtl"` is set server-side on `<html>` from the URL in `__root.tsx`; test layout in both directions when touching CSS.
+- **Tool pages have two templates.** `app` (the tool *is* the page: full-viewport workspace, contextual header, no footer) and `document` (a prose record). The choice lives in `src/lib/panes.ts` (`TOOL_LAYOUTS`) — never in the catalog, never in a route file.
+- **A tool renders its own `<Workspace>`.** The shell owns *space* (width, height, scroll ownership); the tool owns *arrangement*. The action bar's handlers live inside the tool, so the route must not wrap it.
+- **`panes` is both DOM order and grid order.** `workspaceGridClasses` derives the grid from that array, so rendering the `Workspace.Pane`s in a different order than declared puts the wide `stage` track on the wrong pane with no error. `src/data/tools.test.ts` asserts it.
+- **Grid templates must be literals.** Tailwind extracts class names by scanning source text, so `` `lg:grid-cols-[${tracks}]` `` emits no CSS at all. Add new pane combinations to `WORKSPACE_GRID` in `src/components/ui.tsx` as full strings.
+- **The artifact pane is marked `fill`, not inferred from its id.** The shell owns space; the tool owns arrangement — including which of its panes holds the canvas. A `fill` pane fits its cell and does not scroll.
+- **A tool's `wide`/`defer` must be declared, not assumed.** `wide` picks the larger fixed track and `defer` picks the pane that waits for `xl`. Wrong values fail silently, so every new combination needs a literal in `WORKSPACE_GRID` (`components/ui.test.ts` enforces it).
+- **Search folds the script it searches.** `card-studio/engine/search.ts` strips tashkeel and unifies أإآٱ/ا, ى/ي, ة/ه so an unvocalised query matches vocalised corpus text. Never apply folding to the text you render — only to the comparison.
+- **A long picker in a rail must be a disclosure.** Card Studio's 23 template thumbnails are ~1340px in a 264–360px rail. Wrap it in `<details open={state} onToggle={…}>`, and put the current selection in the `<summary>` so a closed picker never hides what is applied. Same for dataset/provenance lists.
+- **Order a rail by the flow, smallest-to-refinement-last.** Card Studio: add → chosen blocks → template. Don't lead with a 3-row list and bury the only way to add content at the bottom.
+- **Inside a workspace pane, use container variants — never `sm:`/`lg:`.** Panes are `@container`s 264–360px wide (or 600–1900px for a stage), and a viewport breakpoint fires regardless of which one it lands in, so `sm:grid-cols-3` becomes three 90px fields in a rail. Use `@lg:` (512px) to split in two, `@2xl:` (672px) for three, `@3xl:` (768px) for four or more. `src/lib/panes.test.ts` enforces this.
+- **A flexible grid track is `minmax(0,1fr)`, never `1fr`** — `1fr` cannot shrink below its content, so a fixed sibling column overflows the pane.
+- **Workspace panes are solid, not glass.** The budget in `DESIGN.md` caps heavy blur at first-level surfaces, and `.glass-panel::before` is `inset: 0` — at viewport size its conic ring sweeps the whole screen. Use `--surface-pane`.
+- **Never lock the body for the workspace.** Put the height on the grid, let panes scroll internally, and let the page keep scrolling — the Adhkar booklet and the Card Studio sheet print through their own portals and need normal document flow (see the print block in `app.css`).
+- **Logical properties only inside a workspace** — `ps/pe/ms/me/border-e/border-s`, never `left-`/`right-`. `grid-cols-*` is physical, so the first pane lands on the right under `dir="rtl"`, which is the correct convention.
+- **The layout budget is tokenised** in `app.css`: `--header-h`, `--header-h-app`, `--shell-w`, `--measure`, `--pane-w`, `--app-h`, `--strip-h`. Don't reintroduce `72px` or `max-w-[1240px]` as literals.
+- **The `?b=` deep link is router-validated.** `tools/$slug.tsx` omits the key when absent; returning `{ b: undefined }` instead makes `search` required on every `<Link>` to that route and breaks typecheck app-wide.
+- **`/tools/<slug>/try` is retired** and 301s to the tool page. Card Studio share links target `/tools/card-studio?b=…`; don't add `/try` URLs back to the sitemap.
 - `.tanstack/`, `dist/`, and generated files are gitignored — don't commit them.
 
 ## Git conventions
