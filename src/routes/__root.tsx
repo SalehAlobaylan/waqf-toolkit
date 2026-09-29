@@ -11,6 +11,7 @@ import { useState } from 'react'
 import { dirFor, getDictionary, isLocale, DEFAULT_LOCALE } from '@/i18n'
 import { ButtonLink } from '@/components/ui'
 import { SITE_URL } from '@/lib/site'
+import { BRAND } from '@/lib/brand'
 import '@/styles/app.css'
 
 function localeFromPathname(pathname: string) {
@@ -23,7 +24,7 @@ export const Route = createRootRoute({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { name: 'theme-color', content: '#f5f2ea' },
+      { name: 'theme-color', content: BRAND.forest },
       { title: 'Waqf Toolkit' },
       {
         name: 'description',
@@ -38,12 +39,28 @@ export const Route = createRootRoute({
         content:
           'Free, open-source web tools. Open your browser and use them instantly — nothing to install.',
       },
+      { property: 'og:url', content: SITE_URL },
       { property: 'og:image', content: `${SITE_URL}/og.png` },
       { property: 'og:image:width', content: '1200' },
       { property: 'og:image:height', content: '630' },
+      { property: 'og:image:type', content: 'image/png' },
+      { property: 'og:image:alt', content: 'Waqf Toolkit — open tools with a clear job' },
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:title', content: 'Waqf Toolkit' },
+      {
+        name: 'twitter:description',
+        content:
+          'Free, open-source web tools. Open your browser and use them instantly — nothing to install.',
+      },
+      { name: 'twitter:image', content: `${SITE_URL}/og.png` },
+      { name: 'twitter:image:alt', content: 'Waqf Toolkit — open tools with a clear job' },
     ],
     links: [
       { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+      { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32.png' },
+      { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16.png' },
+      { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
+      { rel: 'manifest', href: '/site.webmanifest' },
     ],
   }),
   component: RootComponent,

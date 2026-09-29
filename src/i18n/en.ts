@@ -8,7 +8,6 @@ export const en = {
     navGithub: 'GitHub',
     languageSwitch: 'العربية',
     languageSwitchLabel: 'Switch to Arabic',
-    logoLetter: 'w',
     wordmark: 'waqf',
     wordmarkSuffix: 'toolkit',
     savedNav: 'Saved',

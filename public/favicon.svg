@@ -1,5 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="9" fill="#1e3a2d"/>
-  <path d="M16 6l2.47 5.06L24 9.6l-3.53 4.2L25.4 16l-4.93 2.2L24 22.4l-5.53-1.46L16 26l-2.47-5.06L8 22.4l3.53-4.2L6.6 16l4.93-2.2L8 9.6l5.53 1.46L16 6z" fill="#a9c46c"/>
-  <circle cx="16" cy="16" r="3" fill="#f5f2ea"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+<defs><g id="arm"><circle cx="33.58" r="8.06"/><path d="M0 -1.93 C9.23 -2 10.2 -4.64 14.05 -4.64 C17.9 -4.64 20.02 -2.18 22.9 -2.18 C23.8 -2.18 25.57 -2.6 26.9 -4.3 L26.9 4.3 C25.57 2.6 23.8 2.18 22.9 2.18 C17.9 4.64 20.02 2.18 14.05 4.64 C10.2 4.64 9.23 2 0 1.93 Z"/></g></defs>
+<rect width="100" height="100" rx="22.5" fill="#10412d"/>
+<g transform="translate(50 50) scale(1) translate(-50 -50)">
+<g fill="#a8c968" transform="translate(50 50)"><use href="#arm" transform="rotate(0)"/><use href="#arm" transform="rotate(45)"/><use href="#arm" transform="rotate(90)"/><use href="#arm" transform="rotate(135)"/><use href="#arm" transform="rotate(180)"/><use href="#arm" transform="rotate(225)"/><use href="#arm" transform="rotate(270)"/><use href="#arm" transform="rotate(315)"/></g>
+<circle cx="50" cy="50" r="11.18" fill="#fdfdf9"/>
+</g>
 </svg>

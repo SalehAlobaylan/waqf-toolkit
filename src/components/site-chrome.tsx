@@ -6,6 +6,7 @@ import { switchLocalePath } from '@/lib/locale-path'
 import { localizedTool, STATUS_ORDER, TOOLS } from '@/data/tools'
 import { useSavedTools } from '@/lib/saved-tools'
 import { GithubIcon } from './github-icon'
+import { MarkKnockout, MarkTile } from './logo'
 import { GlobeIcon, MenuIcon, CloseIcon, StarIcon, ChevronDownIcon } from './icons'
 
 export const GITHUB_REPO_URL = REPO_URL
@@ -35,9 +36,10 @@ export function LogoMark() {
   const { locale, t } = useI18n()
   return (
     <Link to="/$locale" params={{ locale }} className="group flex items-center gap-3">
-      <span className="flex h-9 w-9 items-center justify-center rounded-[11px] bg-forest text-olive transition-transform duration-300 group-hover:-rotate-6">
-        <span className="font-display text-xl font-bold">{t.site.logoLetter}</span>
-      </span>
+      <MarkTile
+        className="h-9 w-9 shrink-0 transition-transform duration-300 group-hover:-rotate-6"
+        aria-hidden="true"
+      />
       <span className="font-display text-lg font-semibold tracking-[-0.03em]">
         {t.site.wordmark}{' '}
         <span className="font-sans font-normal text-muted">/ {t.site.wordmarkSuffix}</span>
@@ -305,9 +307,7 @@ export function SiteFooter() {
       <div className="mx-auto grid max-w-[1240px] gap-10 px-5 py-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-8">
         <div>
           <div className="flex items-center gap-3">
-            <span className="flex h-9 w-9 items-center justify-center rounded-[11px] bg-forest text-olive">
-              <span className="font-display text-xl font-bold">{t.site.logoLetter}</span>
-            </span>
+            <MarkKnockout className="h-10 w-10 shrink-0" aria-hidden="true" />
             <span className="font-display text-lg font-semibold tracking-[-0.03em]">
               {t.site.wordmark}
             </span>

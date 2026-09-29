@@ -211,6 +211,14 @@
   --color-clay-soft: hsl(25 55% 93%);
   --color-danger: hsl(3 53% 42%);
 
+  /* Brand — locked to the logo artwork. Sampled from the master rosette in
+     docs/logos and deliberately NOT retuned with the UI palette above: the
+     mark is a fixed identity, so a contrast pass on the interface must never
+     silently recolour the logo. Change these only alongside the artwork. */
+  --color-brand-forest: hsl(154 60% 16%); /* tile + rosette ground   #10412d */
+  --color-brand-olive: hsl(79 47% 59%); /* rosette arms             #a8c968 */
+  --color-brand-cream: hsl(48 52% 97%); /* rosette centre + paper   #fdfdf9 */
+
   /* Type */
   --font-sans:
     'DM Sans', 'Thmanyah Sans', ui-sans-serif, system-ui, -apple-system,

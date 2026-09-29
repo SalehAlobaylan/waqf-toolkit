@@ -10,7 +10,6 @@ export const ar: Dictionary = {
     navGithub: 'جيت هب',
     languageSwitch: 'English',
     languageSwitchLabel: 'التبديل إلى الإنجليزية',
-    logoLetter: 'و',
     wordmark: 'وقف',
     wordmarkSuffix: 'صندوق الأدوات',
     savedNav: 'المحفوظة',
